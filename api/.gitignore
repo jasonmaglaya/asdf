@@ -1,0 +1,8 @@
+bin/
+obj/
+.idea/
+./idea/*
+.vs/
+debug.log
+debug*.txt
+*.DS_Store

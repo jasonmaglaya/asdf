@@ -1,0 +1,56 @@
+@import "./branding/brand.scss";
+
+@import "~bootstrap/scss/bootstrap";
+
+html,
+body {
+    background-color: $background-color;
+    overflow-x: hidden;
+}
+
+input.invalid {
+    border-color: #dc3545;
+    background-color: #f8d7da;
+}
+
+textarea.invalid {
+    border-color: #dc3545;
+    background-color: #f8d7da;
+}
+
+.btn:disabled {
+    opacity: 0.4;
+}
+
+select.invalid {
+    border-color: #dc3545;
+    background-color: #f8d7da;
+}
+
+.my-masonry-grid {
+    display: -webkit-box; /* Not needed if autoprefixing */
+    display: -ms-flexbox; /* Not needed if autoprefixing */
+    display: flex;
+    margin-left: -5px; /* gutter size offset */
+    width: auto;
+}
+.my-masonry-grid_column {
+    padding-left: 5px; /* gutter size */
+    background-clip: padding-box;
+}
+
+/* Style your items */
+.my-masonry-grid_column > div { /* change div to reference your elements you put in <Masonry> */
+    background: grey;
+    margin-bottom: 5px;
+}
+
+.blink {
+    animation: blinker 1.5s linear infinite;
+}
+
+@keyframes blinker {
+    50% {
+        opacity: 0;
+    }
+}

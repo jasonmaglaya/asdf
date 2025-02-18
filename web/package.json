@@ -1,0 +1,57 @@
+{
+  "name": "gambit",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@fortawesome/fontawesome": "^1.1.8",
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "@microsoft/signalr": "^8.0.7",
+    "@reduxjs/toolkit": "^2.5.1",
+    "axios": "^1.7.9",
+    "bootstrap": "^5.3.3",
+    "cra-template": "1.2.0",
+    "framer-motion": "^12.4.2",
+    "react": "^18.3.1",
+    "react-bootstrap": "^2.10.9",
+    "react-currency-input-field": "^3.9.0",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.54.2",
+    "react-masonry-css": "^1.0.16",
+    "react-redux": "^9.2.0",
+    "react-responsive": "^10.0.0",
+    "react-router-dom": "^7.1.4",
+    "react-scripts": "5.0.1",
+    "styled-components": "^6.1.14"
+  },
+  "scripts": {
+    "start": "env-cmd -f .env react-scripts start",
+    "build": "env-cmd -f .env.prod react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "sass": "^1.83.4",
+    "web-vitals": "^4.2.4"
+  }
+}
