@@ -11,6 +11,7 @@ using Remy.Gambit.Api.Validators;
 using Remy.Gambit.Api.Web.ActionFilters;
 using Remy.Gambit.Core.Concurrency;
 using Remy.Gambit.Data;
+using Remy.Gambit.Services;
 using System.Data;
 using System.Net.Http.Headers;
 using System.Text;
@@ -18,9 +19,13 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddTransient<IDbConnection>(x => new SqlConnection(builder.Configuration["ConnectionStrings:GambitDbSqlConnection"]));
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddSingleton<IDbConnection>(x => new SqlConnection(builder.Configuration["ConnectionStrings:GambitDbSqlConnection"]));
 builder.Services.AddTransient<IGambitDbClient, GambitDbClient>();
 builder.Services.AddSingleton<IUserLockService, SemaphoreUserLockService>();
+builder.Services.AddTransient<IPartnerService, MarvelGamingService>();
 
 // Repositories
 builder.Services.Scan(scan =>
@@ -119,7 +124,7 @@ builder.Services.AddMemoryCache(options =>
 });
 
 // Http Clients
-builder.Services.AddHttpClient("MG", client =>
+builder.Services.AddHttpClient("MarvelGaming", client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["MG:BaseUrl"]!);
     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

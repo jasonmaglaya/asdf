@@ -20,7 +20,9 @@ public class UsersController(
     ICommandHandler<UpdateAgencyRequest, UpdateAgencyResult> updateAgencyHandler,
     IQueryHandler<GetAllUsersRequest, GetAllUsersResult> getAllUsersHandler,
     ICommandHandler<TransferCreditsRequest, TransferCreditsResult> transferCreditsHandler,
-    IQueryHandler<SearchUserRequest, SearchUserResult> searchUserHandler
+    IQueryHandler<SearchUserRequest, SearchUserResult> searchUserHandler,
+    IQueryHandler<GetUserBalanceRequest, GetUserBalanceResult> getUserBalanceHandler,
+    IHttpContextAccessor httpContextAccessor
         ) : ControllerBase
 {
     private readonly IQueryHandler<GetUserRequest, GetUserResult> _getUserInfoHandler = getUserInfoHandler;
@@ -31,6 +33,8 @@ public class UsersController(
     private readonly IQueryHandler<GetAllUsersRequest, GetAllUsersResult> _getAllUsersHandler = getAllUsersHandler;
     private readonly ICommandHandler<TransferCreditsRequest, TransferCreditsResult> _transferCreditsHandler = transferCreditsHandler;
     private readonly IQueryHandler<SearchUserRequest, SearchUserResult> _searchUserHandler = searchUserHandler;
+    private readonly IQueryHandler<GetUserBalanceRequest, GetUserBalanceResult> _getUserBalanceHandler = getUserBalanceHandler;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     [FeatureFilter(Features.ListAllUsers)]
     [HttpGet]
@@ -245,6 +249,43 @@ public class UsersController(
         request.Requestor = userId;
 
         var result = await _searchUserHandler.HandleAsync(request, token);
+
+        if (result.ValidationResults.Any())
+        {
+            return BadRequest(result);
+        }
+
+        if (!result.IsSuccessful)
+        {
+            return NotFound();
+        }
+
+        return Ok(result);
+    }
+
+    [HttpGet("me/balance")]
+    public async Task<ActionResult<GetUserBalanceResult>> GetUserBalance([FromBody] GetUserBalanceRequest request, CancellationToken token)
+    {
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        if (!Guid.TryParse(identity?.FindFirst(ClaimTypes.Name)?.Value!, out Guid userId))
+        {
+            return Unauthorized();
+        }
+
+        request.UserId = userId;
+
+        var httpContext = _httpContextAccessor.HttpContext;
+        var userToken = httpContext?.Request.Headers["Authorization"]
+            .FirstOrDefault()?.Replace("Bearer ", "");
+
+        if (string.IsNullOrEmpty(userToken))
+        {
+            return Unauthorized();
+        }
+
+        request.UserToken = userToken;
+
+        var result = await _getUserBalanceHandler.HandleAsync(request, token);
 
         if (result.ValidationResults.Any())
         {

@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remy.Gambit.Api", "Remy.Gam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remy.Gambit.Api.Web", "Remy.Gambit.Api.Web\Remy.Gambit.Api.Web.csproj", "{5E52B0E6-9ED5-416E-9F38-D33A827EF5F5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remy.Gambit.Services", "Remy.Gambit.Services\Remy.Gambit.Services.csproj", "{7167ED85-33E0-4970-83AD-6513CA03D78E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,8 +41,15 @@ Global
 		{5E52B0E6-9ED5-416E-9F38-D33A827EF5F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E52B0E6-9ED5-416E-9F38-D33A827EF5F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E52B0E6-9ED5-416E-9F38-D33A827EF5F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7167ED85-33E0-4970-83AD-6513CA03D78E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7167ED85-33E0-4970-83AD-6513CA03D78E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7167ED85-33E0-4970-83AD-6513CA03D78E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7167ED85-33E0-4970-83AD-6513CA03D78E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6131896B-034A-4B0F-9D80-90319F37A320}
 	EndGlobalSection
 EndGlobal

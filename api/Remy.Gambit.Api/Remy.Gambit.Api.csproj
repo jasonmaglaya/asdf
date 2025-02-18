@@ -24,6 +24,7 @@
     <ProjectReference Include="..\Remy.Gambit.Core\Remy.Gambit.Core.csproj" />
     <ProjectReference Include="..\Remy.Gambit.Data\Remy.Gambit.Data.csproj" />
     <ProjectReference Include="..\Remy.Gambit.Models\Remy.Gambit.Models.csproj" />
+    <ProjectReference Include="..\Remy.Gambit.Services\Remy.Gambit.Services.csproj" />
   </ItemGroup>
 
 </Project>
