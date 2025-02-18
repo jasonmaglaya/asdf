@@ -28,18 +28,18 @@ jobs:
       - name: Azure Login
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.REMYGAMBITAP_AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.REMYGAMBITAP_AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.REMYGAMBITAP_AZURE_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.REMYGAMBITAPI_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.REMYGAMBITAPI_AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.REMYGAMBITAPI_AZURE_SUBSCRIPTION_ID }}
 
       - name: Build and push container image to registry
         uses: azure/container-apps-deploy-action@v2
         with:
-          appSourcePath: ${{ github.workspace }}/api/Remy.Gambit.Api.Web
+          appSourcePath: ${{ github.workspace }}
           _dockerfilePathKey_: _dockerfilePath_
           registryUrl: jasonmaglaya.azurecr.io
-          registryUsername: ${{ secrets.REMYGAMBITAP_REGISTRY_USERNAME }}
-          registryPassword: ${{ secrets.REMYGAMBITAP_REGISTRY_PASSWORD }}
+          registryUsername: ${{ secrets.REMYGAMBITAPI_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.REMYGAMBITAPI_REGISTRY_PASSWORD }}
           containerAppName: remy-gambit-api
           resourceGroup: rg-remy
           imageToBuild: jasonmaglaya.azurecr.io/remy-gambit-api:${{ github.sha }}
