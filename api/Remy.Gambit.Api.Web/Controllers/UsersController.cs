@@ -21,8 +21,7 @@ public class UsersController(
     IQueryHandler<GetAllUsersRequest, GetAllUsersResult> getAllUsersHandler,
     ICommandHandler<TransferCreditsRequest, TransferCreditsResult> transferCreditsHandler,
     IQueryHandler<SearchUserRequest, SearchUserResult> searchUserHandler,
-    IQueryHandler<GetUserBalanceRequest, GetUserBalanceResult> getUserBalanceHandler,
-    IHttpContextAccessor httpContextAccessor
+    IQueryHandler<GetUserBalanceRequest, GetUserBalanceResult> getUserBalanceHandler
         ) : ControllerBase
 {
     private readonly IQueryHandler<GetUserRequest, GetUserResult> _getUserInfoHandler = getUserInfoHandler;
@@ -34,7 +33,6 @@ public class UsersController(
     private readonly ICommandHandler<TransferCreditsRequest, TransferCreditsResult> _transferCreditsHandler = transferCreditsHandler;
     private readonly IQueryHandler<SearchUserRequest, SearchUserResult> _searchUserHandler = searchUserHandler;
     private readonly IQueryHandler<GetUserBalanceRequest, GetUserBalanceResult> _getUserBalanceHandler = getUserBalanceHandler;
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     [FeatureFilter(Features.ListAllUsers)]
     [HttpGet]
@@ -274,13 +272,9 @@ public class UsersController(
 
         request.UserId = userId;
 
-        var httpContext = _httpContextAccessor.HttpContext;
-        var userToken = httpContext?.Request.Headers["Authorization"]
-            .FirstOrDefault()?.Replace("Bearer ", "");
-
-        if (string.IsNullOrEmpty(userToken))
+        if (Request.Headers.TryGetValue("Authorization", out var userToken))
         {
-            return Unauthorized();
+            request.UserToken = userToken.FirstOrDefault()?.Replace("Bearer ", "");
         }
 
         request.UserToken = userToken;

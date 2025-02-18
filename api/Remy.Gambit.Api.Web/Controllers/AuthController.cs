@@ -106,20 +106,12 @@ public class AuthController(
         {
             request.ClientId = clientId;
         }
-        //else
-        //{
-        //    return Unauthorized("Header x-client-id not found.");
-        //}
-
+        
         if (Request.Headers.TryGetValue("x-client-secret", out var clientSecret))
         {
             request.ClientSecret = clientSecret;
         }
-        //else
-        //{
-        //    return Unauthorized("Header x-client-secret not found.");
-        //}
-
+        
         var clientIp = Request.Headers["X-Forwarded-For"].FirstOrDefault();
 
         if (string.IsNullOrEmpty(clientIp))

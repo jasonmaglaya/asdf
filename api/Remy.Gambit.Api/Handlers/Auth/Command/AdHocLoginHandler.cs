@@ -19,6 +19,12 @@ public class AdHocLoginHandler(IConfiguration configuration, IValidator<AdHocLog
 
     public async ValueTask<AdHocLoginResult> HandleAsync(AdHocLoginRequest command, CancellationToken token = default)
     {
+        var validationResult = await _validator.ValidateAsync(command, token);
+        if (!validationResult.IsValid)
+        {
+            return new AdHocLoginResult { Type = command.Type, Status = "failure" };
+        }
+
         //var clientSecret = await _clientSecretsRepository.GetClientSecretAsync(command.ClientId!, token);
         //if (clientSecret is null)
         //{
@@ -38,11 +44,7 @@ public class AdHocLoginHandler(IConfiguration configuration, IValidator<AdHocLog
         //    }
         //}
 
-        var validationResult = await _validator.ValidateAsync(command, token);
-        if (!validationResult.IsValid)
-        {
-            return new AdHocLoginResult { Type = command.Type, Status = "failure" };
-        }
+
 
         Models.User user;
 
