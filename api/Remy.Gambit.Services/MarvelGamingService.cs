@@ -36,14 +36,15 @@ namespace Remy.Gambit.Services
             {
                 return new Balance
                 {
-                    Amount = 0                    
+                    Amount = 0,
+                    Currency = content
                 };
             }
 
             return new Balance
             {
                 Amount = getBalanceResponse.Balance,
-                Currency = getBalanceResponse.Currency
+                Currency = content
             };
         }
 
