@@ -8,7 +8,6 @@ public class GetUserBalanceRequestValidator : AbstractValidator<GetUserBalanceRe
     public GetUserBalanceRequestValidator()
     {
         RuleFor(request => request.UserId).NotNull().WithMessage("UserId is required");
-        RuleFor(request => request.UserName).NotNull().WithMessage("UserName is required");
         RuleFor(request => request.UserToken).NotNull().WithMessage("UserToken is required");
     }
 }

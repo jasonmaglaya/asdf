@@ -64,10 +64,13 @@ export default function Login() {
     const operatorToken = searchParams.get("operatorToken");
 
     if (accessToken || refreshToken || operatorToken) {
-      window.localStorage.setItem(
-        "user",
-        JSON.stringify({ accessToken, refreshToken, operatorToken })
-      );
+      const user = { accessToken, refreshToken, operatorToken };
+      console.log(user);
+
+      const stringUser = JSON.stringify(user);
+      console.log(stringUser);
+
+      window.localStorage.setItem("user", stringUser);
       navigate("/");
     } else {
       setShowLoading(false);

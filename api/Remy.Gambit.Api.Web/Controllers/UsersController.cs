@@ -281,7 +281,7 @@ public class UsersController(
 
         if (!result.IsSuccessful)
         {
-            return NotFound();
+            return NotFound(result);
         }
 
         return Ok(result);

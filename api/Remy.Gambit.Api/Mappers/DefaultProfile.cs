@@ -22,6 +22,8 @@ namespace Remy.Gambit.Api.Mappers
             CreateMap<Models.Winner, Dto.Winner>();
             CreateMap<Models.Match, Dto.MatchListItem>();
             CreateMap<PaginatedList<Models.Match>, PaginatedList<Dto.MatchListItem>>();
+            CreateMap<Models.Balance, Dto.Balance>();
+
         }
     }
 }

@@ -1,14 +1,17 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
+using Remy.Gambit.Api.Dto;
 using Remy.Gambit.Api.Handlers.Users.Query.Dto;
 using Remy.Gambit.Core.Cqs;
 using Remy.Gambit.Services;
 
 namespace Remy.Gambit.Api.Handlers.Users.Query;
 
-public class GetUserBalanceHandler (IPartnerService partnerService, IValidator<GetUserBalanceRequest> getUserBalanceRequestValidator) : IQueryHandler<GetUserBalanceRequest, GetUserBalanceResult>
+public class GetUserBalanceHandler (IPartnerService partnerService, IValidator<GetUserBalanceRequest> getUserBalanceRequestValidator, IMapper mapper) : IQueryHandler<GetUserBalanceRequest, GetUserBalanceResult>
 {
     private readonly IPartnerService _partnerService = partnerService;
     private readonly IValidator<GetUserBalanceRequest> _getUserBalanceRequestValidator = getUserBalanceRequestValidator;
+    private readonly IMapper _mapper = mapper;
 
     public async ValueTask<GetUserBalanceResult> HandleAsync(GetUserBalanceRequest request, CancellationToken token = default)
     {
@@ -25,12 +28,23 @@ public class GetUserBalanceHandler (IPartnerService partnerService, IValidator<G
 
         // TODO: Add validation for user name and user token
 
-        var balance = await _partnerService.GetBalanceAsync(request.UserName!, request.UserToken!, token);
-
-        return new GetUserBalanceResult
+        try
         {
-            IsSuccessful = true,
-            Result = balance
-        };  
+            var balance = await _partnerService.GetBalanceAsync(request.UserToken!, token);
+
+            return new GetUserBalanceResult
+            {
+                IsSuccessful = true,
+                Result = _mapper.Map<Balance>(balance)
+            };
+        }
+        catch (Exception ex)
+        {
+            return new GetUserBalanceResult
+            {
+                IsSuccessful = false,
+                Errors = [ex.Message]
+            };
+        }
     }
 }

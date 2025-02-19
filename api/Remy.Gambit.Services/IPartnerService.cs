@@ -1,6 +1,8 @@
-﻿namespace Remy.Gambit.Services;
+﻿using Remy.Gambit.Models;
+
+namespace Remy.Gambit.Services;
 
 public interface IPartnerService
 {
-    Task<string> GetBalanceAsync(string username, string userToken, CancellationToken cancelationToken = default);
+    Task<Balance> GetBalanceAsync(string partnerToken, CancellationToken cancelationToken = default);
 }
