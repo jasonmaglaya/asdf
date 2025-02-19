@@ -30,21 +30,20 @@ namespace Remy.Gambit.Services
 
             var content = await response.Content.ReadAsStringAsync(cancellationToken);
 
-            var getBalanceResponse = JsonSerializer.Deserialize<GetBalanceResponse>(content);
+            var getBalanceResponse = JsonSerializer.Deserialize<GetBalanceResponse>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             if(getBalanceResponse is null || getBalanceResponse.Status != "success")
             {
                 return new Balance
                 {
-                    Amount = 0,
-                    Currency = content
+                    Amount = 0                    
                 };
             }
 
             return new Balance
             {
                 Amount = getBalanceResponse.Balance,
-                Currency = content
+                Currency = getBalanceResponse.Currency
             };
         }
 
