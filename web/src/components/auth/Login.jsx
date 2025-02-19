@@ -65,12 +65,9 @@ export default function Login() {
 
     if (accessToken || refreshToken || operatorToken) {
       const user = { accessToken, refreshToken, operatorToken };
-      console.log(user);
 
-      const stringUser = JSON.stringify(user);
-      console.log(stringUser);
+      window.localStorage.setItem("user", JSON.stringify(user));
 
-      window.localStorage.setItem("user", stringUser);
       navigate("/");
     } else {
       setShowLoading(false);
