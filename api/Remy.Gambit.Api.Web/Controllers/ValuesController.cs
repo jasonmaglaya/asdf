@@ -24,4 +24,27 @@ public class ValuesController(IQueryHandler<GetRolesRequest, GetRolesResult> get
 
         return Ok(result);
     }
+
+    [AllowAnonymous]
+    [HttpGet("my-ip")]
+    public ActionResult<string> MyIp(CancellationToken token)
+    {
+        var xForwardedFor = Request.Headers["X-Forwarded-For"].FirstOrDefault();
+
+        var remoteIpAddress = HttpContext.Connection.RemoteIpAddress?.ToString();        
+
+        return Ok($"xForwardedFor : {xForwardedFor}\nremoteIpAddress:{remoteIpAddress}");
+    }
+
+    [AllowAnonymous]
+    [HttpGet("my-ip/bounce")]
+    public async Task<ActionResult<string>> BounceMyIp(CancellationToken token)
+    {
+        var httpClient = new HttpClient();
+        var response = await httpClient.GetAsync("https://saklahub.com/values/my-ip");
+
+        var result = await response.Content.ReadAsStringAsync();
+
+        return Ok(result);
+    }
 }
