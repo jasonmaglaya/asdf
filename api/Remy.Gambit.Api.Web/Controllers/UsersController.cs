@@ -272,13 +272,6 @@ public class UsersController(
 
         request.UserId = userId;
 
-        if (Request.Headers.TryGetValue("Authorization", out var userToken))
-        {
-            request.UserToken = userToken.FirstOrDefault()?.Replace("Bearer ", "");
-        }
-
-        request.UserToken = userToken;
-
         var result = await _getUserBalanceHandler.HandleAsync(request, token);
 
         if (result.ValidationResults.Any())
