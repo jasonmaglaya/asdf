@@ -79,9 +79,9 @@ public class AdHocLoginHandler(IConfiguration configuration, IValidator<AdHocLog
         {
             _semaphore.Release();
         }
-        
+
+        var refreshToken = TokenHelper.GenerateToken(64);
         var accessToken = TokenHelper.GenerateToken(user, _configuration);
-        var refreshToken = TokenHelper.GenerateRefreshToken();
         var refreshTokenExpiry = DateTime.UtcNow.AddHours(_configuration.GetValue("Jwt:RefreshTokenExpiryHours", 24));
 
         var refreshTokenIsSet = await _usersRepository.UpdateRefreshTokenAsync(user.Id, refreshToken, refreshTokenExpiry, token);
@@ -90,13 +90,15 @@ public class AdHocLoginHandler(IConfiguration configuration, IValidator<AdHocLog
             return new AdHocLoginResult { Type = command.Type, Status = "failure" };
         }
 
-        var callBackUrl = $"{_configuration["MG:CallbackUrl"]}?accessToken={accessToken}&refreshToken={refreshToken}";
+        var operatorToken = TokenHelper.GenerateToken(24);
+
+        var callBackUrl = $"{_configuration["MG:CallbackUrl"]}?accessToken={accessToken}&refreshToken={refreshToken}&operatorToken={operatorToken}";
 
         return new AdHocLoginResult
         {
             Type = command.Type,
             Status = "success",
-            Token = accessToken,
+            Token = operatorToken,
             Url = callBackUrl
         };
     }
