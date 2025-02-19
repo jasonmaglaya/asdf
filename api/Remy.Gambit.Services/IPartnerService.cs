@@ -2,5 +2,5 @@
 
 public interface IPartnerService
 {
-    Task<decimal> GetBalanceAsync(string username, string userToken, CancellationToken cancelationToken = default);
+    Task<string> GetBalanceAsync(string username, string userToken, CancellationToken cancelationToken = default);
 }

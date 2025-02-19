@@ -8,7 +8,7 @@ namespace Remy.Gambit.Services
     {
         private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
 
-        public async Task<decimal> GetBalanceAsync(string username, string userToken, CancellationToken cancellationToken = default)
+        public async Task<string> GetBalanceAsync(string username, string userToken, CancellationToken cancellationToken = default)
         {
             var httpClient = _httpClientFactory.CreateClient("MarvelGaming");
 
@@ -27,11 +27,11 @@ namespace Remy.Gambit.Services
                 throw new Exception($"Failed to get balance for user {username}.\nResponse:{res}");
             }
 
-            var content = await response.Content.ReadAsStringAsync(cancellationToken);
+            return await response.Content.ReadAsStringAsync(cancellationToken);
 
-            var result = JsonSerializer.Deserialize<BalanceResponse>(content);
+            //var result = JsonSerializer.Deserialize<BalanceResponse>(content);
 
-            return result?.Balance ?? 0;
+            //return result?.Balance ?? 0;
         }
 
         private class BalanceResponse
