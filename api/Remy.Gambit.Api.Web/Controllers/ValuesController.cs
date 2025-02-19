@@ -41,10 +41,18 @@ public class ValuesController(IQueryHandler<GetRolesRequest, GetRolesResult> get
     public async Task<ActionResult<string>> BounceMyIp(CancellationToken token)
     {
         var httpClient = new HttpClient();
-        var response = await httpClient.GetAsync("https://saklahub.com/values/my-ip");
+        var response = await httpClient.GetAsync("https://api.ipify.org");
 
         var result = await response.Content.ReadAsStringAsync();
 
         return Ok(result);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("image")]
+    public IActionResult GetContainerImage()
+    {
+        var imageName = Environment.GetEnvironmentVariable("IMAGE_NAME") ?? "Unknown";
+        return Ok(new { image = imageName });
     }
 }

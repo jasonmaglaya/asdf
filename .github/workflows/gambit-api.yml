@@ -40,9 +40,9 @@ jobs:
           registryUrl: jasonmaglaya.azurecr.io
           registryUsername: ${{ secrets.REMYGAMBITAPI_REGISTRY_USERNAME }}
           registryPassword: ${{ secrets.REMYGAMBITAPI_REGISTRY_PASSWORD }}
-          containerAppName: remy-gambit-api
+          containerAppName: remy-gambit-app
           resourceGroup: rg-remy
-          imageToBuild: jasonmaglaya.azurecr.io/remy-gambit-api:${{ github.sha }}
+          imageToBuild: jasonmaglaya.azurecr.io/remy-gambit-app:${{ github.sha }}
           _buildArgumentsKey_: |
             _buildArgumentsValues_
 
