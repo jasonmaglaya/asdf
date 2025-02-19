@@ -33,9 +33,9 @@ namespace Remy.Gambit.Api.Helpers
             return jwt;
         }
 
-        public static string GenerateRefreshToken()
+        public static string GenerateToken(int length)
         {
-            return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+            return Convert.ToBase64String(RandomNumberGenerator.GetBytes(length));
         }
     }
 }

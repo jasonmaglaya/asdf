@@ -29,7 +29,7 @@ namespace Remy.Gambit.Api.Handlers.Auth.Command
             }
 
             var accessToken = TokenHelper.GenerateToken(user, _configuration);
-            var refreshToken = TokenHelper.GenerateRefreshToken();
+            var refreshToken = TokenHelper.GenerateToken(64);
             var refreshTokenExpiry = DateTime.UtcNow.AddHours(_configuration.GetValue("Jwt:RefreshTokenExpiryHours", 24));
 
             var refreshTokenIsSet = await _userRepository.UpdateRefreshTokenAsync(user.Id, refreshToken, refreshTokenExpiry, token);
