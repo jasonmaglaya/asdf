@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Container, InputGroup, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { faCoins } from "@fortawesome/free-solid-svg-icons";
@@ -33,24 +33,6 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
     clearErrors("amount");
   };
 
-  const handleOnShow = () => {
-    setIsLoading(true);
-
-    const { operatorToken } = JSON.parse(localStorage.getItem("user"));
-
-    getBalance(operatorToken)
-      .then(({ data }) => {
-        console.log(data);
-        const { amount } = data.result;
-
-        setCredits(amount);
-      })
-      .finally(() => {
-        setIsLoading(false);
-        setFocus("amount");
-      });
-  };
-
   const cashIn = (data) => {
     var amount = Number(data.amount?.replace(/[^0-9.-]+/g, ""));
     if (amount > credits) {
@@ -65,6 +47,36 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
     reset({ amount: "" });
     setFocus("amount");
   };
+
+  const handleOnShow = () => {
+    setIsLoading(true);
+
+    const { operatorToken } = JSON.parse(localStorage.getItem("user"));
+
+    getBalance(operatorToken)
+      .then(({ data }) => {
+        const { amount } = data.result;
+
+        setCredits(amount);
+      })
+      .finally(() => {
+        setIsLoading(false);
+        setFocus("amount");
+      });
+  };
+
+  useEffect(() => {
+    const { operatorToken } = JSON.parse(localStorage.getItem("user"));
+    getBalance(operatorToken)
+      .then(({ data }) => {
+        const { amount } = data.result;
+
+        setCredits(amount);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
 
   return (
     <Modal
