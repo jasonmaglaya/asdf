@@ -5,11 +5,12 @@ import { faCoins } from "@fortawesome/free-solid-svg-icons";
 import CurrencyInput from "react-currency-input-field";
 import SpinnerComponent from "../_shared/SpinnerComponent";
 import { getBalance } from "../../services/creditsService";
+import { set } from "react-hook-form";
 
 export default function CashInDialog({ show, handleClose, currency, locale }) {
   const [credits, setCredits] = useState(0);
   const [isBusy, setIsBusy] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const onValueChange = (amount) => {
     if (isNaN(amount) || amount > credits) {
@@ -29,6 +30,8 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
   const clearAmount = async () => {};
 
   const handleOnShow = () => {
+    setIsLoading(true);
+
     const { operatorToken } = JSON.parse(localStorage.getItem("user"));
 
     getBalance(operatorToken)
