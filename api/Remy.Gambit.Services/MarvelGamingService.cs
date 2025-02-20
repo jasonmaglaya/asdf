@@ -40,10 +40,17 @@ namespace Remy.Gambit.Services
 
             if (response is null || response.Status != "success")
             {
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    IncludeFields = true,
+                    WriteIndented = true,
+                };
+
                 return new CashInResult
                 {
                     IsSuccessful = false,
-                    Errors = [$"Payload: {JsonSerializer.Serialize(request)}\nResponse: {JsonSerializer.Serialize(response)}"]
+                    Errors = [$"Payload: {JsonSerializer.Serialize(request, options)}\nResponse: {JsonSerializer.Serialize(response, options)}"]
                 };
             }
 
@@ -63,10 +70,17 @@ namespace Remy.Gambit.Services
 
             if (response is null || response.Status != "success")
             {
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    IncludeFields = true,
+                    WriteIndented = true,
+                };
+
                 return new CashOutResult
                 {
                     IsSuccessful = false,
-                    Errors = [$"Payload: {JsonSerializer.Serialize(request)}\nResponse: {JsonSerializer.Serialize(response)}"]
+                    Errors = [$"Payload: {JsonSerializer.Serialize(request, options)}\nResponse: {JsonSerializer.Serialize(response, options)}"]
                 };
             }
 

@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Remy.Gambit.Api.Handlers.Credits.Dto;
-using Remy.Gambit.Api.Handlers.Users.Query.Dto;
-using Remy.Gambit.Api.Handlers.Users.Query;
 using Remy.Gambit.Core.Cqs;
 using System.Security.Claims;
 
