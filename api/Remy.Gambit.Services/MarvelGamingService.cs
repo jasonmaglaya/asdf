@@ -3,6 +3,7 @@ using Remy.Gambit.Models;
 using Remy.Gambit.Services.Dto;
 using System.Text;
 using System.Text.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Remy.Gambit.Services
 {
@@ -42,7 +43,7 @@ namespace Remy.Gambit.Services
                 return new CashInResult
                 {
                     IsSuccessful = false,
-                    Errors = [JsonSerializer.Serialize(response)]
+                    Errors = [$"Payload: {JsonSerializer.Serialize(request)}\nResponse: {JsonSerializer.Serialize(response)}"]
                 };
             }
 
@@ -65,7 +66,7 @@ namespace Remy.Gambit.Services
                 return new CashOutResult
                 {
                     IsSuccessful = false,
-                    Errors = [JsonSerializer.Serialize(response)]
+                    Errors = [$"Payload: {JsonSerializer.Serialize(request)}\nResponse: {JsonSerializer.Serialize(response)}"]
                 };
             }
 

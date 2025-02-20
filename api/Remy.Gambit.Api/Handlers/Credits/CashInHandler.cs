@@ -31,18 +31,18 @@ namespace Remy.Gambit.Api.Handlers.Credits
                 var lockAcquired = await _userLockService.AcquireLockAsync(command.UserId);
                 if (!lockAcquired)
                 {
-                    return new CashInResult { IsSuccessful = false, ValidationResults = ["Failed to cash in."] };
+                    return new CashInResult { IsSuccessful = false, ValidationResults = ["Failed to cash in. Acquiring lock failed."] };
                 }
 
                 var user = await _usersRepository.GetUserByIdAsync(command.UserId, token);
                 if (user is null)
                 {
-                    return new CashInResult { IsSuccessful = false, ValidationResults = ["Failed to cash in."] };
+                    return new CashInResult { IsSuccessful = false, ValidationResults = ["Failed to cash in. Invalid User ID"] };
                 }
 
                 if (!user.IsActive)
                 {
-                    return new CashInResult { IsSuccessful = false, ValidationResults = ["Failed to cash in."] };
+                    return new CashInResult { IsSuccessful = false, ValidationResults = ["Failed to cash in. User is not active."] };
                 }
 
                 // Get Current Balance and check if the user has enough balance
