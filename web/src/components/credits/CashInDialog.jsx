@@ -44,8 +44,7 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
 
     getBalance(operatorToken)
       .then(({ data }) => {
-        setCredits(data.credits);
-        setBalance(data.credits);
+        setCredits(data.amount);
       })
       .finally(() => {
         setIsLoading(false);
