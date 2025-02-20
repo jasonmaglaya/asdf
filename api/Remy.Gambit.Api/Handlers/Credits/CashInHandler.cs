@@ -72,7 +72,7 @@ namespace Remy.Gambit.Api.Handlers.Credits
                 var cashInResult = await _partnerService.CashInAsync(cashInRequest, token);
                 if (!cashInResult.IsSuccessful)
                 {
-                    return new CashInResult { IsSuccessful = false, Errors = ["Failed to cash in."] };
+                    return new CashInResult { IsSuccessful = false, Errors = cashInResult.Errors! };
                 }
 
                 // Add the amount to the user
@@ -103,9 +103,9 @@ namespace Remy.Gambit.Api.Handlers.Credits
                         Round = round
                     };
 
-                    await _partnerService.CashOutAsync(cashOutRequest, token);
+                    var res = await _partnerService.CashOutAsync(cashOutRequest, token);
 
-                    return new CashInResult { IsSuccessful = false, Errors = ["Failed to cash in."] };
+                    return new CashInResult { IsSuccessful = false, Errors = res.Errors! };
                 }
 
                 return new CashInResult

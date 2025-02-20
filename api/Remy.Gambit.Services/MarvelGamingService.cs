@@ -42,7 +42,7 @@ namespace Remy.Gambit.Services
                 return new CashInResult
                 {
                     IsSuccessful = false,
-                    Errors = ["Failed to cash in."]
+                    Errors = [JsonSerializer.Serialize(response)]
                 };
             }
 
@@ -65,7 +65,7 @@ namespace Remy.Gambit.Services
                 return new CashOutResult
                 {
                     IsSuccessful = false,
-                    Errors = ["Failed to cash out."]
+                    Errors = [JsonSerializer.Serialize(response)]
                 };
             }
 

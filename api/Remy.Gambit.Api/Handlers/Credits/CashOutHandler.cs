@@ -70,7 +70,7 @@ namespace Remy.Gambit.Api.Handlers.Users.Command
                 var cashOutResult = await _partnerService.CashOutAsync(cashOutRequest, token);
                 if (!cashOutResult.IsSuccessful)
                 {
-                    return new CashOutResult { IsSuccessful = false, Errors = ["Failed to cash out."] };
+                    return new CashOutResult { IsSuccessful = false, Errors = cashOutResult.Errors! };
                 }
 
                 var amount = command.Amount * -1;
@@ -103,9 +103,9 @@ namespace Remy.Gambit.Api.Handlers.Users.Command
                         Round = round
                     };
 
-                    await _partnerService.CashInAsync(cashInRequest, token);
+                    var res = await _partnerService.CashInAsync(cashInRequest, token);
 
-                    return new CashOutResult { IsSuccessful = false, Errors = ["Failed to cash out."] };
+                    return new CashOutResult { IsSuccessful = false, Errors = res.Errors! };
                 }
 
                 return new CashOutResult
