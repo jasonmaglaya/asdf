@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Button, Container, InputGroup, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { faCoins } from "@fortawesome/free-solid-svg-icons";
@@ -12,7 +12,6 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
     register,
     handleSubmit,
     setFocus,
-    setValue,
     formState: { errors },
     reset,
     setError,
@@ -21,20 +20,17 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
 
   const amountRef = useRef();
 
-  const [balance, setBalance] = useState(0);
   const [credits, setCredits] = useState(0);
   const [isBusy, setIsBusy] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const onValueChange = (amount) => {
     if (isNaN(amount) || amount > credits) {
-      setBalance(credits);
       setError("amount");
       return;
     }
 
     clearErrors("amount");
-    setBalance(credits - amount);
   };
 
   const handleOnShow = () => {
@@ -65,26 +61,9 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
     setIsBusy(true);
   };
 
-  const setAmount = async (amount) => {
-    setValue(
-      "amount",
-      amount.toLocaleString(locale || "en-US", {
-        style: "currency",
-        currency: currency || "USD",
-      }),
-      {
-        shouldValidate: true,
-        shouldDirty: true,
-      }
-    );
-
-    setBalance(credits - amount);
-  };
-
   const clearAmount = async () => {
     reset({ amount: "" });
     setFocus("amount");
-    setBalance(credits);
   };
 
   return (
@@ -112,9 +91,9 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
                   <i style={{ color: "gold" }}>
                     <FontAwesomeIcon icon={faCoins} />
                   </i>{" "}
-                  BALANCE:{" "}
+                  CREDITS:{" "}
                   <span className="text-success">
-                    {balance?.toLocaleString(locale || "en-US", {
+                    {credits?.toLocaleString(locale || "en-US", {
                       style: "currency",
                       currency: currency || "USD",
                     })}
@@ -157,12 +136,7 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
           >
             CANCEL
           </Button>
-          <Button
-            type="submit"
-            variant="primary"
-            size="lg"
-            disabled={credits === balance || isBusy}
-          >
+          <Button type="submit" variant="primary" size="lg" disabled={isBusy}>
             {!isBusy ? (
               <span>CASH IN</span>
             ) : (
