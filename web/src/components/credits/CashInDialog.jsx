@@ -117,12 +117,7 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
         >
           CANCEL
         </Button>
-        <Button
-          variant="primary"
-          size="lg"
-          disabled={isBusy}
-          onClick={handleClose}
-        >
+        <Button variant="primary" size="lg" disabled={true}>
           {!isBusy ? (
             <span>CASH IN</span>
           ) : (
