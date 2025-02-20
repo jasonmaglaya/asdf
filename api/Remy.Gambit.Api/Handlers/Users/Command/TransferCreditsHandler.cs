@@ -6,10 +6,10 @@ using Remy.Gambit.Data.Users;
 
 namespace Remy.Gambit.Api.Handlers.Users.Command
 {
-    public class TransferCreditsHandler(IUsersRepository usersRepository, IFeaturesRepository featuresReporsitory, IValidator<TransferCreditsRequest> validator) : ICommandHandler<TransferCreditsRequest, TransferCreditsResult>
+    public class TransferCreditsHandler(IUsersRepository usersRepository, IFeaturesRepository featuresRepository, IValidator<TransferCreditsRequest> validator) : ICommandHandler<TransferCreditsRequest, TransferCreditsResult>
     {
         private readonly IUsersRepository _usersRepository = usersRepository;
-        private readonly IFeaturesRepository _featuresReporsitory = featuresReporsitory;
+        private readonly IFeaturesRepository _featuresRepository = featuresRepository;
         private readonly IValidator<TransferCreditsRequest> _validator = validator;
 
         public async ValueTask<TransferCreditsResult> HandleAsync(TransferCreditsRequest command, CancellationToken token = default)
@@ -21,7 +21,7 @@ namespace Remy.Gambit.Api.Handlers.Users.Command
             }
 
             var requestor = await _usersRepository.GetUserByIdAsync(command.Requestor, token);
-            var features = await _featuresReporsitory.GetFeaturesByRoleAsync(requestor.Role, token);
+            var features = await _featuresRepository.GetFeaturesByRoleAsync(requestor.Role, token);
 
             Guid? from = null;
             if (command.From is not null)
@@ -53,7 +53,7 @@ namespace Remy.Gambit.Api.Handlers.Users.Command
                 }
             }
 
-            var result = await _usersRepository.TransaferCreditsAsync(from, command.UserId, command.Amount, command.Requestor!, command.Notes, token);
+            var result = await _usersRepository.TransferCreditsAsync(from, command.UserId, command.Amount, command.Requestor!, command.Notes, token);
 
             return new TransferCreditsResult { IsSuccessful = result };
         }

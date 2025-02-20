@@ -2,6 +2,6 @@
 
 public interface IUserLockService
 {
-    Task<bool> AcquireLockAsync(string userId);
-    Task ReleaseLockAsync(string userId);
+    Task<bool> AcquireLockAsync(Guid userId);
+    Task ReleaseLockAsync(Guid userId);
 }

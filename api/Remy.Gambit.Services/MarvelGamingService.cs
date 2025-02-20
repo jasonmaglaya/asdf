@@ -1,5 +1,6 @@
 ﻿
 using Remy.Gambit.Models;
+using Remy.Gambit.Services.Dto;
 using System.Text;
 using System.Text.Json;
 
@@ -9,15 +10,86 @@ namespace Remy.Gambit.Services
     {
         private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
 
-        public async Task<Balance> GetBalanceAsync(string partnerToken, CancellationToken cancellationToken = default)
+        public async Task<Balance> GetBalanceAsync(GetBalanceRequest request, CancellationToken cancellationToken = default)
+        {
+            request.Type = "balance";
+
+            var response = await CallApiAsync<GetBalanceResponse>(request, cancellationToken);
+
+            if (response is null || response.Status != "success")
+            {
+                return new Balance
+                {
+                    Amount = 0
+                };
+            }
+
+            return new Balance
+            {
+                Amount = response.Balance,
+                Currency = response.Currency
+            };
+        }
+
+        public async Task<CashInResult> CashInAsync(CashInRequest request, CancellationToken cancellationToken = default)
+        {
+            request.Type = "bet";
+
+            var response = await CallApiAsync<CashInResponse>(request, cancellationToken);
+
+            if (response is null || response.Status != "success")
+            {
+                return new CashInResult
+                {
+                    IsSuccessful = false,
+                    Errors = ["Failed to cash in."]
+                };
+            }
+
+            return new CashInResult
+            {
+                IsSuccessful = true,
+                NewBalance = response.Balance,
+                Currency = response.Currency
+            };
+        }
+
+        public async Task<CashOutResult> CashOutAsync(CashOutRequest request, CancellationToken cancellationToken = default)
+        {
+            request.Type = "betResult";
+
+            var response = await CallApiAsync<CashOutResponse>(request, cancellationToken);
+
+            if (response is null || response.Status != "success")
+            {
+                return new CashOutResult
+                {
+                    IsSuccessful = false,
+                    Errors = ["Failed to cash out."]
+                };
+            }
+
+            return new CashOutResult
+            {
+                IsSuccessful = true,
+                NewBalance = response.Balance,
+                Currency = response.Currency
+            };
+        }
+
+        
+        private async Task<T?> CallApiAsync<T>(RequestBase request, CancellationToken cancellationToken)
         {
             var httpClient = _httpClientFactory.CreateClient("MarvelGaming");
 
-            var payload = JsonSerializer.Serialize(new
+            var options = new JsonSerializerOptions
             {
-                type = "balance",
-                token = partnerToken
-            });
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                IncludeFields = true,
+                WriteIndented = true,
+            };
+
+            var payload = JsonSerializer.Serialize(request, request.GetType(), options);
 
             var response = await httpClient.PostAsync("provider/fund/transfer", new StringContent(payload, Encoding.UTF8, "application/json"), cancellationToken);
 
@@ -25,35 +97,12 @@ namespace Remy.Gambit.Services
             {
                 var res = await response.Content.ReadAsStringAsync(cancellationToken);
 
-                throw new Exception($"Failed to get balance.\nResponse:{res}");
+                throw new Exception($"Failed to calling the partner API.\nResponse:{res}");
             }
 
             var content = await response.Content.ReadAsStringAsync(cancellationToken);
 
-            var getBalanceResponse = JsonSerializer.Deserialize<GetBalanceResponse>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-            if(getBalanceResponse is null || getBalanceResponse.Status != "success")
-            {
-                return new Balance
-                {
-                    Amount = 0                    
-                };
-            }
-
-            return new Balance
-            {
-                Amount = getBalanceResponse.Balance,
-                Currency = getBalanceResponse.Currency
-            };
-        }
-
-        private class GetBalanceResponse
-        {
-            public string? Type { get; set; }
-            public string? UserName { get; set; }
-            public string? Status { get; set; }
-            public string? Currency { get; set; }
-            public decimal Balance { get; set; }
+            return JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
     }
 }

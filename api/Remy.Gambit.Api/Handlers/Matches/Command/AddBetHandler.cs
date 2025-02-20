@@ -79,7 +79,7 @@ namespace Remy.Gambit.Api.Handlers.Matches.Command
 
             try
             {
-                var lockAcquired = await _userLockService.AcquireLockAsync(command.UserId.ToString());
+                var lockAcquired = await _userLockService.AcquireLockAsync(command.UserId);
                 if (!lockAcquired)
                 {
                     return new AddBetResult { IsSuccessful = false, ValidationResults = ["User is locked"] };
@@ -114,7 +114,7 @@ namespace Remy.Gambit.Api.Handlers.Matches.Command
             }
             finally
             {
-                await _userLockService.ReleaseLockAsync(command.UserId.ToString());
+                await _userLockService.ReleaseLockAsync(command.UserId);
 
                 var totalBets = await _matchesRepository.GetTotalBetsAsync(command.MatchId, token);
                 await _matchHub.Clients.Group(@event.Id.ToString()).SendAsync(EventHubEvents.TotalBetsReceived, totalBets.Item1, cancellationToken: token);

@@ -29,7 +29,7 @@ public interface IUsersRepository
 
     Task<PaginatedList<User>> GetAllUsersAsync(bool? isAgent, int pageNumber, int pageSize, CancellationToken token);
 
-    Task<bool> TransaferCreditsAsync(Guid? from, Guid to, decimal amount, Guid transactedBy, string? notes, CancellationToken token);
+    Task<bool> TransferCreditsAsync(Guid? from, Guid to, decimal amount, Guid transactedBy, string? notes, CancellationToken token);
     
     Task<PaginatedList<User>> SearchUserAsync(string keyword, bool? isAgent, Guid? requestor, int pageNumber, int pageSize, CancellationToken token);
 }

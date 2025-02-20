@@ -22,7 +22,7 @@ namespace Remy.Gambit.Api.Handlers.Users.Command
             var validationResult = await _validator.ValidateAsync(command, token);
             if (!validationResult.IsValid)
             {
-                return new UpdateUserRoleResult { IsSuccessful = false, Errors = validationResult.Errors.Select(x => x.ErrorMessage) };
+                return new UpdateUserRoleResult { IsSuccessful = false, ValidationResults = validationResult.Errors.Select(x => x.ErrorMessage) };
             }
 
             var user = await _usersRepository.GetUserByIdAsync(command.UserId, token);

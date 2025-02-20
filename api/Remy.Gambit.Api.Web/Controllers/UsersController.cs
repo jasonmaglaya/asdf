@@ -20,8 +20,7 @@ public class UsersController(
     ICommandHandler<UpdateAgencyRequest, UpdateAgencyResult> updateAgencyHandler,
     IQueryHandler<GetAllUsersRequest, GetAllUsersResult> getAllUsersHandler,
     ICommandHandler<TransferCreditsRequest, TransferCreditsResult> transferCreditsHandler,
-    IQueryHandler<SearchUserRequest, SearchUserResult> searchUserHandler,
-    IQueryHandler<GetUserBalanceRequest, GetUserBalanceResult> getUserBalanceHandler
+    IQueryHandler<SearchUserRequest, SearchUserResult> searchUserHandler
         ) : ControllerBase
 {
     private readonly IQueryHandler<GetUserRequest, GetUserResult> _getUserInfoHandler = getUserInfoHandler;
@@ -32,7 +31,6 @@ public class UsersController(
     private readonly IQueryHandler<GetAllUsersRequest, GetAllUsersResult> _getAllUsersHandler = getAllUsersHandler;
     private readonly ICommandHandler<TransferCreditsRequest, TransferCreditsResult> _transferCreditsHandler = transferCreditsHandler;
     private readonly IQueryHandler<SearchUserRequest, SearchUserResult> _searchUserHandler = searchUserHandler;
-    private readonly IQueryHandler<GetUserBalanceRequest, GetUserBalanceResult> _getUserBalanceHandler = getUserBalanceHandler;
 
     [FeatureFilter(Features.ListAllUsers)]
     [HttpGet]
@@ -259,31 +257,5 @@ public class UsersController(
         }
 
         return Ok(result);
-    }
-
-    [HttpGet("me/balance")]
-    public async Task<ActionResult<GetUserBalanceResult>> GetUserBalance([FromBody] GetUserBalanceRequest request, CancellationToken token)
-    {
-        var identity = HttpContext.User.Identity as ClaimsIdentity;
-        if (!Guid.TryParse(identity?.FindFirst(ClaimTypes.Name)?.Value!, out Guid userId))
-        {
-            return Unauthorized();
-        }
-
-        request.UserId = userId;
-
-        var result = await _getUserBalanceHandler.HandleAsync(request, token);
-
-        if (result.ValidationResults.Any())
-        {
-            return BadRequest(result);
-        }
-
-        if (!result.IsSuccessful)
-        {
-            return NotFound(result);
-        }
-
-        return Ok(result);
-    }
+    }    
 }

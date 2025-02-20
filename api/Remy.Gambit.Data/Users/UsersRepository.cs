@@ -116,7 +116,7 @@ public class UsersRepository : IUsersRepository
         return new PaginatedList<User> { List = users, PageSize = pageSize, TotalItems = total.FirstOrDefault() };
     }
 
-    public async Task<bool> TransaferCreditsAsync(Guid? from, Guid to, decimal amount, Guid transactedBy, string? notes, CancellationToken token)
+    public async Task<bool> TransferCreditsAsync(Guid? from, Guid to, decimal amount, Guid transactedBy, string? notes, CancellationToken token)
     {
         var query = new TransferCreditsQuery(from, to, amount, transactedBy, notes);
 

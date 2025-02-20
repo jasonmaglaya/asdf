@@ -4,6 +4,7 @@ using Remy.Gambit.Api.Dto;
 using Remy.Gambit.Api.Handlers.Users.Query.Dto;
 using Remy.Gambit.Core.Cqs;
 using Remy.Gambit.Services;
+using Remy.Gambit.Services.Dto;
 
 namespace Remy.Gambit.Api.Handlers.Users.Query;
 
@@ -30,7 +31,12 @@ public class GetUserBalanceHandler (IPartnerService partnerService, IValidator<G
 
         try
         {
-            var balance = await _partnerService.GetBalanceAsync(request.UserToken!, token);
+            var getBalanceRequest = new GetBalanceRequest
+            {
+                Token = request.UserToken!
+            };
+
+            var balance = await _partnerService.GetBalanceAsync(getBalanceRequest, token);
 
             return new GetUserBalanceResult
             {
