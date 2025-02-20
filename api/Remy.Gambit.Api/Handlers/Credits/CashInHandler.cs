@@ -64,7 +64,7 @@ namespace Remy.Gambit.Api.Handlers.Credits
                     TransactionId = transactionId.ToString(),
                     Token = command.PartnerToken,
                     UserName = user.Username,
-                    Amount = command.Amount,
+                    Amount = command.Amount.ToString("F2"),
                     Currency = command.Currency,
                     TableId = tableId,
                     Round = round
@@ -97,7 +97,7 @@ namespace Remy.Gambit.Api.Handlers.Credits
                         TransactionId = transactionId,
                         Token = command.PartnerToken,
                         UserName = user.Username,
-                        Amount = command.Amount,
+                        Amount = command.Amount.ToString("F2"),
                         Currency = command.Currency,
                         TableId = tableId,
                         Round = round

@@ -3,7 +3,7 @@
 public class CashInRequest : RequestBase, IRequestDto
 {
     public required string UserName { get; set; }
-    public decimal Amount { get; set; }
+    public required string Amount { get; set; }
     public string? Currency { get; set; }
     public required string TransactionId { get; set; }
     public string? TableId { get; set; }
