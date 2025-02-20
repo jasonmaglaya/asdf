@@ -22,14 +22,13 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
 
   const [credits, setCredits] = useState(0);
   const [isBusy, setIsBusy] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onValueChange = (amount) => {
     if (isNaN(amount) || amount > credits) {
       setError("amount");
       return;
     }
-
     clearErrors("amount");
   };
 
@@ -49,8 +48,6 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
   };
 
   const handleOnShow = () => {
-    setIsLoading(true);
-
     const { operatorToken } = JSON.parse(localStorage.getItem("user"));
 
     getBalance(operatorToken)
@@ -59,6 +56,7 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
 
         setCredits(amount);
       })
+      .catch(() => {})
       .finally(() => {
         setIsLoading(false);
         setFocus("amount");
@@ -73,6 +71,7 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
 
         setCredits(amount);
       })
+      .catch(() => {})
       .finally(() => {
         setIsLoading(false);
       });
@@ -115,8 +114,8 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
               <Container className="mb-2">
                 <InputGroup>
                   <CurrencyInput
-                    autoComplete="off"
                     onValueChange={onValueChange}
+                    autoComplete="off"
                     className={
                       errors.amount
                         ? "form-control form-control-lg invalid"
