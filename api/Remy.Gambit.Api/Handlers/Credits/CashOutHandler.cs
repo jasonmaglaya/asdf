@@ -111,7 +111,7 @@ namespace Remy.Gambit.Api.Handlers.Users.Command
                 return new CashOutResult
                 {
                     IsSuccessful = true,
-                    NewBalance = cashOutResult.NewBalance + user.Credits,
+                    NewBalance = user.Credits - command.Amount,
                     Currency = cashOutResult.Currency
                 };
             }
