@@ -44,6 +44,7 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
 
     getBalance(operatorToken)
       .then(({ data }) => {
+        console.log(data);
         const { amount } = data.result;
 
         setCredits(amount);
@@ -85,26 +86,6 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
     setFocus("amount");
     setBalance(credits);
   };
-
-  useEffect(() => {
-    const fetchBalance = async () => {
-      setIsLoading(true);
-
-      const { operatorToken } = JSON.parse(localStorage.getItem("user"));
-
-      getBalance(operatorToken)
-        .then(({ data }) => {
-          const { amount } = data.result;
-
-          setCredits(amount);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    };
-
-    fetchBalance();
-  }, []);
 
   return (
     <Modal
