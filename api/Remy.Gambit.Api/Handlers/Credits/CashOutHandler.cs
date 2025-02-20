@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Remy.Gambit.Api.Handlers.Credits.Dto;
+using Remy.Gambit.Api.Helpers;
 using Remy.Gambit.Core.Concurrency;
 using Remy.Gambit.Core.Cqs;
 using Remy.Gambit.Data.Credits;
@@ -52,13 +53,13 @@ namespace Remy.Gambit.Api.Handlers.Users.Command
                 }
 
                 // Credit the amount to the partner
-                var transactionId = Guid.NewGuid();
+                var transactionId = $"{DateTime.UtcNow.ToString("yyyyMMddHHmmss")}{TokenHelper.GenerateToken(10)}";
                 var tableId = "Infiniti1";
                 var round = "Infiniti1-1";
 
                 var cashOutRequest = new Services.Dto.CashOutRequest
                 {
-                    TransactionId = transactionId.ToString(),
+                    TransactionId = transactionId,
                     Token = command.PartnerToken,
                     UserName = user.Username,
                     Amount = command.Amount,
@@ -78,7 +79,6 @@ namespace Remy.Gambit.Api.Handlers.Users.Command
                 // Deduct the amount from the user
                 var deduction = new Credit
                 {
-                    Id = transactionId,
                     UserId = user.Id,
                     Amount = amount
                 };
@@ -90,7 +90,7 @@ namespace Remy.Gambit.Api.Handlers.Users.Command
                 if (!deductCreditResult)
                 {
                     // Rollback the cash out
-                    transactionId = Guid.NewGuid();
+                    transactionId = $"{DateTime.UtcNow.ToString("yyyyMMddHHmmss")}{TokenHelper.GenerateToken(10)}";
 
                     var cashInRequest = new Services.Dto.CashInRequest
                     {

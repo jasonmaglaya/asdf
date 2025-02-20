@@ -12,13 +12,12 @@ INSERT INTO Credits
 )
 VALUES
 (
-	@Id, @UserId, @Amount, GETUTCDATE(), @TransactionType, @TransactedBy, @Notes
+	NEWID(), @UserId, @Amount, GETUTCDATE(), @TransactionType, @TransactedBy, @Notes
 )
 ";
 
     public CashInQuery(Credit credit, string notes)
     {
-        Parameters.Add("@Id", credit.Id);
         Parameters.Add("@UserId", credit.UserId);
         Parameters.Add("@Amount", credit.Amount);
         Parameters.Add("@TransactionType", "Loading");

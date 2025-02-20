@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Remy.Gambit.Api.Handlers.Credits.Dto;
+using Remy.Gambit.Api.Helpers;
 using Remy.Gambit.Core.Concurrency;
 using Remy.Gambit.Core.Cqs;
 using Remy.Gambit.Data.Credits;
@@ -54,7 +55,7 @@ namespace Remy.Gambit.Api.Handlers.Credits
                 }
 
                 // Deduct the amount from the partner
-                var transactionId = Guid.NewGuid();
+                var transactionId = $"{DateTime.UtcNow.ToString("yyyyMMddHHmmss")}{TokenHelper.GenerateToken(10)}";
                 var tableId = "Infiniti1";
                 var round = "Infiniti1-1";
 
@@ -78,23 +79,22 @@ namespace Remy.Gambit.Api.Handlers.Credits
                 // Add the amount to the user
                 var credit = new Credit
                 {
-                    Id = transactionId,
                     UserId = user.Id,
                     Amount = command.Amount
                 };
 
-                var notes = $"CASH IN - TableId: {tableId}, Round: {round}";
+                var notes = $"CASH IN - TransactionId: {transactionId}, TableId: {tableId}, Round: {round}";
 
                 var addCreditResult =  await _creditsRepository.CashInAsync(credit, notes, token);
 
                 if(!addCreditResult)
                 {
                     //Rollback the cash in
-                    transactionId = Guid.NewGuid();
+                    transactionId = transactionId = $"{DateTime.UtcNow.ToString("yyyyMMddHHmmss")}{TokenHelper.GenerateToken(10)}";
 
                     var cashOutRequest = new Services.Dto.CashOutRequest
                     {
-                        TransactionId = transactionId.ToString(),
+                        TransactionId = transactionId,
                         Token = command.PartnerToken,
                         UserName = user.Username,
                         Amount = command.Amount,

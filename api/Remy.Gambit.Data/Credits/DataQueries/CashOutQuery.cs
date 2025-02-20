@@ -12,13 +12,12 @@ INSERT INTO Credits
 )
 VALUES
 (
-	@Id, @UserId, @Amount, GETUTCDATE(), @TransactionType, @TransactedBy
+	NEWID(), @UserId, @Amount, GETUTCDATE(), @TransactionType, @TransactedBy
 )
 ";
 
     public CashOutQuery(Credit credit)
     {
-        Parameters.Add("@Id", credit.Id);
         Parameters.Add("@UserId", credit.UserId);
         Parameters.Add("@Amount", credit.Amount);
         Parameters.Add("@TransactionType", "CASH OUT");
