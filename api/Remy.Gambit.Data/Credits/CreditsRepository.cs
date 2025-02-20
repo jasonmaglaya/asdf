@@ -7,14 +7,14 @@ public class CreditsRepository(IGambitDbClient gambitDbClient) : ICreditsReposit
 {
     private readonly IGambitDbClient _gambitDbClient = gambitDbClient;
 
-    public async Task<bool> CashInAsync(Credit credit, CancellationToken cancellationToken)
+    public async Task<bool> CashInAsync(Credit credit, string notes, CancellationToken cancellationToken)
     {
-        var query = new CashInQuery(credit);
+        var query = new CashInQuery(credit, notes);
 
         return await _gambitDbClient.ExecuteAsync(query, cancellationToken) > 0;
     }
 
-    public async Task<bool> CashOutAsync(Credit credit, CancellationToken cancellationToken)
+    public async Task<bool> CashOutAsync(Credit credit, string notes, CancellationToken cancellationToken)
     {
         var query = new CashOutQuery(credit);
 

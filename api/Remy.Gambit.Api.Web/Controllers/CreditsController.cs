@@ -22,7 +22,7 @@ namespace Remy.Gambit.Api.Web.Controllers
         private readonly ICommandHandler<CashOutRequest, CashOutResult> _cashOutHandler = cashOutHandler;
 
         [HttpGet]
-        public async Task<ActionResult<GetUserBalanceResult>> GetUserBalance([FromBody] GetUserBalanceRequest request, CancellationToken token)
+        public async Task<ActionResult<GetUserBalanceResult>> GetUserBalance([FromQuery] GetUserBalanceRequest request, CancellationToken token)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             if (!Guid.TryParse(identity?.FindFirst(ClaimTypes.Name)?.Value!, out Guid userId))

@@ -55,6 +55,8 @@ namespace Remy.Gambit.Api.Handlers.Credits
 
                 // Deduct the amount from the partner
                 var transactionId = Guid.NewGuid();
+                var tableId = "Infiniti1";
+                var round = "Infiniti1-1";
 
                 var cashInRequest = new Services.Dto.CashInRequest
                 {
@@ -63,6 +65,8 @@ namespace Remy.Gambit.Api.Handlers.Credits
                     UserName = user.Username,
                     Amount = command.Amount,
                     Currency = command.Currency,
+                    TableId = tableId,
+                    Round = round
                 };
 
                 var cashInResult = await _partnerService.CashInAsync(cashInRequest, token);
@@ -79,7 +83,9 @@ namespace Remy.Gambit.Api.Handlers.Credits
                     Amount = command.Amount
                 };
 
-                var addCreditResult =  await _creditsRepository.CashInAsync(credit, token);
+                var notes = $"CASH IN - TableId: {tableId}, Round: {round}";
+
+                var addCreditResult =  await _creditsRepository.CashInAsync(credit, notes, token);
 
                 if(!addCreditResult)
                 {
@@ -93,6 +99,8 @@ namespace Remy.Gambit.Api.Handlers.Credits
                         UserName = user.Username,
                         Amount = command.Amount,
                         Currency = command.Currency,
+                        TableId = tableId,
+                        Round = round
                     };
 
                     await _partnerService.CashOutAsync(cashOutRequest, token);

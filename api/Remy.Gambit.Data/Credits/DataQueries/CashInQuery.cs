@@ -8,22 +8,23 @@ public class CashInQuery : DataQuery
     private readonly string _query = @"
 INSERT INTO Credits
 (
-	Id, UserId, Amount, TransactionDate, TransactionType, TransactedBy
+	Id, UserId, Amount, TransactionDate, TransactionType, TransactedBy, Notes
 )
 VALUES
 (
-	@Id, @UserId, @Amount, GETUTCDATE(), @TransactionType, @TransactedBy
+	@Id, @UserId, @Amount, GETUTCDATE(), @TransactionType, @TransactedBy, @Notes
 )
 ";
 
-    public CashInQuery(Credit credit)
+    public CashInQuery(Credit credit, string notes)
     {
         Parameters.Add("@Id", credit.Id);
         Parameters.Add("@UserId", credit.UserId);
         Parameters.Add("@Amount", credit.Amount);
-        Parameters.Add("@TransactionType", "CASH IN");
+        Parameters.Add("@TransactionType", "Loading");
         Parameters.Add("@TransactedBy", credit.UserId);
-        
+        Parameters.Add("@Notes", notes);
+
         CmdText = _query;
     }
 }

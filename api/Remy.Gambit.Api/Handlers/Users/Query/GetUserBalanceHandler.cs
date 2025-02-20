@@ -33,7 +33,7 @@ public class GetUserBalanceHandler (IPartnerService partnerService, IValidator<G
         {
             var getBalanceRequest = new GetBalanceRequest
             {
-                Token = request.UserToken!
+                Token = request.PartnerToken!
             };
 
             var balance = await _partnerService.GetBalanceAsync(getBalanceRequest, token);
