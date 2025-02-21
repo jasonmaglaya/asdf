@@ -6,6 +6,7 @@ import CurrencyInput from "react-currency-input-field";
 import { cashOut } from "../../services/creditsService";
 import { useDispatch, useSelector } from "react-redux";
 import { setErrorMessages } from "../../store/errorMessagesSlice";
+import { setCredits } from "../../store/userSlice";
 
 export default function CashOutDialog({ show, handleClose, currency, locale }) {
   const [isBusy, setIsBusy] = useState(false);
@@ -42,8 +43,9 @@ export default function CashOutDialog({ show, handleClose, currency, locale }) {
     const { operatorToken } = JSON.parse(localStorage.getItem("user"));
 
     cashOut(operatorToken, amount, currency)
-      .then(() => {
+      .then(({ data }) => {
         // notify user
+        dispatch(setCredits(data.result.newBalance));
         handleClose();
       })
       .catch(() => {

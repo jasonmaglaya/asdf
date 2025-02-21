@@ -7,6 +7,7 @@ import SpinnerComponent from "../_shared/SpinnerComponent";
 import { getBalance, cashIn } from "../../services/creditsService";
 import { useDispatch } from "react-redux";
 import { setErrorMessages } from "../../store/errorMessagesSlice";
+import { setCredits } from "../../store/userSlice";
 
 export default function CashInDialog({ show, handleClose, currency, locale }) {
   const [isBusy, setIsBusy] = useState(false);
@@ -18,7 +19,6 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
   const [amount, setAmount] = useState();
 
   const onValueChange = (amount) => {
-    console.log(amount);
     if (isNaN(amount) || amount > balance || amount === 0) {
       setAmount(0);
       setHasError(true);
@@ -59,8 +59,9 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
     const { operatorToken } = JSON.parse(localStorage.getItem("user"));
 
     cashIn(operatorToken, amount, currency)
-      .then(() => {
+      .then(({ data }) => {
         // notify user
+        dispatch(setCredits(data.result.newBalance));
         handleClose();
       })
       .catch(() => {
