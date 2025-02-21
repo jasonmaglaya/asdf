@@ -1,6 +1,6 @@
 import { Container } from "react-bootstrap";
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
-import NavBar from "./NavBar";
+import NavBar from "../components/navbar/NavBar";
 import { useEffect } from "react";
 import { pathFeatureMappings } from "../constants";
 import { useDispatch } from "react-redux";

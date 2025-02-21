@@ -8,10 +8,18 @@ export const getBalance = async (partnerToken) => {
   });
 };
 
-export const cashIn = async (request) => {
-  return jwtInterceptor.post("/credits/cash-in", request);
+export const cashIn = async (partnerToken, amount, currency) => {
+  return jwtInterceptor.post("/credits/cash-in", {
+    partnerToken,
+    amount,
+    currency,
+  });
 };
 
-export const cashOut = async (request) => {
-  return jwtInterceptor.post("/credits/cash-out", request);
+export const cashOut = async (partnerToken, amount, currency) => {
+  return jwtInterceptor.post("/credits/cash-out", {
+    partnerToken,
+    amount,
+    currency,
+  });
 };

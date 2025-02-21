@@ -1,33 +1,37 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Container, InputGroup, Modal } from "react-bootstrap";
 import { faCoins } from "@fortawesome/free-solid-svg-icons";
 import CurrencyInput from "react-currency-input-field";
 import SpinnerComponent from "../_shared/SpinnerComponent";
-import { getBalance } from "../../services/creditsService";
-import { set } from "react-hook-form";
+import { getBalance, cashIn } from "../../services/creditsService";
+import { useDispatch } from "react-redux";
+import { setErrorMessages } from "../../store/errorMessagesSlice";
 
 export default function CashInDialog({ show, handleClose, currency, locale }) {
-  const [credits, setCredits] = useState(0);
   const [isBusy, setIsBusy] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(true);
+  const dispatch = useDispatch();
+  const amountRef = useRef();
+  const [balance, setBalance] = useState(0);
+  const [amount, setAmount] = useState();
 
   const onValueChange = (amount) => {
-    if (isNaN(amount) || amount > credits) {
-      return;
-    }
-  };
-
-  const cashIn = (data) => {
-    var amount = Number(data.amount?.replace(/[^0-9.-]+/g, ""));
-    if (amount > credits) {
+    if (isNaN(amount) || amount > balance) {
+      setAmount(0);
+      setHasError(true);
       return;
     }
 
-    setIsBusy(true);
+    setHasError(false);
+    setAmount(amount);
   };
 
-  const clearAmount = async () => {};
+  const clearAmount = () => {
+    setAmount(0);
+    setHasError(false);
+  };
 
   const handleOnShow = () => {
     setIsLoading(true);
@@ -36,13 +40,37 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
 
     getBalance(operatorToken)
       .then(({ data }) => {
-        const { amount } = data.result;
-
-        setCredits(amount);
+        setBalance(data.result.amount);
       })
-      .catch(() => {})
+      .catch(() => {
+        dispatch(setErrorMessages(["Unable to get balance."]));
+      })
       .finally(() => {
         setIsLoading(false);
+        setTimeout(() => amountRef.current.focus(), 0);
+      });
+  };
+
+  const processCashIn = () => {
+    if (amount > balance) {
+      dispatch(setErrorMessages(["Invalid amount."]));
+      return;
+    }
+
+    setIsBusy(true);
+
+    const { operatorToken } = JSON.parse(localStorage.getItem("user"));
+
+    cashIn(operatorToken, amount, currency)
+      .then(() => {
+        // notify user
+        handleClose();
+      })
+      .catch(() => {
+        dispatch(setErrorMessages(["Unable to cash in."]));
+      })
+      .finally(() => {
+        setIsBusy(false);
       });
   };
 
@@ -50,9 +78,7 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
     const { operatorToken } = JSON.parse(localStorage.getItem("user"));
     getBalance(operatorToken)
       .then(({ data }) => {
-        const { amount } = data.result;
-
-        setCredits(amount);
+        setBalance(data.result.amount);
       })
       .catch(() => {})
       .finally(() => {
@@ -83,9 +109,9 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
                 <i style={{ color: "gold" }}>
                   <FontAwesomeIcon icon={faCoins} />
                 </i>{" "}
-                CREDITS:{" "}
+                BALANCE:{" "}
                 <span className="text-success">
-                  {credits?.toLocaleString(locale || "en-US", {
+                  {balance?.toLocaleString(locale || "en-US", {
                     style: "currency",
                     currency: currency || "USD",
                   })}
@@ -97,11 +123,16 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
                 <CurrencyInput
                   onValueChange={onValueChange}
                   autoComplete="off"
-                  className="form-control form-control-lg"
+                  className={
+                    hasError
+                      ? "form-control form-control-lg invalid"
+                      : "form-control form-control-lg"
+                  }
                   placeholder="ENTER AMOUNT"
                   decimalScale={2}
                   allowNegativeValue={false}
                   intlConfig={{ locale, currency }}
+                  ref={amountRef}
                 />
                 <Button variant="secondary" onClick={clearAmount}>
                   CLEAR
@@ -120,7 +151,12 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
         >
           CANCEL
         </Button>
-        <Button variant="primary" size="lg" disabled={true}>
+        <Button
+          variant="primary"
+          size="lg"
+          onClick={processCashIn}
+          disabled={balance === 0 || isBusy}
+        >
           {!isBusy ? (
             <span>CASH IN</span>
           ) : (
@@ -129,7 +165,7 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
                 className="spinner-grow spinner-grow-sm"
                 role="status"
               ></span>
-              <span>PLEASE WAIT...</span>
+              <span>CASHING IN...</span>
             </span>
           )}
         </Button>

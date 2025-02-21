@@ -2,11 +2,12 @@ import { useNavigate, NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCoins } from "@fortawesome/free-solid-svg-icons";
 import { Navbar, Nav, NavDropdown } from "react-bootstrap";
-import { logout as userLogout } from "../services/authService";
+import { logout as userLogout } from "../../services/authService";
 import { useSelector } from "react-redux";
-import { pathFeatureMappings } from "../constants";
+import { pathFeatureMappings } from "../../constants";
 import { useEffect, useState } from "react";
-import CashInDialog from "../components/credits/CashInDialog";
+import CashInDialog from "../credits/CashInDialog";
+import CashOutDialog from "../credits/CashOutDialog";
 
 export default function NavBar() {
   const navigate = useNavigate();
@@ -15,9 +16,14 @@ export default function NavBar() {
   const { currency, locale } = appSettings;
   const [dateTime, setDateTime] = useState(new Date().toLocaleString());
   const [showCashInDialog, setShowCashInDialog] = useState(false);
+  const [showCashOutDialog, setShowCashOutDialog] = useState(false);
 
   const handleCashInDialogClose = () => {
     setShowCashInDialog(false);
+  };
+
+  const handleCashOutDialogClose = () => {
+    setShowCashOutDialog(false);
   };
 
   const logoutUser = () => {
@@ -98,23 +104,17 @@ export default function NavBar() {
                 href="#"
                 onClick={() => setShowCashInDialog(true)}
               >
-                <>
-                  <FontAwesomeIcon icon="fa-solid fa-right-to-bracket" />
-                  <span>Cash In</span>
-                </>
+                <span>Cash In</span>
               </NavDropdown.Item>
-              <NavDropdown.Item href="#">
-                <>
-                  <FontAwesomeIcon icon="fa-solid fa-arrow-right-from-bracket" />
-                  <span>Cash Out</span>
-                </>
+              <NavDropdown.Item
+                href="#"
+                onClick={() => setShowCashOutDialog(true)}
+              >
+                <span>Cash Out</span>
               </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item href="#" icon="fa-solid fa-clock-rotate-left">
-                <>
-                  <FontAwesomeIcon icon="fa-solid fa-clock-rotate-left" />
-                  <span>History</span>
-                </>
+              <NavDropdown.Item href="#">
+                <span>History</span>
               </NavDropdown.Item>
             </NavDropdown>
           </Nav>
@@ -125,6 +125,12 @@ export default function NavBar() {
         currency={currency}
         locale={locale}
         handleClose={handleCashInDialogClose}
+      />
+      <CashOutDialog
+        show={showCashOutDialog}
+        currency={currency}
+        locale={locale}
+        handleClose={handleCashOutDialogClose}
       />
     </>
   );
