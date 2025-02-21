@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Remy.Gambit.Api.Constants;
 using Remy.Gambit.Api.Handlers.Credits.Dto;
 using Remy.Gambit.Api.Helpers;
 using Remy.Gambit.Core.Concurrency;
@@ -56,8 +57,8 @@ namespace Remy.Gambit.Api.Handlers.Credits
 
                 // Deduct the amount from the partner
                 var transactionId = $"{DateTime.UtcNow.ToString("yyyyMMddHHmmss")}{TokenHelper.GenerateToken(10)}";
-                var tableId = "Infiniti1";
-                var round = "Infiniti1-1";
+                var tableId = Constants.AppSettings.MarvelGamingTableId;
+                var round = TokenHelper.GenerateToken(24);
 
                 var cashInRequest = new Services.Dto.CashInRequest
                 {

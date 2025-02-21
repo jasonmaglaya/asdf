@@ -7,5 +7,6 @@
         public const string Currency = "Currency";
         public const string Locale = "Locale";
         public const string Draw = "D";
+        public const string MarvelGamingTableId = "SGMCI";
     }
 }

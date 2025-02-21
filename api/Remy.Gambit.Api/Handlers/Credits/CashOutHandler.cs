@@ -54,8 +54,8 @@ namespace Remy.Gambit.Api.Handlers.Users.Command
 
                 // Credit the amount to the partner
                 var transactionId = $"{DateTime.UtcNow.ToString("yyyyMMddHHmmss")}{TokenHelper.GenerateToken(10)}";
-                var tableId = "Infiniti1";
-                var round = "Infiniti1-1";
+                var tableId = Constants.AppSettings.MarvelGamingTableId;
+                var round = TokenHelper.GenerateToken(24);
 
                 var cashOutRequest = new Services.Dto.CashOutRequest
                 {
@@ -83,7 +83,7 @@ namespace Remy.Gambit.Api.Handlers.Users.Command
                     Amount = amount
                 };
 
-                var notes = $"CASH IN - TableId: {tableId}, Round: {round}";
+                var notes = $"CASH IN - TransactionId: {transactionId}, TableId: {tableId}, Round: {round}";
 
                 var deductCreditResult = await _creditsRepository.CashOutAsync(deduction, notes, token);
 
