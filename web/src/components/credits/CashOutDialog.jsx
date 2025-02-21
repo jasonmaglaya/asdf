@@ -45,7 +45,7 @@ export default function CashOutDialog({ show, handleClose, currency, locale }) {
     cashOut(operatorToken, amount, currency)
       .then(({ data }) => {
         // notify user
-        dispatch(setCredits(data.result.newBalance));
+        dispatch(setCredits(data.newBalance));
         handleClose();
       })
       .catch(() => {

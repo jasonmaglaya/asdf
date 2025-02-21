@@ -61,7 +61,7 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
     cashIn(operatorToken, amount, currency)
       .then(({ data }) => {
         // notify user
-        dispatch(setCredits(data.result.newBalance));
+        dispatch(setCredits(data.newBalance));
         handleClose();
       })
       .catch(() => {
