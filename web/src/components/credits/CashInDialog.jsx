@@ -6,7 +6,10 @@ import CurrencyInput from "react-currency-input-field";
 import SpinnerComponent from "../_shared/SpinnerComponent";
 import { getBalance, cashIn } from "../../services/creditsService";
 import { useDispatch } from "react-redux";
-import { setErrorMessages } from "../../store/errorMessagesSlice";
+import {
+  setErrorMessages,
+  setSuccessMessages,
+} from "../../store/messagesSlice";
 import { setCredits } from "../../store/userSlice";
 
 export default function CashInDialog({ show, handleClose, currency, locale }) {
@@ -39,7 +42,7 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
         setBalance(data.result.amount);
       })
       .catch(() => {
-        dispatch(setErrorMessages(["Unable to get balance."]));
+        dispatch(setErrorMessages(["Unable to get the balance."]));
       })
       .finally(() => {
         setAmount(0);
@@ -60,7 +63,7 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
 
     cashIn(operatorToken, amount, currency)
       .then(({ data }) => {
-        // notify user
+        dispatch(setSuccessMessages(["Cash in successful."]));
         dispatch(setCredits(data.newBalance));
         handleClose();
       })

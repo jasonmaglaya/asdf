@@ -1,6 +1,6 @@
 import { Container } from "react-bootstrap";
 import { Outlet } from "react-router-dom";
-import ErrorMessage from "../components/_shared/ErrorMessage";
+import ErrorMessage from "../components/_shared/Messages";
 
 export const HomeLayout = () => {
   return (

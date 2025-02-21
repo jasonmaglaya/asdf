@@ -6,7 +6,7 @@ import { pathFeatureMappings } from "../constants";
 import { useDispatch } from "react-redux";
 import { fetchFeatures, fetchUser } from "../store/userSlice";
 import { useSelector } from "react-redux";
-import ErrorMessage from "../components/_shared/ErrorMessage";
+import Messages from "../components/_shared/Messages";
 
 const ProtectedLayout = () => {
   const navigate = useNavigate();
@@ -43,9 +43,9 @@ const ProtectedLayout = () => {
     <>
       <NavBar />
       <Container className="p-0" fluid style={{ minHeight: "800px" }}>
-        <ErrorMessage />
         <Outlet />
       </Container>
+      <Messages />
     </>
   );
 };

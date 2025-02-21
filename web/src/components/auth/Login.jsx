@@ -5,7 +5,7 @@ import AuthContainer from "./AuthContainer";
 import { login as userLogin } from "../../services/authService";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import LoadingScreen from "../_shared/LoadingScreen";
-import { setErrorMessages } from "../../store/errorMessagesSlice";
+import { setErrorMessages } from "../../store/messagesSlice";
 import { useDispatch } from "react-redux";
 
 export default function Login() {

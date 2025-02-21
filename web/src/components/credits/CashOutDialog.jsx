@@ -5,7 +5,10 @@ import { faCoins } from "@fortawesome/free-solid-svg-icons";
 import CurrencyInput from "react-currency-input-field";
 import { cashOut } from "../../services/creditsService";
 import { useDispatch, useSelector } from "react-redux";
-import { setErrorMessages } from "../../store/errorMessagesSlice";
+import {
+  setErrorMessages,
+  setSuccessMessages,
+} from "../../store/messagesSlice";
 import { setCredits } from "../../store/userSlice";
 
 export default function CashOutDialog({ show, handleClose, currency, locale }) {
@@ -44,7 +47,7 @@ export default function CashOutDialog({ show, handleClose, currency, locale }) {
 
     cashOut(operatorToken, amount, currency)
       .then(({ data }) => {
-        // notify user
+        dispatch(setSuccessMessages(["Cash out successful."]));
         dispatch(setCredits(data.newBalance));
         handleClose();
       })
