@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRef, useState } from "react";
-import { Button, Container, InputGroup, Modal } from "react-bootstrap";
+import { Button, Container, Modal } from "react-bootstrap";
 import { faCoins } from "@fortawesome/free-solid-svg-icons";
 import CurrencyInput from "react-currency-input-field";
 import { cashOut } from "../../services/creditsService";
@@ -16,7 +16,7 @@ export default function CashOutDialog({ show, handleClose, currency, locale }) {
   const [amount, setAmount] = useState();
 
   const onValueChange = (amount) => {
-    if (isNaN(amount) || amount > credits) {
+    if (isNaN(amount) || amount > credits || amount === 0) {
       setAmount(0);
       setHasError(true);
       return;
@@ -26,17 +26,13 @@ export default function CashOutDialog({ show, handleClose, currency, locale }) {
     setAmount(amount);
   };
 
-  const clearAmount = () => {
-    setAmount(0);
-    setHasError(false);
-  };
-
   const handleOnShow = () => {
+    setAmount(0);
     setTimeout(() => amountRef.current.focus(), 0);
   };
 
   const processCashOut = () => {
-    if (amount > credits) {
+    if (isNaN(amount) || amount === 0 || amount > credits) {
       dispatch(setErrorMessages(["Invalid amount."]));
       return;
     }
@@ -88,25 +84,20 @@ export default function CashOutDialog({ show, handleClose, currency, locale }) {
             </h5>
           </Container>
           <Container className="mb-2">
-            <InputGroup>
-              <CurrencyInput
-                onValueChange={onValueChange}
-                autoComplete="off"
-                className={
-                  hasError
-                    ? "form-control form-control-lg invalid"
-                    : "form-control form-control-lg"
-                }
-                placeholder="ENTER AMOUNT"
-                decimalScale={2}
-                allowNegativeValue={false}
-                intlConfig={{ locale, currency }}
-                ref={amountRef}
-              />
-              <Button variant="secondary" onClick={clearAmount}>
-                CLEAR
-              </Button>
-            </InputGroup>
+            <CurrencyInput
+              onValueChange={onValueChange}
+              autoComplete="off"
+              className={
+                hasError
+                  ? "form-control form-control-lg invalid"
+                  : "form-control form-control-lg"
+              }
+              placeholder="ENTER AMOUNT"
+              decimalScale={2}
+              allowNegativeValue={false}
+              intlConfig={{ locale, currency }}
+              ref={amountRef}
+            />
           </Container>
         </>
       </Modal.Body>
@@ -123,7 +114,7 @@ export default function CashOutDialog({ show, handleClose, currency, locale }) {
           variant="primary"
           size="lg"
           onClick={processCashOut}
-          disabled={credits === 0 || isBusy}
+          disabled={isNaN(amount) || amount === 0 || credits === 0 || isBusy}
         >
           {!isBusy ? (
             <span>CASH OUT</span>
