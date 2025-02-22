@@ -33,7 +33,7 @@ BEGIN TRY
 	DECLARE @GroupTransactionId UNIQUEIDENTIFIER = NEWID()
 
 	INSERT INTO Credits (UserId, Amount, TransactionDate, TransactionType, TransactedBy, BetId, Notes, GroupTransactionId, DeclareId)
-	SELECT C.UserId, C.Amount * -1 Amount, GETUTCDATE(), 'Betting-Rollback', @UserId, C.BetId, 'RE-DECLARE - REVERSAL', @GroupTransactionId, DeclareId
+	SELECT C.UserId, C.Amount * -1 Amount, GETUTCDATE(), 'Betting-Rollback', @UserId, C.BetId, 'RE-DECLARE - REVERSAL', @GroupTransactionId, @DeclareId
 	FROM Credits C
 		JOIN Bets B
 			ON C.BetId = B.Id	
