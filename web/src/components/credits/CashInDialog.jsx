@@ -108,7 +108,7 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
                 <i style={{ color: "gold" }}>
                   <FontAwesomeIcon icon={faCoins} />
                 </i>{" "}
-                BALANCE:{" "}
+                MAIN BALANCE:{" "}
                 <span className="text-success">
                   {balance?.toLocaleString(locale || "en-US", {
                     style: "currency",
