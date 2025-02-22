@@ -80,7 +80,8 @@ public class CashInHandler(IUsersRepository usersRepository, ICreditsRepository 
             var credit = new Credit
             {
                 UserId = user.Id,
-                Amount = command.Amount
+                Amount = command.Amount,
+                IpAddress = command.IpAddress
             };
 
             var notes = $"CASH IN - TransactionId: {transactionId}, TableId: {tableId}, Round: {round}";

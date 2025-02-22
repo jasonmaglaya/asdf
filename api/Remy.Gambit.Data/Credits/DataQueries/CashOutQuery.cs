@@ -8,11 +8,11 @@ public class CashOutQuery : DataQuery
     private readonly string _query = @"
 INSERT INTO Credits
 (
-	Id, UserId, Amount, TransactionDate, TransactionType, TransactedBy
+	Id, UserId, Amount, TransactionDate, TransactionType, TransactedBy, IpAddress
 )
 VALUES
 (
-	NEWID(), @UserId, @Amount, GETUTCDATE(), @TransactionType, @TransactedBy
+	NEWID(), @UserId, @Amount, GETUTCDATE(), @TransactionType, @TransactedBy, IpAddress
 )
 ";
 
@@ -22,6 +22,7 @@ VALUES
         Parameters.Add("@Amount", credit.Amount);
         Parameters.Add("@TransactionType", "CASH OUT");
         Parameters.Add("@TransactedBy", credit.UserId);
+        Parameters.Add("@IpAddress", credit.IpAddress);
 
         CmdText = _query;
         CmdText = _query;

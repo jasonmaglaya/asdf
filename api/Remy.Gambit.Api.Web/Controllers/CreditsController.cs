@@ -85,6 +85,15 @@ namespace Remy.Gambit.Api.Web.Controllers
 
             request.UserId = userId;
 
+            var clientIp = Request.Headers["X-Forwarded-For"].FirstOrDefault();
+
+            if (string.IsNullOrEmpty(clientIp))
+            {
+                clientIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+            }
+
+            request.IpAddress = clientIp;
+
             var result = await _cashInHandler.HandleAsync(request, token);
 
             if (result.ValidationResults.Any())
@@ -110,6 +119,15 @@ namespace Remy.Gambit.Api.Web.Controllers
             }
 
             request.UserId = userId;
+
+            var clientIp = Request.Headers["X-Forwarded-For"].FirstOrDefault();
+
+            if (string.IsNullOrEmpty(clientIp))
+            {
+                clientIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+            }
+
+            request.IpAddress = clientIp;
 
             var result = await _cashOutHandler.HandleAsync(request, token);
 

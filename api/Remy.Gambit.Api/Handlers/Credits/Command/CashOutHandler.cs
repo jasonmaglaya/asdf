@@ -80,7 +80,8 @@ public class CashOutHandler(IUsersRepository usersRepository, ICreditsRepository
             var deduction = new Credit
             {
                 UserId = user.Id,
-                Amount = amount
+                Amount = amount,
+                IpAddress = command.IpAddress,
             };
 
             var notes = $"CASH IN - TransactionId: {transactionId}, TableId: {tableId}, Round: {round}";

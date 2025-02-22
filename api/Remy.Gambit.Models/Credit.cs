@@ -10,6 +10,7 @@ public class Credit
     public string? TransactionType { get; set; }
     public Guid? BetId { get; set; }
     public string? Notes { get; set; }
+    public string? IpAddress { get; set; }
     public Guid? CreditsFrom { get; set; }
     public Guid? CreditsTo { get; set; }
     public Guid? GroupTransactionId { get; set; }

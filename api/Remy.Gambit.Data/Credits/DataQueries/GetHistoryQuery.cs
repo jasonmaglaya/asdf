@@ -31,8 +31,8 @@ WHERE
     {
         CmdText = _query;
 
-        Parameters.Add("UserId", userId);
-        Parameters.Add("PageNumber", pageNumber);
-        Parameters.Add("PageSize", pageSize);
+        Parameters.Add("@UserId", userId);
+        Parameters.Add("@PageNumber", pageNumber);
+        Parameters.Add("@PageSize", pageSize);
     }
 }
