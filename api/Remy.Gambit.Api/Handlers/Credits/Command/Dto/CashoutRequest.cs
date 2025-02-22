@@ -1,9 +1,9 @@
 ﻿using Remy.Gambit.Core.Cqs;
 using System.Text.Json.Serialization;
 
-namespace Remy.Gambit.Api.Handlers.Credits.Dto;
+namespace Remy.Gambit.Api.Handlers.Credits.Command.Dto;
 
-public class CashInRequest : ICommand
+public class CashOutRequest : ICommand
 {
     [JsonIgnore]
     public Guid UserId { get; set; }

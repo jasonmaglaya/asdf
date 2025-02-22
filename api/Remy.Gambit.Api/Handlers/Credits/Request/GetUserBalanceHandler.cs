@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Remy.Gambit.Api.Dto;
-using Remy.Gambit.Api.Handlers.Credits.Dto;
+using Remy.Gambit.Api.Handlers.Credits.Request.Dto;
 using Remy.Gambit.Core.Cqs;
 using Remy.Gambit.Services;
 using Remy.Gambit.Services.Dto;
 
-namespace Remy.Gambit.Api.Handlers.Credits;
+namespace Remy.Gambit.Api.Handlers.Credits.Request;
 
 public class GetUserBalanceHandler (IPartnerService partnerService, IValidator<GetUserBalanceRequest> getUserBalanceRequestValidator, IMapper mapper) : IQueryHandler<GetUserBalanceRequest, GetUserBalanceResult>
 {

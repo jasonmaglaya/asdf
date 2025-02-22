@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Remy.Gambit.Api.Handlers.Credits.Dto;
+using Remy.Gambit.Api.Handlers.Credits.Request.Dto;
 
 namespace Remy.Gambit.Api.Validators;
 

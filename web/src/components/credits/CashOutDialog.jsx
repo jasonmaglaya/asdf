@@ -13,7 +13,7 @@ import { setCredits } from "../../store/userSlice";
 
 export default function CashOutDialog({ show, handleClose, currency, locale }) {
   const [isBusy, setIsBusy] = useState(false);
-  const [hasError, setHasError] = useState(true);
+  const [hasError, setHasError] = useState(false);
   const dispatch = useDispatch();
   const amountRef = useRef();
   const { credits } = useSelector((state) => state.user);

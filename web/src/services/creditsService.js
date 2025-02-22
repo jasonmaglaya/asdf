@@ -23,3 +23,12 @@ export const cashOut = async (partnerToken, amount, currency) => {
     currency,
   });
 };
+
+export const getCreditHistory = async (pageNumber, pageSize) => {
+  return jwtInterceptor.get("/credits/history", {
+    params: {
+      pageNumber,
+      pageSize,
+    },
+  });
+};

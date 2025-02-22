@@ -1,7 +1,7 @@
 ﻿using Remy.Gambit.Core.Cqs;
 using System.Text.Json.Serialization;
 
-namespace Remy.Gambit.Api.Handlers.Credits.Dto;
+namespace Remy.Gambit.Api.Handlers.Credits.Request.Dto;
 
 public class GetUserBalanceRequest : IQuery
 {

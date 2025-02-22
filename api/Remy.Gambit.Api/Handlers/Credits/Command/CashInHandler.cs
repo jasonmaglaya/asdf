@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Remy.Gambit.Api.Handlers.Credits.Dto;
+using Remy.Gambit.Api.Handlers.Credits.Command.Dto;
 using Remy.Gambit.Api.Helpers;
 using Remy.Gambit.Core.Concurrency;
 using Remy.Gambit.Core.Cqs;
@@ -8,7 +8,7 @@ using Remy.Gambit.Data.Users;
 using Remy.Gambit.Models;
 using Remy.Gambit.Services;
 
-namespace Remy.Gambit.Api.Handlers.Credits;
+namespace Remy.Gambit.Api.Handlers.Credits.Command;
 
 public class CashInHandler(IUsersRepository usersRepository, ICreditsRepository creditsRepository, IValidator<CashInRequest> validator,
     IPartnerService partnerService, IUserLockService userLockService) : ICommandHandler<CashInRequest, CashInResult>
@@ -57,7 +57,7 @@ public class CashInHandler(IUsersRepository usersRepository, ICreditsRepository 
             // Deduct the amount from the partner
             var transactionId = $"{DateTime.UtcNow.ToString("yyyyMMddHHmmss")}{TokenHelper.GenerateToken(10)}";
             var tableId = Constants.AppSettings.MarvelGamingTableId;
-            var round = TokenHelper.GenerateToken(24);
+            var round = $"{DateTime.UtcNow.ToString("yyyyMMddHHmmss")}{TokenHelper.GenerateToken(10)}";
 
             var cashInRequest = new Services.Dto.CashInRequest
             {

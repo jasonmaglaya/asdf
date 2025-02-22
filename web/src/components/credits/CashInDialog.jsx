@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Container, Modal } from "react-bootstrap";
 import { faCoins } from "@fortawesome/free-solid-svg-icons";
 import CurrencyInput from "react-currency-input-field";
@@ -15,9 +15,8 @@ import { setCredits } from "../../store/userSlice";
 export default function CashInDialog({ show, handleClose, currency, locale }) {
   const [isBusy, setIsBusy] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(true);
+  const [hasError, setHasError] = useState(false);
   const dispatch = useDispatch();
-  const amountRef = useRef();
   const [balance, setBalance] = useState(0);
   const [amount, setAmount] = useState();
 
@@ -47,7 +46,6 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
       .finally(() => {
         setAmount(0);
         setIsLoading(false);
-        setTimeout(() => amountRef.current.focus(), 0);
       });
   };
 
@@ -132,7 +130,7 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
                 decimalScale={2}
                 allowNegativeValue={false}
                 intlConfig={{ locale, currency }}
-                ref={amountRef}
+                autoFocus
               />
             </Container>
           </>

@@ -23,7 +23,8 @@ namespace Remy.Gambit.Api.Mappers
             CreateMap<Models.Match, Dto.MatchListItem>();
             CreateMap<PaginatedList<Models.Match>, PaginatedList<Dto.MatchListItem>>();
             CreateMap<Models.Balance, Dto.Balance>();
-
+            CreateMap<Models.Credit, Dto.CreditHistoryItem>();
+            CreateMap<PaginatedList<Models.Credit>, PaginatedList<Dto.CreditHistoryItem>>();
         }
     }
 }

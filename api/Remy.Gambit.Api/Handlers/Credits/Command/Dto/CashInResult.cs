@@ -1,6 +1,6 @@
 ﻿using Remy.Gambit.Core.Cqs;
 
-namespace Remy.Gambit.Api.Handlers.Credits.Dto;
+namespace Remy.Gambit.Api.Handlers.Credits.Command.Dto;
 
 public class CashInResult : CommandResult
 {

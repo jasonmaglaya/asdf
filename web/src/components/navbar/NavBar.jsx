@@ -8,6 +8,7 @@ import { pathFeatureMappings } from "../../constants";
 import { useEffect, useState } from "react";
 import CashInDialog from "../credits/CashInDialog";
 import CashOutDialog from "../credits/CashOutDialog";
+import CreditHistory from "../credits/CreditHistory";
 
 export default function NavBar() {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ export default function NavBar() {
   const [dateTime, setDateTime] = useState(new Date().toLocaleString());
   const [showCashInDialog, setShowCashInDialog] = useState(false);
   const [showCashOutDialog, setShowCashOutDialog] = useState(false);
+  const [showCreditHistoryDialog, setShowCreditHistoryDialog] = useState(false);
 
   const handleCashInDialogClose = () => {
     setShowCashInDialog(false);
@@ -24,6 +26,10 @@ export default function NavBar() {
 
   const handleCashOutDialogClose = () => {
     setShowCashOutDialog(false);
+  };
+
+  const handleCreditHistoryDialogClose = () => {
+    setShowCreditHistoryDialog(false);
   };
 
   const logoutUser = () => {
@@ -113,7 +119,10 @@ export default function NavBar() {
                 <span>Cash Out</span>
               </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item href="#">
+              <NavDropdown.Item
+                href="#"
+                onClick={() => setShowCreditHistoryDialog(true)}
+              >
                 <span>History</span>
               </NavDropdown.Item>
             </NavDropdown>
@@ -131,6 +140,12 @@ export default function NavBar() {
         currency={currency}
         locale={locale}
         handleClose={handleCashOutDialogClose}
+      />
+      <CreditHistory
+        show={showCreditHistoryDialog}
+        currency={currency}
+        locale={locale}
+        handleClose={handleCreditHistoryDialogClose}
       />
     </>
   );

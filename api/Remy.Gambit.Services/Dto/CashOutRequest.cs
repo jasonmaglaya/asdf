@@ -1,6 +1,6 @@
 ﻿namespace Remy.Gambit.Services.Dto;
 
-public class CashOutRequest : RequestBase, IRequestDto
+public class CashOutRequest : RequestBase
 {
     public required string UserName { get; set; }
     public required string Amount { get; set; }
