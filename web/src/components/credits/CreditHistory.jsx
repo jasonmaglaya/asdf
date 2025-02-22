@@ -67,7 +67,6 @@ export default function CreditHistory({ show, handleClose, currency, locale }) {
       centered
       animation={false}
       onShow={handleOnShow}
-      scrollable
     >
       <Modal.Header closeButton>
         <Modal.Title>HISTORY</Modal.Title>
@@ -97,13 +96,13 @@ export default function CreditHistory({ show, handleClose, currency, locale }) {
           {isLoading ? (
             <SpinnerComponent />
           ) : (
-            <Container>
+            <Container style={{ overflowY: "auto", maxHeight: "300px" }}>
               {history.map((item) => (
                 <div key={item.date} className="p-0 mb-0">
                   <div className="bg-light p-1 fw-bold">
                     <small>{item.date}</small>
                   </div>
-                  <div style={{ overflowY: "auto" }}>
+                  <div>
                     <table className="table table-striped table-borderless">
                       <tbody>
                         {item.transactions.map((tran) => (
