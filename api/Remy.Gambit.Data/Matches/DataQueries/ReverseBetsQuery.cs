@@ -33,7 +33,7 @@ BEGIN TRY
 	DECLARE @GroupTransactionId UNIQUEIDENTIFIER = NEWID()
 
 	INSERT INTO Credits (UserId, Amount, TransactionDate, TransactionType, TransactedBy, BetId, Notes, GroupTransactionId, DeclareId)
-	SELECT C.UserId, C.Amount * -1 Amount, GETUTCDATE(), 'Betting-Rollback', @UserId, C.BetId, 'RE-DECLARE - REVERSAL', @GroupTransactionId, @DeclareId
+	SELECT C.UserId, C.Amount * -1 Amount, GETUTCDATE(), 'Betting-Rollback', @UserId, C.BetId, 'REVERSAL (RE-DECLARED)', @GroupTransactionId, @DeclareId
 	FROM Credits C
 		JOIN Bets B
 			ON C.BetId = B.Id	
@@ -53,7 +53,25 @@ BEGIN TRY
 			ELSE
 				B.Amount * -1
 		END,
-		GETUTCDATE(), 'Betting', @UserId, B.Id, 'RE-DECLARE - REVERSAL', @GroupTransactionId, @DeclareId
+		GETUTCDATE(), 
+		'Betting', 
+		@UserId, 
+		B.Id,
+		CASE WHEN (
+			CASE 
+				WHEN B.TeamCode = W.TeamCode
+					THEN
+						CASE WHEN W.TeamCode = 'D'
+							THEN (B.Amount * @DrawMultiplier) * (1 - @Commission)
+						ELSE
+							B.Amount * (O.Odds - 1)
+						END
+				ELSE
+					B.Amount * -1
+			END
+		) > 0 THEN 'WINNINGS' ELSE 'LOSSES' END,		
+		@GroupTransactionId, 
+		@DeclareId
 	FROM Bets B
 		LEFT JOIN MatchWinners W
 			ON B.TeamCode = W.TeamCode

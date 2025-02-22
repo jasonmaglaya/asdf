@@ -32,7 +32,7 @@ BEGIN TRY
 
 	DECLARE @GroupTransactionId UNIQUEIDENTIFIER = NEWID()
 
-	INSERT INTO Credits (UserId, Amount, TransactionDate, TransactionType, TransactedBy, BetId, GroupTransactionId, DeclareId)
+	INSERT INTO Credits (UserId, Amount, Notes, TransactionDate, TransactionType, TransactedBy, BetId, GroupTransactionId, DeclareId)
 	SELECT
 		B.UserId, 
 		CASE 
@@ -46,7 +46,25 @@ BEGIN TRY
 			ELSE
 				B.Amount * -1
 		END,
-		GETUTCDATE(), 'Betting', 'System', B.Id, @GroupTransactionId, @DeclareId
+		CASE WHEN (
+			CASE 
+				WHEN B.TeamCode = W.TeamCode
+					THEN
+						CASE WHEN W.TeamCode = 'D'
+							THEN (B.Amount * @DrawMultiplier) * (1 - @Commission)
+						ELSE
+							B.Amount * (O.Odds - 1)
+						END
+				ELSE
+					B.Amount * -1
+			END
+		) > 0 THEN 'WINNINGS' ELSE 'LOSSES' END,
+		GETUTCDATE(),
+		'Betting',
+		'System',
+		B.Id,
+		@GroupTransactionId,
+		@DeclareId
 	FROM Bets B
 		LEFT JOIN MatchWinners W
 			ON B.TeamCode = W.TeamCode
