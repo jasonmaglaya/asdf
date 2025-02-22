@@ -27,11 +27,10 @@ export default function CreditHistory({ show, handleClose, currency, locale }) {
     try {
       const { data } = await getBalance(operatorToken);
       setBalance(data.result.amount);
+      setIsLoadingBalance(false);
     } catch (error) {
       dispatch(setErrorMessages(["Unable to get the balance."]));
     }
-
-    setIsLoadingBalance(false);
 
     try {
       const { data } = await getCreditHistory(1, 10);
