@@ -33,13 +33,13 @@ BEGIN TRY
 	DECLARE @GroupTransactionId UNIQUEIDENTIFIER = NEWID()
 
 	INSERT INTO Credits (UserId, Amount, TransactionDate, TransactionType, TransactedBy, BetId, Notes, GroupTransactionId)
-	SELECT C.UserId, C.Amount * -1 Amount, GETUTCDATE(), 'Betting-Rollback', @UserId, C.BetId, 'RE-DECLARE', @GroupTransactionId
+	SELECT C.UserId, C.Amount * -1 Amount, GETUTCDATE(), 'Betting-Rollback', @UserId, C.BetId, 'RE-DECLARE - REVERSAL', @GroupTransactionId
 	FROM Credits C
 		JOIN Bets B
 			ON C.BetId = B.Id	
 	WHERE B.MatchId = @matchId
 
-	INSERT INTO Credits (UserId, Amount, TransactionDate, TransactionType, TransactedBy, BetId, Notes, GroupTransactionId)
+	INSERT INTO Credits (UserId, Amount, TransactionDate, TransactionType, TransactedBy, BetId, Notes, GroupTransactionId, DeclareId)
 	SELECT
 		B.UserId, 
 		CASE 
@@ -53,11 +53,12 @@ BEGIN TRY
 			ELSE
 				B.Amount * -1
 		END,
-		GETUTCDATE(), 'Betting', @UserId, B.Id, 'RE-DECLARE', @GroupTransactionId
+		GETUTCDATE(), 'Betting', @UserId, B.Id, 'RE-DECLARE - REVERSAL', @GroupTransactionId, @DeclareId
 	FROM Bets B
 		LEFT JOIN MatchWinners W
 			ON B.TeamCode = W.TeamCode
 				AND B.MatchId = W.MatchId
+				AND W.IsDeleted = 0
 		LEFT JOIN (
 			SELECT T.Code, @TotalBetsAfterComm / COALESCE(SUM(B.Amount),0) Odds
 			FROM Matches M
@@ -83,11 +84,12 @@ IF @@TRANCOUNT > 0
     COMMIT TRANSACTION;
 ";
 
-    public ReverseBetsQuery(Guid matchId, Guid userId)
+    public ReverseBetsQuery(Guid matchId, Guid userId, Guid declareId)
     {
         CmdText = _query;
 
         Parameters.Add("MatchId", matchId);
         Parameters.Add("UserId", userId);
+        Parameters.Add("DeclareId", declareId);
     }
 }

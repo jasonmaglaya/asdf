@@ -5,18 +5,22 @@ namespace Remy.Gambit.Data.Matches.DataQueries;
 public class ReDeclareWinnerQuery : DataQuery
 {
     private readonly string _query = @"
-DELETE FROM MatchWinners
+UPDATE MatchWinners SET
+    IsDeleted = 1
 WHERE MatchId = @MatchId;
 
-INSERT INTO MatchWinners (MatchId, TeamCode)
-VALUES (@MatchId, @TeamCodes)
+INSERT INTO MatchWinners (MatchId, TeamCode, DeclareId, DeclareDate, DeclaredBy, IsDeleted, IpAddress)
+VALUES (@MatchId, @TeamCodes, @DeclareId, GETUTCDATE(), @DeclaredBy, 0, @IpAddress)
 ";
 
-    public ReDeclareWinnerQuery(Guid matchId, IEnumerable<string> teamCodes)
+    public ReDeclareWinnerQuery(Guid matchId, IEnumerable<string> teamCodes, Guid declareId, Guid declaredBy, string ipAddress)
     {
         CmdText = _query;
 
         Parameters.Add("MatchId", matchId);
         Parameters.Add("TeamCodes", teamCodes);
+        Parameters.Add("DeclareId", declareId);
+        Parameters.Add("DeclaredBy", declaredBy);
+        Parameters.Add("IpAddress", ipAddress);
     }
 }

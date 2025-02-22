@@ -32,7 +32,7 @@ BEGIN TRY
 
 	DECLARE @GroupTransactionId UNIQUEIDENTIFIER = NEWID()
 
-	INSERT INTO Credits (UserId, Amount, TransactionDate, TransactionType, TransactedBy, BetId, GroupTransactionId)
+	INSERT INTO Credits (UserId, Amount, TransactionDate, TransactionType, TransactedBy, BetId, GroupTransactionId, DeclareId)
 	SELECT
 		B.UserId, 
 		CASE 
@@ -46,11 +46,12 @@ BEGIN TRY
 			ELSE
 				B.Amount * -1
 		END,
-		GETUTCDATE(), 'Betting', 'System', B.Id, @GroupTransactionId
+		GETUTCDATE(), 'Betting', 'System', B.Id, @GroupTransactionId, @DeclareId
 	FROM Bets B
 		LEFT JOIN MatchWinners W
 			ON B.TeamCode = W.TeamCode
 				AND B.MatchId = W.MatchId
+				AND W.IsDeleted = 0
 		LEFT JOIN (
 			SELECT T.Code, @TotalBetsAfterComm / COALESCE(SUM(B.Amount),0) Odds
 			FROM Matches M
@@ -79,10 +80,11 @@ IF @@TRANCOUNT > 0
     COMMIT TRANSACTION;
 ";
 
-    public ProcessBetsQuery(Guid matchId)
+    public ProcessBetsQuery(Guid matchId, Guid declareId)
     {
         CmdText = _query;
 
 			Parameters.Add("MatchId", matchId);
+			Parameters.Add("DeclareId", declareId);
     }
 }

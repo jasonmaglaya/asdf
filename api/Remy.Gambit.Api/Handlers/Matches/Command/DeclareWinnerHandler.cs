@@ -43,7 +43,7 @@ namespace Remy.Gambit.Api.Handlers.Matches.Command
                 return new DeclareWinnerResult { IsSuccessful = false, ValidationResults = ["Invalid event ID"] };
             }
 
-            await _matchesRepository.DeclareWinnerAsync(command.MatchId, command.TeamCodes, token);
+            await _matchesRepository.DeclareWinnerAsync(command.MatchId, command.TeamCodes, command.UserId, command.IpAddress!, token);
             await _matchesRepository.UpdateStatusAsync(command.MatchId, MatchStatuses.Declared, token);
 
             await _matchHub.Clients.Group(match.EventId.ToString()).SendAsync(EventHubEvents.WinnerDeclared, command.TeamCodes, cancellationToken: token);

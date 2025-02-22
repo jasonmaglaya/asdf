@@ -19,9 +19,9 @@ public interface IMatchesRepository
 
     Task<bool> UpdateStatusAsync(Guid matchId, string status, CancellationToken token);
 
-    Task<bool> DeclareWinnerAsync(Guid matchId, IEnumerable<string> teamCodes, CancellationToken token);
+    Task<bool> DeclareWinnerAsync(Guid matchId, IEnumerable<string> teamCodes, Guid declaredBy, string ipAddress, CancellationToken token);
 
-    Task<bool> ReDeclareWinnerAsync(Guid matchId, IEnumerable<string> teamCodes, Guid userId, CancellationToken token);
+    Task<bool> ReDeclareWinnerAsync(Guid matchId, IEnumerable<string> teamCodes, Guid userId, string ipAddress, CancellationToken token);
 
     Task<bool> CancelMatchAsync(Guid matchId, CancellationToken token);
 

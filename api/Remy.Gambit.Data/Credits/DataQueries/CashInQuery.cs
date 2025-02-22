@@ -12,7 +12,7 @@ INSERT INTO Credits
 )
 VALUES
 (
-	NEWID(), @UserId, @Amount, GETUTCDATE(), @TransactionType, @TransactedBy, @Notes, @IpAddress
+	NEWID(), @UserId, @Amount, GETUTCDATE(), @TransactionType, @UserId, @Notes, @IpAddress
 )
 ";
 
@@ -21,7 +21,6 @@ VALUES
         Parameters.Add("@UserId", credit.UserId);
         Parameters.Add("@Amount", credit.Amount);
         Parameters.Add("@TransactionType", "Loading");
-        Parameters.Add("@TransactedBy", credit.UserId);
         Parameters.Add("@Notes", notes);
         Parameters.Add("@IpAddress", credit.IpAddress);
 

@@ -22,6 +22,7 @@ WHERE EventId = @Id
 SELECT TeamCode as Code
 FROM MatchWinners
 WHERE MatchId = @CurrentMatchId
+    AND IsDeleted = 0
 ";
 
     public GetCurrentMatchQuery(Guid id)

@@ -9,8 +9,9 @@ SELECT M.Number, COALESCE(MW.TeamCode, 'C') TeamCode
 FROM Matches M
 	LEFT JOIN MatchWinners MW
 		ON M.Id = MW.MatchId
+            AND MW.IsDeleted = 0
 WHERE M.EventId = @EventId
-	AND M.Status IN ('Declared','Completed', 'Cancelled')
+	AND M.Status IN ('Declared','Completed', 'Cancelled')    
 ORDER BY M.[Sequence]
 ";
 

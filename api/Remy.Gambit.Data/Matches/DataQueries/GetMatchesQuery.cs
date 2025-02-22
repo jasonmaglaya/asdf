@@ -16,6 +16,7 @@ FROM Matches M
 	LEFT JOIN MatchWinners MW
 		ON M.Id = MW.MatchId
 WHERE EventId = @EventId
+    AND MW.IsDeleted = 0
 GROUP BY M.Id, M.EventId, M.Number, M.Status, M.Description, M.Sequence
 ORDER BY M.Sequence DESC
 OFFSET (@pn-1)*@ps ROWS
@@ -24,8 +25,9 @@ FETCH NEXT @ps ROWS ONLY
 SELECT COUNT(*) Count
 FROM Matches M
 	LEFT JOIN MatchWinners MW
-		ON M.Id = MW.MatchId
+		ON M.Id = MW.MatchId            
 WHERE EventId = @EventId
+    AND MW.IsDeleted = 0
 GROUP BY M.Id, M.EventId, M.Number, M.Status, M.Description, M.Sequence
 ";
 

@@ -12,7 +12,7 @@ INSERT INTO Credits
 )
 VALUES
 (
-	NEWID(), @UserId, @Amount, GETUTCDATE(), @TransactionType, @TransactedBy, IpAddress
+	NEWID(), @UserId, @Amount, GETUTCDATE(), @TransactionType, @UserId, IpAddress
 )
 ";
 
@@ -21,7 +21,6 @@ VALUES
         Parameters.Add("@UserId", credit.UserId);
         Parameters.Add("@Amount", credit.Amount);
         Parameters.Add("@TransactionType", "CASH OUT");
-        Parameters.Add("@TransactedBy", credit.UserId);
         Parameters.Add("@IpAddress", credit.IpAddress);
 
         CmdText = _query;

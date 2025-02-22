@@ -8,6 +8,7 @@ public class GetMatchWinnersQuery : DataQuery
 SELECT TeamCode
 FROM MatchWinners
 WHERE MatchId = @MatchId
+    AND IsDeleted = 0
 ";
     public GetMatchWinnersQuery(Guid matchId)
     {

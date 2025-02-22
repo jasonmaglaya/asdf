@@ -135,6 +135,24 @@ public class MatchesController(
     public async Task<ActionResult<DeclareWinnerResult>> DeclareWinner([FromRoute] Guid id, [FromBody] DeclareWinnerRequest request, CancellationToken token)
     {
         request.MatchId = id;
+
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        if (!Guid.TryParse(identity?.FindFirst(ClaimTypes.Name)?.Value!, out Guid userId))
+        {
+            return BadRequest();
+        }
+
+        request.UserId = userId;
+
+        var clientIp = Request.Headers["X-Forwarded-For"].FirstOrDefault();
+
+        if (string.IsNullOrEmpty(clientIp))
+        {
+            clientIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+        }
+
+        request.IpAddress = clientIp;
+
         var result = await _declareWinnerHandler.HandleAsync(request, token);
 
         if (result.ValidationResults.Any())
@@ -163,6 +181,15 @@ public class MatchesController(
         }
 
         request.UserId = userId;
+
+        var clientIp = Request.Headers["X-Forwarded-For"].FirstOrDefault();
+
+        if (string.IsNullOrEmpty(clientIp))
+        {
+            clientIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+        }
+
+        request.IpAddress = clientIp;
 
         var result = await _reDeclareWinnerHandler.HandleAsync(request, token);
 

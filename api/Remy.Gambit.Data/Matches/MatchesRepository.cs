@@ -29,12 +29,14 @@ public class MatchesRepository(IGambitDbClient gambitDbClient) : IMatchesReposit
         return await _gambitDbClient.ExecuteAsync(query, token) > 0;
     }
 
-    public async Task<bool> DeclareWinnerAsync(Guid matchId, IEnumerable<string> teamCodes, CancellationToken token)
+    public async Task<bool> DeclareWinnerAsync(Guid matchId, IEnumerable<string> teamCodes, Guid declaredBy, string ipAddress, CancellationToken token)
     {
-        var declareWinnerQuery = new DeclareWinnerQuery(matchId, teamCodes);
+        var declareId = Guid.NewGuid();
+
+        var declareWinnerQuery = new DeclareWinnerQuery(matchId, teamCodes, declareId, declaredBy, ipAddress);
         await _gambitDbClient.ExecuteAsync(declareWinnerQuery, token);
 
-        var processBetsQuery = new ProcessBetsQuery(matchId);
+        var processBetsQuery = new ProcessBetsQuery(matchId, declareId);
         await _gambitDbClient.ExecuteAsync(processBetsQuery, token);
 
         //var processAgentCommissionsQuery = new ProcessAgentCommissionsQuery(matchId);
@@ -63,12 +65,14 @@ public class MatchesRepository(IGambitDbClient gambitDbClient) : IMatchesReposit
         return true;
     }
 
-    public async Task<bool> ReDeclareWinnerAsync(Guid matchId, IEnumerable<string> teamCodes, Guid userId, CancellationToken token)
+    public async Task<bool> ReDeclareWinnerAsync(Guid matchId, IEnumerable<string> teamCodes, Guid userId, string ipAddress, CancellationToken token)
     {
-        var declareWinnerQuery = new ReDeclareWinnerQuery(matchId, teamCodes);
+        var declareId = Guid.NewGuid();
+
+        var declareWinnerQuery = new ReDeclareWinnerQuery(matchId, teamCodes, declareId, userId, ipAddress);
         await _gambitDbClient.ExecuteAsync(declareWinnerQuery, token);
 
-        var processBetsQuery = new ReverseBetsQuery(matchId, userId);
+        var processBetsQuery = new ReverseBetsQuery(matchId, userId, declareId);
         await _gambitDbClient.ExecuteAsync(processBetsQuery, token);
 
         // Re-Process Commissions
