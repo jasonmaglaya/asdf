@@ -96,8 +96,8 @@ export default function Betting({
             )}
 
             <h5 className="d-flex align-items-center">
-              FIGHT#
-              <Badge bg="info">
+              <span className="p-1">FIGHT#</span>
+              <Badge bg="info" className="p-1">
                 <span className="h5">{match?.number}</span>
               </Badge>
             </h5>
