@@ -96,7 +96,7 @@ export default function CreditHistory({ show, handleClose, currency, locale }) {
           {isLoading ? (
             <SpinnerComponent />
           ) : (
-            <Container style={{ overflowY: "auto", maxHeight: "300px" }}>
+            <Container style={{ overflowY: "auto", maxHeight: "400px" }}>
               {history.map((item) => (
                 <div key={item.date} className="p-0 mb-0">
                   <div className="bg-light p-1 fw-bold">
