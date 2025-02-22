@@ -103,26 +103,28 @@ export default function CreditHistory({ show, handleClose, currency, locale }) {
                   <div className="bg-light p-1 fw-bold">
                     <small>{item.date}</small>
                   </div>
-                  <table className="table table-striped table-borderless">
-                    <tbody>
-                      {item.transactions.map((tran) => (
-                        <tr key={tran.time}>
-                          <td className="d-flex flex-column">
-                            <span>
-                              {item.amount < 0 ? "CASH OUT" : "CASH IN"}
-                            </span>
-                            <small className="text-muted">{tran.time}</small>
-                          </td>
-                          <td className="text-end align-middle">
-                            {tran.amount.toLocaleString(locale || "en-US", {
-                              style: "currency",
-                              currency: currency || "USD",
-                            })}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                  <div style={{ overflowY: "auto" }}>
+                    <table className="table table-striped table-borderless">
+                      <tbody>
+                        {item.transactions.map((tran) => (
+                          <tr key={tran.time}>
+                            <td className="d-flex flex-column">
+                              <span>
+                                {item.amount < 0 ? "CASH OUT" : "CASH IN"}
+                              </span>
+                              <small className="text-muted">{tran.time}</small>
+                            </td>
+                            <td className="text-end align-middle">
+                              {tran.amount.toLocaleString(locale || "en-US", {
+                                style: "currency",
+                                currency: currency || "USD",
+                              })}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               ))}
             </Container>
