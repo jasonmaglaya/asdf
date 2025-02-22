@@ -67,6 +67,7 @@ export default function CreditHistory({ show, handleClose, currency, locale }) {
       centered
       animation={false}
       onShow={handleOnShow}
+      scrollable
     >
       <Modal.Header closeButton>
         <Modal.Title>HISTORY</Modal.Title>
