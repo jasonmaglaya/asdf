@@ -33,6 +33,8 @@ public class MatchesController(
     [HttpPost("{id}/bets")]
     public async Task<ActionResult<AddBetResult>> AddBet([FromRoute] Guid id, [FromBody] AddBetRequest request, CancellationToken token)
     {
+        request.MatchId = id;
+
         var identity = HttpContext.User.Identity as ClaimsIdentity;
         if (!Guid.TryParse(identity?.FindFirst(ClaimTypes.Name)?.Value!, out Guid userId))
         {
@@ -40,7 +42,15 @@ public class MatchesController(
         }
 
         request.UserId = userId;
-        request.MatchId = id;
+        
+        var clientIp = Request.Headers["X-Forwarded-For"].FirstOrDefault();
+
+        if (string.IsNullOrEmpty(clientIp))
+        {
+            clientIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+        }
+
+        request.IpAddress = clientIp;
 
         var result = await _addBetHandler.HandleAsync(request, token);
 

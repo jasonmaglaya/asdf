@@ -102,7 +102,7 @@ namespace Remy.Gambit.Api.Handlers.Matches.Command
                     return new AddBetResult { IsSuccessful = false, ValidationResults = ["Insufficient credits"] };
                 }
 
-                var credits = await _matchesRepository.AddBetAsync(command.UserId, command.MatchId, command.TeamCode!, command.Amount, token);
+                var credits = await _matchesRepository.AddBetAsync(command.UserId, command.MatchId, command.TeamCode!, command.Amount, command.IpAddress!, token);
                 var bets = await _matchesRepository.GetBetsAsync(command.MatchId, command.UserId, token);
                 var betsDto = _mapper.Map<IEnumerable<Api.Dto.TotalBet>>(bets);
 

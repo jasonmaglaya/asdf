@@ -15,9 +15,9 @@ public class MatchesRepository(IGambitDbClient gambitDbClient) : IMatchesReposit
         return await _gambitDbClient.ExecuteScalarAsync<Guid>(query, token);
     }
 
-    public async Task<decimal?> AddBetAsync(Guid userId, Guid matchId, string teamCode, decimal amount, CancellationToken token)
+    public async Task<decimal?> AddBetAsync(Guid userId, Guid matchId, string teamCode, decimal amount, string ipAddress, CancellationToken token)
     {
-        var query = new AddBetQuery(userId, matchId, teamCode, amount);
+        var query = new AddBetQuery(userId, matchId, teamCode, amount, ipAddress);
 
         return await _gambitDbClient.ExecuteScalarAsync<decimal?>(query, token);
     }

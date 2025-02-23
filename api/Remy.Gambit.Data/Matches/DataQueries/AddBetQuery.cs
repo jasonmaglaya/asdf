@@ -12,8 +12,8 @@ BEGIN TRY
 
 	IF @Credits < @Amount RETURN
 
-	INSERT INTO Bets (UserId, MatchId, TeamCode, Amount, BetTimeStamp, Status)
-	VALUES (@UserId, @MatchId, @TeamCode, @Amount, GETUTCDATE(), 'Open')
+	INSERT INTO Bets (UserId, MatchId, TeamCode, Amount, BetTimeStamp, Status, IpAddress)
+	VALUES (@UserId, @MatchId, @TeamCode, @Amount, GETUTCDATE(), 'Open', @IpAddress)
 
 	SELECT dbo.fx_GetUserCredits(@UserId) AS Credits
 END TRY
@@ -26,7 +26,7 @@ END CATCH;
 IF @@TRANCOUNT > 0
     COMMIT TRANSACTION;
 ";
-    public AddBetQuery(Guid userId, Guid matchId, string teamCode, decimal amount)
+    public AddBetQuery(Guid userId, Guid matchId, string teamCode, decimal amount, string ipAddress)
     {
         CmdText = _query;
 
@@ -34,5 +34,6 @@ IF @@TRANCOUNT > 0
         Parameters.Add("MatchId", matchId);
         Parameters.Add("TeamCode", teamCode);
         Parameters.Add("Amount", amount);
+        Parameters.Add("IpAddress", ipAddress);
     }
 }

@@ -15,7 +15,7 @@ public interface IMatchesRepository
 
     Task<IEnumerable<TotalBet>> GetBetsAsync(Guid id, Guid userId, CancellationToken token);
 
-    Task<decimal?> AddBetAsync(Guid userId, Guid matchId, string teamCode, decimal amount, CancellationToken token);
+    Task<decimal?> AddBetAsync(Guid userId, Guid matchId, string teamCode, decimal amount, string ipAddress, CancellationToken token);
 
     Task<bool> UpdateStatusAsync(Guid matchId, string status, CancellationToken token);
 

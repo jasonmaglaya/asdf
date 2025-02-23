@@ -14,5 +14,7 @@ namespace Remy.Gambit.Api.Handlers.Matches.Command.Dto
         public string? TeamCode { get; set; }
 
         public decimal Amount { get; set; }
+
+        public string? IpAddress { get; set; }
     }
 }
