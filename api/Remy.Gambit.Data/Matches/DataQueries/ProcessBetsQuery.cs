@@ -32,7 +32,7 @@ BEGIN TRY
 
 	DECLARE @GroupTransactionId UNIQUEIDENTIFIER = NEWID()
 
-	INSERT INTO Credits (UserId, Amount, Notes, TransactionDate, TransactionType, TransactedBy, BetId, GroupTransactionId, DeclareId)
+	INSERT INTO Credits (UserId, Amount, Notes, TransactionDate, TransactionType, TransactedBy, BetId, GroupTransactionId, DeclareId, Odds)
 	SELECT
 		B.UserId, 
 		CASE 
@@ -64,7 +64,8 @@ BEGIN TRY
 		'System',
 		B.Id,
 		@GroupTransactionId,
-		@DeclareId
+		@DeclareId,
+		O.Odds
 	FROM Bets B
 		LEFT JOIN MatchWinners W
 			ON B.TeamCode = W.TeamCode

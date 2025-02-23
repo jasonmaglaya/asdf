@@ -39,7 +39,7 @@ BEGIN TRY
 			ON C.BetId = B.Id	
 	WHERE B.MatchId = @matchId
 
-	INSERT INTO Credits (UserId, Amount, TransactionDate, TransactionType, TransactedBy, BetId, Notes, GroupTransactionId, DeclareId)
+	INSERT INTO Credits (UserId, Amount, TransactionDate, TransactionType, TransactedBy, BetId, Notes, GroupTransactionId, DeclareId, Odds)
 	SELECT
 		B.UserId, 
 		CASE 
@@ -71,7 +71,8 @@ BEGIN TRY
 			END
 		) > 0 THEN 'WINNINGS' ELSE 'LOSSES' END,		
 		@GroupTransactionId, 
-		@DeclareId
+		@DeclareId,
+		O.Odds
 	FROM Bets B
 		LEFT JOIN MatchWinners W
 			ON B.TeamCode = W.TeamCode
