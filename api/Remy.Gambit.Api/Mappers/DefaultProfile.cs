@@ -25,6 +25,7 @@ namespace Remy.Gambit.Api.Mappers
             CreateMap<Models.Balance, Dto.Balance>();
             CreateMap<Models.Credit, Dto.CreditHistoryItem>();
             CreateMap<PaginatedList<Models.Credit>, PaginatedList<Dto.CreditHistoryItem>>();
+            CreateMap<Models.EventSummaryItem, Dto.EventSummaryItem>();
         }
     }
 }

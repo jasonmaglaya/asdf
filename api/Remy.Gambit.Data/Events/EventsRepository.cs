@@ -73,4 +73,10 @@ public class EventsRepository(IGambitDbClient gambitDbClient) : IEventsRepositor
         var query = new GetEventWinnersQuery(eventId);
         return await _gambitDbClient.GetCollectionAsync<Winner>(query, token);
     }
+
+    public async Task<IEnumerable<EventSummaryItem>> GetEventSummaryAsync(Guid eventId, Guid userId, CancellationToken token)
+    {
+        var query = new GetEventSummaryQuery(eventId, userId);
+        return await _gambitDbClient.GetCollectionAsync<EventSummaryItem>(query, token);
+    }
 }

@@ -6,6 +6,7 @@ using Remy.Gambit.Api.Handlers.Events.Query.Dto;
 using Remy.Gambit.Core.Cqs;
 using Remy.Gambit.Api.Web.ActionFilters;
 using Remy.Gambit.Api.Handlers.Matches.Query.Dto;
+using System.Security.Claims;
 
 namespace Remy.Gambit.Api.Web.Controllers;
 
@@ -21,7 +22,8 @@ public class EventsController(
     IQueryHandler<GetCurrentMatchRequest, GetCurrentMatchResult> getCurrentMatchHandler,
     ICommandHandler<NextMatchRequest, NextMatchResult> nextMatchHandler,
     IQueryHandler<GetEventWinnersRequest, GetEventWinnersResult> getEventWinnersHandler,
-    IQueryHandler<GetMatchesRequest, GetMatchesResult> getMatchesHandler
+    IQueryHandler<GetMatchesRequest, GetMatchesResult> getMatchesHandler,
+    IQueryHandler<GetEventSummaryRequest, GetEventSummaryResult> getEventSummaryHandler
     ) : ControllerBase
 {
     private readonly ICommandHandler<AddEventRequest, AddEventResult> _addEventHandler = addEventHandler;
@@ -33,6 +35,7 @@ public class EventsController(
     private readonly ICommandHandler<NextMatchRequest, NextMatchResult> _nextMatchHandler = nextMatchHandler;
     private readonly IQueryHandler<GetEventWinnersRequest, GetEventWinnersResult> _getEventWinnersHandler = getEventWinnersHandler;
     private readonly IQueryHandler<GetMatchesRequest, GetMatchesResult> _getMatchesHandler = getMatchesHandler;
+    private readonly IQueryHandler<GetEventSummaryRequest, GetEventSummaryResult> _getEventSummaryHandler = getEventSummaryHandler;
 
     [FeatureFilter(Features.MaintainEvents)]
     [HttpPost]
@@ -239,6 +242,37 @@ public class EventsController(
         var result = await _getEventWinnersHandler.HandleAsync(request, token);
 
         if(result.ValidationResults.Any())
+        {
+            return BadRequest(result);
+        }
+
+        if (!result.IsSuccessful)
+        {
+            return NotFound();
+        }
+
+        return Ok(result);
+    }
+
+    [HttpGet("{id}/summary")]
+    public async Task<ActionResult<GetEventSummaryResult>> GetSummary([FromRoute] Guid id, CancellationToken token)
+    {
+        var request = new GetEventSummaryRequest
+        {
+            EventId = id
+        };
+
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        if (!Guid.TryParse(identity?.FindFirst(ClaimTypes.Name)?.Value!, out Guid userId))
+        {
+            return Unauthorized();
+        }
+
+        request.UserId = userId;
+
+        var result = await _getEventSummaryHandler.HandleAsync(request, token);
+
+        if (result.ValidationResults.Any())
         {
             return BadRequest(result);
         }
