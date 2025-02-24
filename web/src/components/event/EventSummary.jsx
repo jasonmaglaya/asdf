@@ -161,10 +161,10 @@ export default function EventSummary({ history, currency, locale }) {
           <tr>
             <th style={{ width: "6%" }}>Fight #</th>
             <th style={{ width: "20%" }}>Bet On</th>
-            <th style={{ width: "15%" }} className="text-end">
-              Amount
+            <th style={{ width: "20%" }} className="text-center">
+              Odds/Multiplier
             </th>
-            <th className="text-center">Odds/Multiplier</th>
+            <th className="text-end">Amount</th>
           </tr>
         </thead>
         <tbody>
@@ -188,14 +188,14 @@ export default function EventSummary({ history, currency, locale }) {
                       );
                     })}
                   </td>
+                  <td className="text-center align-middle">
+                    {(item.odds * 100).toFixed(2)}%
+                  </td>
                   <td className="text-end align-middle">
                     {item.bet.toLocaleString(locale || "en-US", {
                       style: "currency",
                       currency: currency || "USD",
                     })}
-                  </td>
-                  <td className="text-center align-middle">
-                    {(item.odds * 100).toFixed(2)}%
                   </td>
                 </tr>
                 <tr key={`${item.fightNumber}-${item.gainLossDate}-2`}>
@@ -210,13 +210,10 @@ export default function EventSummary({ history, currency, locale }) {
                           >
                             Result
                           </th>
-                          <th
-                            style={{ width: "15%" }}
-                            className="text-end align-middle"
-                          >
+                          <th style={{ width: "20%" }}>Description</th>
+                          <th className="text-end align-middle">
                             Winning/Loss
                           </th>
-                          <th>Description</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -250,6 +247,9 @@ export default function EventSummary({ history, currency, locale }) {
                                   <Badge bg="danger">LOSE</Badge>
                                 )}
                               </td>
+                              <td className="align-middle">
+                                {declaration.notes}
+                              </td>
                               <td className="text-end align-middle">
                                 {declaration.gainLoss.toLocaleString(
                                   locale || "en-US",
@@ -258,9 +258,6 @@ export default function EventSummary({ history, currency, locale }) {
                                     currency: currency || "USD",
                                   }
                                 )}
-                              </td>
-                              <td className="align-middle">
-                                {declaration.notes}
                               </td>
                             </tr>
                           );
