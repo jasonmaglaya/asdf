@@ -185,7 +185,9 @@ export default function EventSummary({ history, currency, locale }) {
                       currency: currency || "USD",
                     })}
                   </td>
-                  <td className="align-middle">{item.odds}</td>
+                  <td className="align-middle">
+                    {(item.odds * 100).toFixed(2)}%
+                  </td>
                 </tr>
                 <tr key={`${item.fightNumber}-${item.gainLossDate}-2`}>
                   <td colSpan="4" className="p-3">
