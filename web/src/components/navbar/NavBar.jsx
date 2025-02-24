@@ -62,6 +62,9 @@ export default function NavBar() {
           <NavLink to="/" className="nav-link">
             Home
           </NavLink>
+          <NavLink to="/events/summary" className="nav-link">
+            Event History
+          </NavLink>
           {features.includes(pathFeatureMappings["/events"]) && (
             <NavLink to="/events" className="nav-link">
               Events
