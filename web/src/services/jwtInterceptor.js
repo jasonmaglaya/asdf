@@ -5,7 +5,7 @@ const jwtInterceptor = axios.create({});
 jwtInterceptor.interceptors.request.use((config) => {
   config.baseURL = process.env.REACT_APP_API_BASEURL;
 
-  const userString = localStorage.getItem("user");
+  const userString = localStorage.getItem("user")?.toString();
   const user = JSON.parse(userString);
 
   if (!user) {
@@ -27,7 +27,7 @@ jwtInterceptor.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    const userString = localStorage.getItem("user");
+    const userString = localStorage.getItem("user")?.toString();
     const user = JSON.parse(userString);
 
     const { refreshToken } = user;

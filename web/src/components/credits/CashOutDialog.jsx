@@ -43,7 +43,9 @@ export default function CashOutDialog({ show, handleClose, currency, locale }) {
 
     setIsBusy(true);
 
-    const { operatorToken } = JSON.parse(localStorage.getItem("user"));
+    const { operatorToken } = JSON.parse(
+      localStorage.getItem("user")?.toString()
+    );
 
     cashOut(operatorToken, amount, currency)
       .then(({ data }) => {

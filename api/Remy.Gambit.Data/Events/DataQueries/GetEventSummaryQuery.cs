@@ -11,6 +11,7 @@ SELECT
 	B.Amount Bet,
 	B.BetTimeStamp, 
 	MW.Winners, 
+	C.Odds,
 	C.Amount GainLoss,
 	C.TransactionDate GainLossDate,
 	C.Notes

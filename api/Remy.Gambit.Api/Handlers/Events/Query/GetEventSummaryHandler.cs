@@ -13,7 +13,7 @@ public class GetEventSummaryHandler(IEventsRepository eventsRepository, IMapper 
 
     public async ValueTask<GetEventSummaryResult> HandleAsync(GetEventSummaryRequest request, CancellationToken token = default)
     {
-        var result = await _eventsRepository.GetEventWinnersAsync(request.EventId, token);
+        var result = await _eventsRepository.GetEventSummaryAsync(request.EventId, request.UserId, token);
 
         return new GetEventSummaryResult { IsSuccessful = true, Result = _mapper.Map<IEnumerable<EventSummaryItem>>(result) };
     }

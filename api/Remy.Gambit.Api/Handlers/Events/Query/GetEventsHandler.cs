@@ -14,7 +14,8 @@ namespace Remy.Gambit.Api.Handlers.Events.Query
 
         public async ValueTask<GetEventsResult> HandleAsync(GetEventsRequest request, CancellationToken token = default)
         {
-            var result = await _eventsRepository.GetEventsAsync(request.Status, request.PageNumber, request.PageSize, token);
+            var result = await _eventsRepository.GetEventsAsync(request.Status, request.PageNumber, request.PageSize, request.IncludeNew, token);
+
             return new GetEventsResult {IsSuccessful=true, Result = _mapper.Map<PaginatedList<Event>, PaginatedList<Api.Dto.EventListItem>>(result) };
         }
     }

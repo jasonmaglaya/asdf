@@ -22,7 +22,9 @@ export default function CreditHistory({ show, handleClose, currency, locale }) {
     setIsLoading(true);
     setIsLoadingBalance(true);
 
-    const { operatorToken } = JSON.parse(localStorage.getItem("user"));
+    const { operatorToken } = JSON.parse(
+      localStorage.getItem("user")?.toString()
+    );
 
     try {
       const { data } = await getBalance(operatorToken);
@@ -40,6 +42,7 @@ export default function CreditHistory({ show, handleClose, currency, locale }) {
         const time = formatUTCToLocalTime(transactionDate);
 
         let existingGroup = acc.find((group) => group.date === formattedDate);
+
         if (existingGroup) {
           existingGroup.transactions.push({ amount, time });
         } else {

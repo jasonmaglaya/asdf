@@ -32,9 +32,9 @@ public class EventsRepository(IGambitDbClient gambitDbClient) : IEventsRepositor
         return @event!;
     }
 
-    public async Task<PaginatedList<Event>> GetEventsAsync(string? status, int pageNumber, int pageSize, CancellationToken token)
+    public async Task<PaginatedList<Event>> GetEventsAsync(string? status, int pageNumber, int pageSize, bool includeNew, CancellationToken token)
     {
-        var query = new GetEventsQuery(status, pageNumber, pageSize);
+        var query = new GetEventsQuery(status, pageNumber, pageSize, includeNew);
 
         var (events, total) = await _gambitDbClient.GetMultipleAsync<Event, int>(query, token);
 

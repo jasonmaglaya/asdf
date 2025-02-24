@@ -55,3 +55,11 @@ export const getMatches = async (eventId, pageNumber, pageSize) => {
     },
   });
 };
+
+export const getLastEvents = async () => {
+  return jwtInterceptor.get("/events/last-n");
+};
+
+export const getSummary = async (eventId) => {
+  return jwtInterceptor.get(`events/${eventId}/summary`);
+};

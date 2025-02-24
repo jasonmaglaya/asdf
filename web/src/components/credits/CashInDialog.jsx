@@ -34,7 +34,9 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
   const handleOnShow = () => {
     setIsLoading(true);
 
-    const { operatorToken } = JSON.parse(localStorage.getItem("user"));
+    const { operatorToken } = JSON.parse(
+      localStorage.getItem("user")?.toString()
+    );
 
     getBalance(operatorToken)
       .then(({ data }) => {
@@ -57,7 +59,9 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
 
     setIsBusy(true);
 
-    const { operatorToken } = JSON.parse(localStorage.getItem("user"));
+    const { operatorToken } = JSON.parse(
+      localStorage.getItem("user")?.toString()
+    );
 
     cashIn(operatorToken, amount, currency)
       .then(({ data }) => {
@@ -74,7 +78,9 @@ export default function CashInDialog({ show, handleClose, currency, locale }) {
   };
 
   useEffect(() => {
-    const { operatorToken } = JSON.parse(localStorage.getItem("user"));
+    const { operatorToken } = JSON.parse(
+      localStorage.getItem("user")?.toString()
+    );
     getBalance(operatorToken)
       .then(({ data }) => {
         setBalance(data.result.amount);

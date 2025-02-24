@@ -115,6 +115,25 @@ public class EventsController(
         return Ok(result);
     }
 
+    [HttpGet("last-n")]
+    public async Task<ActionResult<GetEventsResult>> GetLastEvents(CancellationToken token)
+    {
+        var request = new GetEventsRequest {
+            PageNumber = 1,
+            PageSize = 5,
+            IncludeNew = false
+        };
+
+        var result = await _getEventsHandler.HandleAsync(request, token);
+
+        if (!result.IsSuccessful)
+        {
+            return NotFound();
+        }
+
+        return Ok(result);
+    }
+
     [HttpGet]
     public async Task<ActionResult<GetEventsResult>> GetEvents([FromQuery] GetEventsRequest request, CancellationToken token)
     {

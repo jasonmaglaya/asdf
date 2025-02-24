@@ -126,7 +126,7 @@ export default function EventPage() {
       }
     };
 
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(localStorage.getItem("user")?.toString());
     if (!user) {
       navigate("/login", { replace: true });
       return;
