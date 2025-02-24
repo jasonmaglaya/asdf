@@ -8,6 +8,7 @@ import { Container, Form, Tab, Tabs } from "react-bootstrap";
 import SpinnerComponent from "../components/_shared/SpinnerComponent";
 import EventSummary from "../components/event/EventSummary";
 import Trend from "../components/event/Trend";
+import { useSelector } from "react-redux";
 
 export default function EventSummaryPage() {
   const [events, setEvents] = useState([]);
@@ -15,6 +16,8 @@ export default function EventSummaryPage() {
   const [eventId, setEventId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [winnersList, setWinnersList] = useState([]);
+  const { appSettings } = useSelector((state) => state.appSettings);
+  const { currency, locale } = appSettings;
 
   const onEventChange = (e) => {
     setEventId(e.target.value);
@@ -78,7 +81,11 @@ export default function EventSummaryPage() {
           className="mb-3"
         >
           <Tab eventKey="summary" title="Summary">
-            <EventSummary history={summary} />
+            <EventSummary
+              history={summary}
+              currency={currency}
+              locale={locale}
+            />
           </Tab>
           <Tab eventKey="trend" title="Trend">
             <Trend winners={winnersList} />
