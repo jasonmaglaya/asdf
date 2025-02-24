@@ -161,7 +161,7 @@ export default function EventSummary({ history, currency, locale }) {
               <>
                 <tr key={`${item.fightNumber}-${item.gainLossDate}-1`}>
                   <td className="align-middle">{item.matchNumber}</td>
-                  <td>
+                  <td className="align-middle">
                     {item.betOn?.split(",").map((code) => {
                       const { color, text } = legend.find(
                         (x) => x.code === code
@@ -201,7 +201,10 @@ export default function EventSummary({ history, currency, locale }) {
                         {item.declarations.map((declaration) => {
                           return (
                             <tr>
-                              <td style={{ width: "15%" }}>
+                              <td
+                                style={{ width: "15%" }}
+                                className="align-middle"
+                              >
                                 {declaration.winners?.split(",").map((code) => {
                                   const { color, text } = legend.find(
                                     (x) => x.code === code
