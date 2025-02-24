@@ -152,10 +152,12 @@ export default function EventSummary({ history, currency, locale }) {
       <Table striped bordered hover responsive variant="dark">
         <thead>
           <tr>
-            <th>Fight #</th>
-            <th>Bet On</th>
-            <th>Amount</th>
-            <th>Odds/Multiplier</th>
+            <th style={{ width: "6%" }}>Fight #</th>
+            <th style={{ width: "20%" }}>Bet On</th>
+            <th style={{ width: "15%" }} className="text-end">
+              Amount
+            </th>
+            <th className="text-center">Odds/Multiplier</th>
           </tr>
         </thead>
         <tbody>
@@ -185,7 +187,7 @@ export default function EventSummary({ history, currency, locale }) {
                       currency: currency || "USD",
                     })}
                   </td>
-                  <td className="align-middle">
+                  <td className="text-center align-middle">
                     {(item.odds * 100).toFixed(2)}%
                   </td>
                 </tr>
@@ -194,9 +196,17 @@ export default function EventSummary({ history, currency, locale }) {
                     <Table size="sm" bordered striped hover responsive>
                       <thead>
                         <tr>
-                          <th>Winner</th>
-                          <th className="text-center align-middle">Result</th>
-                          <th className="text-end align-middle">
+                          <th style={{ width: "20%" }}>Winner</th>
+                          <th
+                            style={{ width: "10%" }}
+                            className="text-center align-middle"
+                          >
+                            Result
+                          </th>
+                          <th
+                            style={{ width: "15%" }}
+                            className="text-end align-middle"
+                          >
                             Winning/Loss
                           </th>
                           <th>Description</th>
@@ -206,10 +216,7 @@ export default function EventSummary({ history, currency, locale }) {
                         {item.declarations.map((declaration) => {
                           return (
                             <tr>
-                              <td
-                                style={{ width: "15%" }}
-                                className="align-middle"
-                              >
+                              <td className="align-middle">
                                 {declaration.winners?.split(",").map((code) => {
                                   const { color, text } = legend.find(
                                     (x) => x.code === code
@@ -227,10 +234,7 @@ export default function EventSummary({ history, currency, locale }) {
                                   );
                                 })}
                               </td>
-                              <td
-                                className="text-center align-middle"
-                                style={{ width: "10%" }}
-                              >
+                              <td className="text-center align-middle">
                                 {declaration.winners
                                   ?.split(",")
                                   .includes(item.betOn) ? (
@@ -239,10 +243,7 @@ export default function EventSummary({ history, currency, locale }) {
                                   <Badge bg="danger">LOSE</Badge>
                                 )}
                               </td>
-                              <td
-                                className="text-end align-middle"
-                                style={{ width: "15%" }}
-                              >
+                              <td className="text-end align-middle">
                                 {declaration.gainLoss.toLocaleString(
                                   locale || "en-US",
                                   {
