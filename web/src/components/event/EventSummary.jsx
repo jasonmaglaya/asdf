@@ -117,7 +117,7 @@ export default function EventSummary({ history, currency, locale }) {
               <h6>
                 Total Losses:{" "}
                 <span className="text-danger">
-                  {totalLosses?.toLocaleString(locale || "en-US", {
+                  {(totalLosses * -1)?.toLocaleString(locale || "en-US", {
                     style: "currency",
                     currency: currency || "USD",
                   })}
