@@ -141,7 +141,8 @@ export default function EventSummary({ history, currency, locale }) {
             </Col>
             <Col>
               <h6>
-                Win Rate: <span className="text-info">{winRate || 0}%</span>
+                Win Rate:{" "}
+                <span className="text-info">{winRate.toFixed(2) || 0}%</span>
               </h6>
             </Col>
           </Row>

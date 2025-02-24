@@ -72,7 +72,7 @@ BEGIN TRY
 		) > 0 THEN 'WINNINGS' ELSE 'LOSSES' END,		
 		@GroupTransactionId, 
 		@DeclareId,
-		CASE WHEN W.TeamCode = 'D' THEN @DrawMultiplier ELSE O.Odds END
+		CASE WHEN W.TeamCode = 'D' AND B.TeamCode = 'D' THEN @DrawMultiplier ELSE O.Odds END
 	FROM Bets B
 		LEFT JOIN MatchWinners W
 			ON B.TeamCode = W.TeamCode
