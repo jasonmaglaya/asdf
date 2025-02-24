@@ -21,7 +21,9 @@ export default function EventSummary({ history, currency, locale }) {
   useEffect(() => {
     const sum = history?.reduce((acc, item) => {
       const { matchNumber, betOn, bet, odds } = item;
-      let existingGroup = acc.find((x) => x.matchNumber === matchNumber);
+      let existingGroup = acc.find(
+        (x) => x.matchNumber === matchNumber && x.betOn === betOn
+      );
 
       const { winners, gainLoss, notes } = item;
       if (existingGroup) {
