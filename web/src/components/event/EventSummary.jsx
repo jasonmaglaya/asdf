@@ -93,7 +93,7 @@ export default function EventSummary({ history, currency, locale }) {
                 >
                   <TeamAvatar color={color}>{bettings[code] || 0}</TeamAvatar>
                   <span>
-                    {text} ({wins[code] || 0} wins)
+                    {text} ({wins[code] || 0})
                   </span>
                 </div>
               );
