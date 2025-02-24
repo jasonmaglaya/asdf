@@ -117,7 +117,10 @@ export default function EventSummary({ history, currency, locale }) {
               <h6>
                 Total Losses:{" "}
                 <span className="text-danger">
-                  {(totalLosses * -1)?.toLocaleString(locale || "en-US", {
+                  {(totalLosses
+                    ? totalLosses * -1
+                    : totalLosses
+                  )?.toLocaleString(locale || "en-US", {
                     style: "currency",
                     currency: currency || "USD",
                   })}
@@ -149,7 +152,9 @@ export default function EventSummary({ history, currency, locale }) {
             <Col>
               <h6>
                 Win Rate:{" "}
-                <span className="text-info">{winRate.toFixed(2) || 0}%</span>
+                <span className="text-info">
+                  {(winRate || 0).toFixed(2) || 0}%
+                </span>
               </h6>
             </Col>
           </Row>
