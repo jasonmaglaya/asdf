@@ -185,7 +185,7 @@ export default function EventSummary({ history, currency, locale }) {
                   <td className="align-middle">{item.odds}</td>
                 </tr>
                 <tr key={`${item.fightNumber}-${item.gainLossDate}-2`}>
-                  <td colSpan="4">
+                  <td colSpan="4" className="p-3">
                     <Table size="sm" bordered striped hover responsive>
                       <thead>
                         <tr>
@@ -201,7 +201,7 @@ export default function EventSummary({ history, currency, locale }) {
                         {item.declarations.map((declaration) => {
                           return (
                             <tr>
-                              <td>
+                              <td style={{ width: "15%" }}>
                                 {declaration.winners?.split(",").map((code) => {
                                   const { color, text } = legend.find(
                                     (x) => x.code === code
@@ -219,7 +219,10 @@ export default function EventSummary({ history, currency, locale }) {
                                   );
                                 })}
                               </td>
-                              <td className="text-center align-middle">
+                              <td
+                                className="text-center align-middle"
+                                style={{ width: "10%" }}
+                              >
                                 {declaration.winners
                                   ?.split(",")
                                   .includes(item.betOn) ? (
@@ -228,7 +231,10 @@ export default function EventSummary({ history, currency, locale }) {
                                   <Badge bg="danger">LOSE</Badge>
                                 )}
                               </td>
-                              <td className="text-end align-middle">
+                              <td
+                                className="text-end align-middle"
+                                style={{ width: "15%" }}
+                              >
                                 {declaration.gainLoss.toLocaleString(
                                   locale || "en-US",
                                   {
@@ -237,7 +243,9 @@ export default function EventSummary({ history, currency, locale }) {
                                   }
                                 )}
                               </td>
-                              <td>{declaration.notes}</td>
+                              <td className="align-middle">
+                                {declaration.notes}
+                              </td>
                             </tr>
                           );
                         })}
