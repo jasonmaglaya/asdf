@@ -8,6 +8,7 @@ export default function EventSummary({ history, currency, locale }) {
   const [totalWinnings, setTotalWinnings] = useState(0);
   const [totalLosses, setTotalLosses] = useState(0);
   const [winRate, setWinRate] = useState(0);
+  const [wins, setWins] = useState({});
 
   const legend = useMemo(
     () => [
@@ -45,7 +46,8 @@ export default function EventSummary({ history, currency, locale }) {
     let winnings = 0;
     let losses = 0;
     const bets = {};
-    let wins = 0;
+    const wins = {};
+    let totalWins = 0;
 
     sum.forEach((x) => {
       if (bets[x.betOn]) {
@@ -63,14 +65,17 @@ export default function EventSummary({ history, currency, locale }) {
       }
 
       if (winners.split(",").includes(x.betOn)) {
-        wins += 1;
+        wins[x.betOn] = wins[x.betOn] ? wins[x.betOn] + 1 : 1;
+
+        totalWins += 1;
       }
     });
 
     setTotalWinnings(winnings);
     setTotalLosses(losses);
     setBettings(bets);
-    setWinRate((wins / sum.length) * 100);
+    setWinRate((totalWins / sum.length) * 100);
+    setWins(wins);
   }, [history]);
 
   return (
@@ -87,7 +92,9 @@ export default function EventSummary({ history, currency, locale }) {
                   style={{ marginRight: "1em" }}
                 >
                   <TeamAvatar color={color}>{bettings[code] || 0}</TeamAvatar>
-                  <span>{text}</span>
+                  <span>
+                    {text} ({wins[code] || 0} wins)
+                  </span>
                 </div>
               );
             })}
