@@ -8,5 +8,6 @@
         public const string Locale = "Locale";
         public const string Draw = "D";
         public const string MarvelGamingTableId = "SGMCI";
+        public const string MarvelGamingRoundId = "RND000001";
     }
 }

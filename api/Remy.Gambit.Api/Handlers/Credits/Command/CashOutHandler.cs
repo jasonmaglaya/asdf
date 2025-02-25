@@ -55,7 +55,7 @@ public class CashOutHandler(IUsersRepository usersRepository, ICreditsRepository
             // Credit the amount to the partner
             var transactionId = $"{DateTime.UtcNow.ToString("yyyyMMddHHmmss")}{TokenHelper.GenerateToken(10)}";
             var tableId = Constants.AppSettings.MarvelGamingTableId;
-            var round = $"{DateTime.UtcNow.ToString("yyyyMMddHHmmss")}{TokenHelper.GenerateToken(10)}";
+            var round = Constants.AppSettings.MarvelGamingRoundId;
 
             var cashOutRequest = new Services.Dto.CashOutRequest
             {
