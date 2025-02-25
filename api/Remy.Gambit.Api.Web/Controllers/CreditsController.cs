@@ -110,7 +110,7 @@ namespace Remy.Gambit.Api.Web.Controllers
         }
 
         [HttpPost("cash-out")]
-        public async Task<ActionResult<CashOutResult>> CashIn([FromBody] CashOutRequest request, CancellationToken token)
+        public async Task<ActionResult<CashOutResult>> CashOut([FromBody] CashOutRequest request, CancellationToken token)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             if (!Guid.TryParse(identity?.FindFirst(ClaimTypes.Name)?.Value!, out Guid userId))

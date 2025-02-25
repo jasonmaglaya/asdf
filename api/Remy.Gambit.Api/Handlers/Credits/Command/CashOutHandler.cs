@@ -84,7 +84,7 @@ public class CashOutHandler(IUsersRepository usersRepository, ICreditsRepository
                 IpAddress = command.IpAddress,
             };
 
-            var notes = $"CASH IN - TransactionId: {transactionId}, TableId: {tableId}, Round: {round}";
+            var notes = $"CASH OUT - TransactionId: {transactionId}, TableId: {tableId}, Round: {round}";
 
             var deductCreditResult = await _creditsRepository.CashOutAsync(deduction, notes, token);
 

@@ -12,7 +12,7 @@ INSERT INTO Credits
 )
 VALUES
 (
-	NEWID(), @UserId, @Amount, GETUTCDATE(), @TransactionType, @UserId, IpAddress
+	NEWID(), @UserId, @Amount, GETUTCDATE(), @TransactionType, @UserId, @IpAddress
 )
 ";
 
