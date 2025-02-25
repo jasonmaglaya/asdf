@@ -26,16 +26,22 @@ export default function EventSummary({ history, currency, locale }) {
         (x) => x.matchNumber === matchNumber && x.betOn === betOn
       );
 
-      const { winners, gainLoss, notes } = item;
+      const { winners, gainLoss, notes, betTimeStamp, gainLossDate } = item;
       if (existingGroup) {
-        existingGroup.declarations.push({ winners, gainLoss, notes });
+        existingGroup.declarations.push({
+          winners,
+          gainLoss,
+          notes,
+          gainLossDate,
+        });
       } else {
         acc.push({
           matchNumber,
           betOn,
           bet,
           odds,
-          declarations: [{ winners, gainLoss, notes }],
+          betTimeStamp,
+          declarations: [{ winners, gainLoss, notes, gainLossDate }],
         });
       }
       return acc;
@@ -166,9 +172,8 @@ export default function EventSummary({ history, currency, locale }) {
           <tr>
             <th style={{ width: "6%" }}>Fight #</th>
             <th style={{ width: "20%" }}>Bet On</th>
-            <th style={{ width: "20%" }} className="text-center">
-              Odds/Multiplier
-            </th>
+            <th style={{ width: "20%" }}>Odds/Multiplier</th>
+            <th style={{ width: "20%" }}>Date & Time</th>
             <th className="text-end">Amount</th>
           </tr>
         </thead>
@@ -193,8 +198,11 @@ export default function EventSummary({ history, currency, locale }) {
                       );
                     })}
                   </td>
-                  <td className="text-center align-middle">
+                  <td className="align-middle">
                     {(item.odds * 100).toFixed(2)}%
+                  </td>
+                  <td className="align-middle">
+                    {new Date(item.betTimeStamp)?.toLocaleString()}
                   </td>
                   <td className="text-end align-middle">
                     {item.bet.toLocaleString(locale || "en-US", {
@@ -204,17 +212,18 @@ export default function EventSummary({ history, currency, locale }) {
                   </td>
                 </tr>
                 <tr key={`${item.fightNumber}-${item.gainLossDate}-2`}>
-                  <td colSpan="4" className="p-3">
+                  <td colSpan="5" className="p-3">
                     <Table size="sm" bordered striped hover responsive>
                       <thead>
                         <tr>
                           <th style={{ width: "20%" }}>Winner</th>
                           <th
-                            style={{ width: "10%" }}
+                            style={{ width: "6%" }}
                             className="text-center align-middle"
                           >
                             Result
                           </th>
+                          <th style={{ width: "20%" }}>Declare Date & Time</th>
                           <th style={{ width: "20%" }}>Description</th>
                           <th className="text-end align-middle">
                             Winning/Loss
@@ -251,6 +260,11 @@ export default function EventSummary({ history, currency, locale }) {
                                 ) : (
                                   <Badge bg="danger">LOSE</Badge>
                                 )}
+                              </td>
+                              <td className="align-middle">
+                                {new Date(
+                                  declaration.gainLossDate
+                                )?.toLocaleString()}
                               </td>
                               <td className="align-middle">
                                 {declaration.notes}
