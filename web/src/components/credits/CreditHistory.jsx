@@ -80,7 +80,7 @@ export default function CreditHistory({ show, handleClose, currency, locale }) {
               <i style={{ color: "gold" }}>
                 <FontAwesomeIcon icon={faCoins} />
               </i>{" "}
-              BALANCE
+              MAIN BALANCE
             </h5>
             {isLoadingBalance ? (
               <Spinner animation="border" variant="success" size="sm" />
