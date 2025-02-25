@@ -111,7 +111,7 @@ export default function CreditHistory({ show, handleClose, currency, locale }) {
                           <tr key={tran.time}>
                             <td className="d-flex flex-column">
                               <span>
-                                {item.amount < 0 ? "CASH OUT" : "CASH IN"}
+                                {tran.amount < 0 ? "CASH OUT" : "CASH IN"}
                               </span>
                               <small className="text-muted">{tran.time}</small>
                             </td>
