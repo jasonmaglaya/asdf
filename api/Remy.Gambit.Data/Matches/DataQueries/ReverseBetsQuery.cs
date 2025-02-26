@@ -46,7 +46,7 @@ BEGIN TRY
 			WHEN B.TeamCode = W.TeamCode
 				THEN
 					CASE WHEN W.TeamCode = 'D'
-						THEN (B.Amount * @DrawMultiplier) * (1 - @Commission)
+						THEN (B.Amount * (@DrawMultiplier - 1)) * (1 - @Commission)
 					ELSE
 						B.Amount * (O.Odds - 1)
 					END
@@ -62,7 +62,7 @@ BEGIN TRY
 				WHEN B.TeamCode = W.TeamCode
 					THEN
 						CASE WHEN W.TeamCode = 'D'
-							THEN (B.Amount * @DrawMultiplier) * (1 - @Commission)
+							THEN (B.Amount * (@DrawMultiplier - 1)) * (1 - @Commission)
 						ELSE
 							B.Amount * (O.Odds - 1)
 						END
