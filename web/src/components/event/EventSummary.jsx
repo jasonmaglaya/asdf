@@ -172,8 +172,8 @@ export default function EventSummary({ history, currency, locale }) {
           <tr>
             <th style={{ width: "6%" }}>Fight #</th>
             <th style={{ width: "20%" }}>Bet On</th>
-            <th style={{ width: "20%" }}>Odds/Multiplier</th>
             <th style={{ width: "20%" }}>Date & Time</th>
+            <th style={{ width: "20%" }}>Odds/Multiplier</th>
             <th className="text-end">Amount</th>
           </tr>
         </thead>
@@ -199,10 +199,10 @@ export default function EventSummary({ history, currency, locale }) {
                     })}
                   </td>
                   <td className="align-middle">
-                    {(item.odds * 100).toFixed(2)}%
+                    {new Date(item.betTimeStamp)?.toLocaleString()}
                   </td>
                   <td className="align-middle">
-                    {new Date(item.betTimeStamp)?.toLocaleString()}
+                    {(item.odds * 100).toFixed(2)}%
                   </td>
                   <td className="text-end align-middle">
                     {item.bet.toLocaleString(locale || "en-US", {
