@@ -39,6 +39,8 @@ export default function EventSummary({ history, currency, locale }) {
           notes,
           gainLossDate,
         });
+
+        existingGroup.gainLoss += gainLoss;
       } else {
         acc.push({
           matchNumber,
@@ -47,6 +49,7 @@ export default function EventSummary({ history, currency, locale }) {
           odds,
           betTimeStamp,
           declarations: [{ winners, gainLoss, notes, gainLossDate }],
+          gainLoss,
         });
       }
       return acc;
@@ -67,12 +70,12 @@ export default function EventSummary({ history, currency, locale }) {
         bets[x.betOn] = 1;
       }
 
-      const { gainLoss, winners } = x.declarations[x.declarations.length - 1];
+      const { winners } = x.declarations[x.declarations.length - 1];
 
-      if (gainLoss > 0) {
-        winnings += gainLoss;
+      if (x.gainLoss > 0) {
+        winnings += x.gainLoss;
       } else {
-        losses += gainLoss;
+        losses += x.gainLoss;
       }
 
       if (winners.split(",").includes(x.betOn)) {
@@ -269,9 +272,7 @@ export default function EventSummary({ history, currency, locale }) {
                     })}
                   </td>
                   <td className="text-end align-middle">
-                    {item.declarations[
-                      item.declarations.length - 1
-                    ].gainLoss?.toLocaleString(locale || "en-US", {
+                    {item.gainLoss?.toLocaleString(locale || "en-US", {
                       style: "currency",
                       currency: currency || "USD",
                     })}

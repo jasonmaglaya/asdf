@@ -64,8 +64,7 @@ BEGIN TRY
 			@DeclareId DeclareId
 		FROM Bets B
 			LEFT JOIN MatchWinners W
-				ON B.TeamCode = W.TeamCode
-					AND B.MatchId = W.MatchId
+				ON B.MatchId = W.MatchId
 					AND W.IsDeleted = 0			
 		WHERE B.MatchId = @MatchId
 			AND B.Status = 'Final'
