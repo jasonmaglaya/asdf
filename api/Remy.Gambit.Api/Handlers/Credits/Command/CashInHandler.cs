@@ -55,9 +55,9 @@ public class CashInHandler(IUsersRepository usersRepository, ICreditsRepository 
             }
 
             // Deduct the amount from the partner
-            var transactionId = $"{DateTime.UtcNow.ToString("yyyyMMddHHmmss")}{TokenHelper.GenerateToken(10)}";
+            var transactionId = $"{DateTime.UtcNow:yyyyMMddHHmmss}{TokenHelper.GenerateToken(10)}";
             var tableId = Constants.AppSettings.MarvelGamingTableId;
-            var round = Constants.AppSettings.MarvelGamingRoundId;
+            var round = $"{DateTime.UtcNow:yyyyMMddHHmmss}{TokenHelper.GenerateToken(10)}";
 
             var cashInRequest = new Services.Dto.CashInRequest
             {
@@ -76,6 +76,10 @@ public class CashInHandler(IUsersRepository usersRepository, ICreditsRepository 
                 return new CashInResult { IsSuccessful = false, Errors = cashInResult.Errors! };
             }
 
+            // Save last round id
+
+            await _usersRepository.UpdateLastRoundIdAsync(user.Id, round, token);
+
             // Add the amount to the user
             var credit = new Credit
             {
@@ -91,7 +95,7 @@ public class CashInHandler(IUsersRepository usersRepository, ICreditsRepository 
             if(!addCreditResult)
             {
                 //Rollback the cash in
-                transactionId = transactionId = $"{DateTime.UtcNow.ToString("yyyyMMddHHmmss")}{TokenHelper.GenerateToken(10)}";
+                transactionId = transactionId = $"{DateTime.UtcNow:yyyyMMddHHmmss}{TokenHelper.GenerateToken(10)}";
 
                 var cashOutRequest = new Services.Dto.CashOutRequest
                 {

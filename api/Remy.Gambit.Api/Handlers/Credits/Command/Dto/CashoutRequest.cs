@@ -11,9 +11,5 @@ public class CashOutRequest : ICommand
     [JsonIgnore]
     public string? IpAddress { get; set; }
 
-    public required string PartnerToken { get; set; }
-
-    public required decimal Amount { get; set; }
-
-    public string? Currency { get; set; }
+    public required string PartnerToken { get; set; }    
 }

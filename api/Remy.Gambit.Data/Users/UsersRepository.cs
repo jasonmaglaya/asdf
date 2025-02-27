@@ -131,4 +131,17 @@ public class UsersRepository : IUsersRepository
 
         return new PaginatedList<User> { List = users, PageSize = pageSize, TotalItems = total.FirstOrDefault() };
     }
+
+    public async Task<bool> UpdateLastRoundIdAsync(Guid userId, string lastRoundId, CancellationToken token)
+    {
+        var query = new UpdateLastRoundIdQuery(userId, lastRoundId);
+
+        return await _gambitDbClient.ExecuteAsync(query, token) > 0;
+    }
+
+    public async Task<string> GetLastRoundIdAsync(Guid userId, CancellationToken token)
+    {
+        var query = new GetLastRoundIdQuery(userId);
+        return await _gambitDbClient.ExecuteScalarAsync<string>(query, token);
+    }
 }

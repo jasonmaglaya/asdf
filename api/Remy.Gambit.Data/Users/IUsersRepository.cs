@@ -32,4 +32,8 @@ public interface IUsersRepository
     Task<bool> TransferCreditsAsync(Guid? from, Guid to, decimal amount, Guid transactedBy, string? notes, CancellationToken token);
     
     Task<PaginatedList<User>> SearchUserAsync(string keyword, bool? isAgent, Guid? requestor, int pageNumber, int pageSize, CancellationToken token);
+
+    Task<bool> UpdateLastRoundIdAsync(Guid userId, string lastRoundId, CancellationToken token);
+
+    Task<string> GetLastRoundIdAsync(Guid userId, CancellationToken token);
 }

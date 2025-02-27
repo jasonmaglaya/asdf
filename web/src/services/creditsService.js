@@ -16,12 +16,8 @@ export const cashIn = async (partnerToken, amount, currency) => {
   });
 };
 
-export const cashOut = async (partnerToken, amount, currency) => {
-  return jwtInterceptor.post("/credits/cash-out", {
-    partnerToken,
-    amount,
-    currency,
-  });
+export const cashOut = async (partnerToken) => {
+  return jwtInterceptor.post("/credits/cash-out", { partnerToken });
 };
 
 export const getCreditHistory = async (pageNumber, pageSize) => {

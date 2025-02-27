@@ -4,17 +4,19 @@ using Remy.Gambit.Api.Helpers;
 using Remy.Gambit.Core.Concurrency;
 using Remy.Gambit.Core.Cqs;
 using Remy.Gambit.Data.Credits;
+using Remy.Gambit.Data.Features;
 using Remy.Gambit.Data.Users;
 using Remy.Gambit.Models;
 using Remy.Gambit.Services;
 
 namespace Remy.Gambit.Api.Handlers.Credits.Command;
 
-public class CashOutHandler(IUsersRepository usersRepository, ICreditsRepository creditsRepository, IValidator<CashOutRequest> validator,
-    IPartnerService partnerService, IUserLockService userLockService) : ICommandHandler<CashOutRequest, CashOutResult>
+public class CashOutHandler(IUsersRepository usersRepository, ICreditsRepository creditsRepository, IAppSettingsRepository appSettingsRepository,
+    IValidator<CashOutRequest> validator, IPartnerService partnerService, IUserLockService userLockService) : ICommandHandler<CashOutRequest, CashOutResult>
 {
     private readonly IUsersRepository _usersRepository = usersRepository;
     private readonly ICreditsRepository _creditsRepository = creditsRepository;
+    private readonly IAppSettingsRepository _appSettingsRepository = appSettingsRepository;
     private readonly IValidator<CashOutRequest> _validator = validator;
     private readonly IPartnerService _partnerService = partnerService;
     private readonly IUserLockService _userLockService = userLockService;
@@ -46,24 +48,24 @@ public class CashOutHandler(IUsersRepository usersRepository, ICreditsRepository
                 return new CashOutResult { IsSuccessful = false, ValidationResults = ["Failed to cash out."] };
             }
 
-            // Check Current Balance if it is greater than the amount requested
-            if (user.Credits < command.Amount)
+            // Credit the amount to the partner
+            var transactionId = $"{DateTime.UtcNow:yyyyMMddHHmmss}{TokenHelper.GenerateToken(10)}";
+            var tableId = Constants.AppSettings.MarvelGamingTableId;
+            var round = await _usersRepository.GetLastRoundIdAsync(user.Id, token);
+            if(string.IsNullOrEmpty(round))
             {
-                return new CashOutResult { IsSuccessful = false, ValidationResults = ["Amount requested is greater than the current balance."] };
+                round = $"{DateTime.UtcNow:yyyyMMddHHmmss}{TokenHelper.GenerateToken(10)}";
             }
 
-            // Credit the amount to the partner
-            var transactionId = $"{DateTime.UtcNow.ToString("yyyyMMddHHmmss")}{TokenHelper.GenerateToken(10)}";
-            var tableId = Constants.AppSettings.MarvelGamingTableId;
-            var round = Constants.AppSettings.MarvelGamingRoundId;
+            var currency = await _appSettingsRepository.GetAppSettingValueAsync<string>(Constants.AppSettings.Currency, token);
 
             var cashOutRequest = new Services.Dto.CashOutRequest
             {
                 TransactionId = transactionId,
                 Token = command.PartnerToken,
                 UserName = user.Username,
-                Amount = command.Amount.ToString("F2"),
-                Currency = command.Currency,
+                Amount = user.Credits.ToString("F2"),
+                Currency = currency,
                 TableId = tableId,
                 Round = round
             };
@@ -74,7 +76,7 @@ public class CashOutHandler(IUsersRepository usersRepository, ICreditsRepository
                 return new CashOutResult { IsSuccessful = false, Errors = cashOutResult.Errors! };
             }
 
-            var amount = command.Amount * -1;
+            var amount = user.Credits * -1;
 
             // Deduct the amount from the user
             var deduction = new Credit
@@ -91,20 +93,23 @@ public class CashOutHandler(IUsersRepository usersRepository, ICreditsRepository
             if (!deductCreditResult)
             {
                 // Rollback the cash out
-                transactionId = $"{DateTime.UtcNow.ToString("yyyyMMddHHmmss")}{TokenHelper.GenerateToken(10)}";
+                transactionId = $"{DateTime.UtcNow:yyyyMMddHHmmss}{TokenHelper.GenerateToken(10)}";
+                round = $"{DateTime.UtcNow:yyyyMMddHHmmss}{TokenHelper.GenerateToken(10)}";
 
                 var cashInRequest = new Services.Dto.CashInRequest
                 {
                     TransactionId = transactionId.ToString(),
                     Token = command.PartnerToken,
                     UserName = user.Username,
-                    Amount = command.Amount.ToString("F2"),
-                    Currency = command.Currency,
+                    Amount = user.Credits.ToString("F2"),
+                    Currency = currency,
                     TableId = tableId,
                     Round = round
                 };
 
                 var res = await _partnerService.CashInAsync(cashInRequest, token);
+
+                await _usersRepository.UpdateLastRoundIdAsync(user.Id, round, token);
 
                 return new CashOutResult { IsSuccessful = false, Errors = res.Errors! };
             }
@@ -112,7 +117,7 @@ public class CashOutHandler(IUsersRepository usersRepository, ICreditsRepository
             return new CashOutResult
             {
                 IsSuccessful = true,
-                NewBalance = user.Credits - command.Amount,
+                NewBalance = 0,
                 Currency = cashOutResult.Currency
             };
         }
