@@ -15,84 +15,62 @@ FROM Matches M
 		ON M.EventId = E.Id
 WHERE M.Id = @MatchId
 
-DECLARE @TotalBetsAfterComm MONEY
-SELECT @TotalBetsAfterComm = COALESCE(SUM(B.Amount),0) * (1 - @Commission)
-FROM Matches M
-	JOIN Teams T
-		ON M.EventId = T.EventId
-	LEFT JOIN Bets B
-		ON T.EventId = M.EventId
-		AND T.Code = B.TeamCode		
-		AND B.MatchId = M.Id
-WHERE M.Id = @MatchId
-
 BEGIN TRANSACTION;
 
 BEGIN TRY
 	
 	DECLARE @GroupTransactionId UNIQUEIDENTIFIER = NEWID()
 
-	INSERT INTO Credits (UserId, Amount, TransactionDate, TransactionType, TransactedBy, BetId, Notes, GroupTransactionId, DeclareId)
+	INSERT INTO Credits (UserId, Amount, TransactionDate, TransactionType, TransactedBy, BetId, Notes, GroupTransactionId, DeclareId)	
 	SELECT C.UserId, C.Amount * -1 Amount, GETUTCDATE(), 'Betting-Rollback', @UserId, C.BetId, 'REVERSAL (RE-DECLARED)', @GroupTransactionId, @DeclareId
 	FROM Credits C
 		JOIN Bets B
 			ON C.BetId = B.Id	
-	WHERE B.MatchId = @matchId
+	WHERE B.MatchId = @MatchId
 
-	INSERT INTO Credits (UserId, Amount, TransactionDate, TransactionType, TransactedBy, BetId, Notes, GroupTransactionId, DeclareId, Odds)
-	SELECT
-		B.UserId, 
-		CASE 
-			WHEN B.TeamCode = W.TeamCode
-				THEN
-					CASE WHEN W.TeamCode = 'D'
-						THEN (B.Amount * (@DrawMultiplier - 1)) * (1 - @Commission)
-					ELSE
-						B.Amount * (O.Odds - 1)
-					END
-			ELSE
-				B.Amount * -1
-		END,
-		GETUTCDATE(), 
-		'Betting', 
-		@UserId, 
-		B.Id,
-		CASE WHEN (
+	INSERT INTO Credits (UserId, Amount, Notes, TransactionDate, TransactionType, TransactedBy, BetId, GroupTransactionId, DeclareId)
+	SELECT * FROM (		
+		SELECT
+			B.UserId, 
 			CASE 
 				WHEN B.TeamCode = W.TeamCode
 					THEN
 						CASE WHEN W.TeamCode = 'D'
 							THEN (B.Amount * (@DrawMultiplier - 1)) * (1 - @Commission)
 						ELSE
-							B.Amount * (O.Odds - 1)
+							B.Amount * (B.OddsMultiplier - 1)
 						END
 				ELSE
-					B.Amount * -1
-			END
-		) > 0 THEN 'WINNINGS' ELSE 'LOSSES' END,		
-		@GroupTransactionId, 
-		@DeclareId,
-		CASE WHEN W.TeamCode = 'D' AND B.TeamCode = 'D' THEN @DrawMultiplier ELSE O.Odds END
-	FROM Bets B
-		LEFT JOIN MatchWinners W
-			ON B.TeamCode = W.TeamCode
-				AND B.MatchId = W.MatchId
-				AND W.IsDeleted = 0
-		LEFT JOIN (
-			SELECT T.Code, @TotalBetsAfterComm / COALESCE(SUM(B.Amount),0) Odds
-			FROM Matches M
-				JOIN Teams T
-					ON M.EventId = T.EventId
-				LEFT JOIN Bets B
-					ON T.EventId = M.EventId
-					AND T.Code = B.TeamCode
-					AND B.MatchId = M.Id
-			WHERE M.Id = @MatchId
-			GROUP BY T.Code
-		) O 
-			ON B.TeamCode = O.Code
-	WHERE B.MatchId = @MatchId
-		AND B.Status = 'Final'		
+					CASE WHEN W.TeamCode = 'D' THEN 0 ELSE B.Amount * -1 END
+			END Amount,
+			CASE WHEN (
+				CASE 
+					WHEN B.TeamCode = W.TeamCode
+						THEN
+							CASE WHEN W.TeamCode = 'D'
+								THEN (B.Amount * (@DrawMultiplier - 1)) * (1 - @Commission)
+							ELSE
+								B.Amount * (B.OddsMultiplier - 1)
+							END
+					ELSE
+						CASE WHEN W.TeamCode = 'D' THEN 0 ELSE B.Amount * -1 END
+				END
+			) > 0 THEN 'WINNINGS' ELSE 'LOSSES' END Notes,
+			GETUTCDATE() TransactionDate, 
+			'Betting' TransactionType, 
+			@UserId TransactedBy, 
+			B.Id BetId,				
+			@GroupTransactionId GroupTransactionId, 
+			@DeclareId DeclareId
+		FROM Bets B
+			LEFT JOIN MatchWinners W
+				ON B.TeamCode = W.TeamCode
+					AND B.MatchId = W.MatchId
+					AND W.IsDeleted = 0			
+		WHERE B.MatchId = @MatchId
+			AND B.Status = 'Final'
+	) X
+	WHERE X.Amount <> 0
 END TRY
 BEGIN CATCH    
     IF @@TRANCOUNT > 0

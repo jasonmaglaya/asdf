@@ -1,6 +1,8 @@
 import { Badge, Card, Col, Row, Table } from "react-bootstrap";
 import TeamAvatar from "./TeamAvatar";
 import { useEffect, useMemo, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 
 export default function EventSummary({ history, currency, locale }) {
   const [summary, setSummary] = useState([]);
@@ -21,12 +23,15 @@ export default function EventSummary({ history, currency, locale }) {
 
   useEffect(() => {
     const sum = history?.reduce((acc, item) => {
-      const { matchNumber, betOn, bet, odds } = item;
+      const { matchNumber, betOn, bet, odds, betTimeStamp } = item;
       let existingGroup = acc.find(
-        (x) => x.matchNumber === matchNumber && x.betOn === betOn
+        (x) =>
+          x.matchNumber === matchNumber &&
+          x.betOn === betOn &&
+          x.betTimeStamp === betTimeStamp
       );
 
-      const { winners, gainLoss, notes, betTimeStamp, gainLossDate } = item;
+      const { winners, gainLoss, notes, gainLossDate } = item;
       if (existingGroup) {
         existingGroup.declarations.push({
           winners,
@@ -83,6 +88,12 @@ export default function EventSummary({ history, currency, locale }) {
     setWinRate((totalWins / sum.length) * 100);
     setWins(wins);
   }, [history]);
+
+  const showHide = (id) => {
+    document.getElementById(id).classList.toggle("d-none");
+    document.getElementById(`${id}-plus`).classList.toggle("d-none");
+    document.getElementById(`${id}-minus`).classList.toggle("d-none");
+  };
 
   return (
     <>
@@ -170,18 +181,53 @@ export default function EventSummary({ history, currency, locale }) {
       <Table striped bordered hover responsive variant="dark">
         <thead>
           <tr>
-            <th style={{ width: "6%" }}>Fight #</th>
-            <th style={{ width: "20%" }}>Bet On</th>
-            <th style={{ width: "20%" }}>Date & Time</th>
-            <th style={{ width: "20%" }}>Odds/Multiplier</th>
-            <th className="text-end">Amount</th>
+            <th></th>
+            <th className="align-middle" style={{ width: "6%" }}>
+              Fight #
+            </th>
+            <th className="align-middle" style={{ width: "10%" }}>
+              Bet On
+            </th>
+            <th className="align-middle" style={{ width: "20%" }}>
+              Date & Time
+            </th>
+            <th className="align-middle" style={{ width: "10%" }}>
+              Odds/Multiplier
+            </th>
+            <th className="align-middle text-center" style={{ width: "6%" }}>
+              Result
+            </th>
+            <th style={{ width: "24%" }} className="align-middle text-end">
+              Amount
+            </th>
+            <th style={{ width: "24%" }} className="text-end align-middle">
+              Winnings/Losses
+            </th>
           </tr>
         </thead>
         <tbody>
           {summary?.map((item) => {
             return (
               <>
-                <tr key={`${item.fightNumber}-${item.gainLossDate}-1`}>
+                <tr key={`${item.fightNumber}-${item.betTimeStamp}-1`}>
+                  <td
+                    className="text-center align-middle"
+                    onClick={() => {
+                      showHide(`${item.fightNumber}-${item.betTimeStamp}-2`);
+                    }}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <FontAwesomeIcon
+                      icon={faPlus}
+                      id={`${item.fightNumber}-${item.betTimeStamp}-2-plus`}
+                      className="d-block"
+                    />
+                    <FontAwesomeIcon
+                      icon={faMinus}
+                      id={`${item.fightNumber}-${item.betTimeStamp}-2-minus`}
+                      className="d-none"
+                    />
+                  </td>
                   <td className="align-middle">{item.matchNumber}</td>
                   <td className="align-middle">
                     {item.betOn?.split(",").map((code) => {
@@ -204,36 +250,67 @@ export default function EventSummary({ history, currency, locale }) {
                   <td className="align-middle">
                     {(item.odds * 100).toFixed(2)}%
                   </td>
+                  <td className="text-center align-middle">
+                    {item.declarations[item.declarations.length - 1].winners
+                      ?.split(",")
+                      .includes(item.betOn) ? (
+                      <Badge bg="success">WIN</Badge>
+                    ) : item.declarations[item.declarations.length - 1]
+                        .winners === "D" ? (
+                      <Badge bg="warning">DRAW</Badge>
+                    ) : (
+                      <Badge bg="danger">LOSE</Badge>
+                    )}
+                  </td>
                   <td className="text-end align-middle">
                     {item.bet.toLocaleString(locale || "en-US", {
                       style: "currency",
                       currency: currency || "USD",
                     })}
                   </td>
+                  <td className="text-end align-middle">
+                    {item.declarations[
+                      item.declarations.length - 1
+                    ].gainLoss?.toLocaleString(locale || "en-US", {
+                      style: "currency",
+                      currency: currency || "USD",
+                    })}
+                  </td>
                 </tr>
-                <tr key={`${item.fightNumber}-${item.gainLossDate}-2`}>
-                  <td colSpan="5" className="p-3">
+                <tr
+                  id={`${item.fightNumber}-${item.betTimeStamp}-2`}
+                  className="d-none"
+                >
+                  <td colSpan="8" className="p-3">
                     <Table size="sm" bordered striped hover responsive>
                       <thead>
                         <tr>
-                          <th style={{ width: "20%" }}>Winner</th>
+                          <th className="align-middle" style={{ width: "20%" }}>
+                            Winner
+                          </th>
                           <th
                             style={{ width: "6%" }}
                             className="text-center align-middle"
                           >
                             Result
                           </th>
-                          <th style={{ width: "20%" }}>Declare Date & Time</th>
-                          <th style={{ width: "20%" }}>Description</th>
+                          <th className="align-middle" style={{ width: "20%" }}>
+                            Declare Date & Time
+                          </th>
+                          <th className="align-middle" style={{ width: "20%" }}>
+                            Description
+                          </th>
                           <th className="text-end align-middle">
-                            Winning/Loss
+                            Winnings/Losses
                           </th>
                         </tr>
                       </thead>
                       <tbody>
                         {item.declarations.map((declaration) => {
                           return (
-                            <tr>
+                            <tr
+                              key={`${declaration.winners}-${declaration.gainLossDate}-${declaration.notes}`}
+                            >
                               <td className="align-middle">
                                 {declaration.winners?.split(",").map((code) => {
                                   const { color, text } = legend.find(
@@ -257,6 +334,8 @@ export default function EventSummary({ history, currency, locale }) {
                                   ?.split(",")
                                   .includes(item.betOn) ? (
                                   <Badge bg="success">WIN</Badge>
+                                ) : declaration.winners === "D" ? (
+                                  <Badge bg="warning">DRAW</Badge>
                                 ) : (
                                   <Badge bg="danger">LOSE</Badge>
                                 )}
