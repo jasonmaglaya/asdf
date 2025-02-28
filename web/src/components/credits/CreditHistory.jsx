@@ -22,9 +22,12 @@ export default function CreditHistory({ show, handleClose, currency, locale }) {
     setIsLoading(true);
     setIsLoadingBalance(true);
 
-    const { operatorToken } = JSON.parse(
-      localStorage.getItem("user")?.toString()
-    );
+    const userString = localStorage.getItem("user")?.toString();
+    if (!userString) {
+      return;
+    }
+
+    const { operatorToken } = JSON.parse(userString);
 
     try {
       const { data } = await getBalance(operatorToken);

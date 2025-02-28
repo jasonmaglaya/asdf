@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Remy.Gambit.Core.Generics;
+using Remy.Gambit.Models.Reports;
 
 namespace Remy.Gambit.Api.Mappers
 {
@@ -25,7 +26,8 @@ namespace Remy.Gambit.Api.Mappers
             CreateMap<Models.Balance, Dto.Balance>();
             CreateMap<Models.Credit, Dto.CreditHistoryItem>();
             CreateMap<PaginatedList<Models.Credit>, PaginatedList<Dto.CreditHistoryItem>>();
-            CreateMap<Models.EventSummaryItem, Dto.EventSummaryItem>();
+            CreateMap<EventSummaryItem, Dto.EventSummaryItem>();
+            CreateMap<EventReportItem, Dto.EventReportItem>();
         }
     }
 }

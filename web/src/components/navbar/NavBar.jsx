@@ -75,6 +75,13 @@ export default function NavBar() {
               Users
             </NavLink>
           )}
+          {features.includes(pathFeatureMappings["/reports"]) && (
+            <NavDropdown title="Reports">
+              <NavDropdown.Item to="/reports/events" as={NavLink}>
+                Events
+              </NavDropdown.Item>
+            </NavDropdown>
+          )}
         </Nav>
         <div className="position-absolute start-50 translate-middle-x text-light d-none d-sm-block">
           <h5>{dateTime}</h5>

@@ -14,7 +14,8 @@ import UsersPage from "./pages/UsersPage";
 import TransferCreditPage from "./pages/TransferCreditPage";
 import EventsMaintenancePage from "./pages/EventsMaintenancePage";
 import MatchesPage from "./pages/MatchesPage";
-import EventSummaryPage from "./pages/EventSummaryPage";
+import PlayerEventSummaryPage from "./pages/PlayerEventSummaryPage";
+import EventsReportPage from "./pages/EventsReportPage";
 
 const getUserData = () => {
   return new Promise((resolve) =>
@@ -68,7 +69,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "/events/summary",
-            element: <EventSummaryPage />,
+            element: <PlayerEventSummaryPage />,
           },
           {
             path: "/events/:eventId",
@@ -101,6 +102,10 @@ export const router = createBrowserRouter([
           {
             path: "/users/:userId/transfer-credits",
             element: <TransferCreditPage />,
+          },
+          {
+            path: "/reports/events",
+            element: <EventsReportPage />,
           },
         ],
       },

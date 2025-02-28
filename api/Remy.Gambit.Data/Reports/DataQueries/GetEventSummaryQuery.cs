@@ -1,6 +1,6 @@
 ﻿using Remy.Gambit.Core.Data;
 
-namespace Remy.Gambit.Data.Events.DataQueries;
+namespace Remy.Gambit.Data.Reports.DataQueries;
 
 public class GetEventSummaryQuery : DataQuery
 {

@@ -35,6 +35,7 @@ export const Features = {
   DeleteUser: "DeleteUser",
   MaintainEvents: "MaintainEvents",
   ListAllUsers: "ListAllUsers",
+  Reports: "Reports",
 };
 
 export const AgentRoles = ["ag", "ma", "sma", "inco"];
@@ -77,4 +78,6 @@ export const pathFeatureMappings = {
   "/events/new/": Features.MaintainEvents,
   "/users": Features.ListAllUsers,
   "/users/": Features.ListAllUsers,
+  "/reports": Features.Reports,
+  "/reports/": Features.Reports,
 };

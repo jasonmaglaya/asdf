@@ -6,11 +6,11 @@ import {
 } from "../services/eventsService";
 import { Container, Form, Tab, Tabs } from "react-bootstrap";
 import SpinnerComponent from "../components/_shared/SpinnerComponent";
-import EventSummary from "../components/event/EventSummary";
+import PplayerEventSummary from "../components/event/PlayerEventSummary";
 import Trend from "../components/event/Trend";
 import { useSelector } from "react-redux";
 
-export default function EventSummaryPage() {
+export default function PlayerEventSummaryPage() {
   const [events, setEvents] = useState([]);
   const [summary, setSummary] = useState([]);
   const [eventId, setEventId] = useState(null);
@@ -63,7 +63,7 @@ export default function EventSummaryPage() {
   }, [eventId]);
 
   return (
-    <Container className="mt-3 text-light">
+    <Container className="mt-2 text-light">
       <h3>Event Summary</h3>
       <Form.Select onChange={onEventChange} className="mb-3">
         {events.map((event) => (
@@ -81,7 +81,7 @@ export default function EventSummaryPage() {
           className="mb-3"
         >
           <Tab eventKey="summary" title="Summary">
-            <EventSummary
+            <PplayerEventSummary
               history={summary}
               currency={currency}
               locale={locale}

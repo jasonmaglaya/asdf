@@ -19,7 +19,5 @@ public interface IEventsRepository
 
     Task<bool> UpdateEventStatusAsync(Guid eventId, string status, CancellationToken token);
 
-    Task<IEnumerable<Winner>> GetEventWinnersAsync(Guid eventId, CancellationToken token);
-
-    Task<IEnumerable<EventSummaryItem>> GetEventSummaryAsync(Guid eventId, Guid userId, CancellationToken token);
+    Task<IEnumerable<Winner>> GetEventWinnersAsync(Guid eventId, CancellationToken token);    
 }

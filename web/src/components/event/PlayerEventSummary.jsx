@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 
-export default function EventSummary({ history, currency, locale }) {
+export default function PlayerEventSummary({ history, currency, locale }) {
   const [summary, setSummary] = useState([]);
   const [bettings, setBettings] = useState({});
   const [totalWinnings, setTotalWinnings] = useState(0);

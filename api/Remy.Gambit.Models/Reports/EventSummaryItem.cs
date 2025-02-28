@@ -1,4 +1,4 @@
-﻿namespace Remy.Gambit.Models;
+﻿namespace Remy.Gambit.Models.Reports;
 
 public class EventSummaryItem
 {

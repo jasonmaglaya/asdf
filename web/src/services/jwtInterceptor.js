@@ -6,8 +6,11 @@ jwtInterceptor.interceptors.request.use((config) => {
   config.baseURL = process.env.REACT_APP_API_BASEURL;
 
   const userString = localStorage.getItem("user")?.toString();
-  const user = JSON.parse(userString);
+  if (!userString) {
+    return config;
+  }
 
+  const user = JSON.parse(userString);
   if (!user) {
     return config;
   }
@@ -28,6 +31,11 @@ jwtInterceptor.interceptors.response.use(
     }
 
     const userString = localStorage.getItem("user")?.toString();
+    if (!userString) {
+      window.location.href = "/login";
+      return;
+    }
+
     const user = JSON.parse(userString);
 
     const { refreshToken } = user;
