@@ -119,8 +119,7 @@ export default function Trend({ winners }) {
             return (
               <div
                 key={text}
-                className="d-flex flex-row align-items-center"
-                style={{ marginRight: "1em" }}
+                className="d-flex flex-row align-items-center mx-2"
               >
                 <TeamAvatar color={color}>{count}</TeamAvatar>
                 <span>{text}</span>

@@ -42,7 +42,7 @@ const ProtectedLayout = () => {
   return (
     <>
       <NavBar />
-      <Container className="p-0" fluid style={{ minHeight: "800px" }}>
+      <Container className="p-0" fluid style={{ minHeight: "200px" }}>
         <Outlet />
       </Container>
       <Messages />

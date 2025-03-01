@@ -108,8 +108,7 @@ export default function PlayerEventSummary({ history, currency, locale }) {
               return (
                 <div
                   key={text}
-                  className="d-flex flex-row align-items-center"
-                  style={{ marginRight: "1em" }}
+                  className="d-flex flex-column align-items-center mx-3"
                 >
                   <TeamAvatar color={color}>{bettings[code] || 0}</TeamAvatar>
                   <span>
