@@ -266,7 +266,7 @@ export default function EventSummary({ summary, currency, locale, event }) {
                                 className={
                                   declaration.commission === 0
                                     ? "text-end align-middle text-warning"
-                                    : declaration.drawNet > 0
+                                    : declaration.commission > 0
                                     ? "text-end align-middle text-success"
                                     : "text-end align-middle text-danger"
                                 }
