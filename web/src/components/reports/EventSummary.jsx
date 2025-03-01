@@ -2,7 +2,7 @@ import { Card, Col, Row, Table } from "react-bootstrap";
 import TeamAvatar from "../../components/event/TeamAvatar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { useMemo } from "react";
+import { useMemo, Fragment } from "react";
 
 export default function EventSummary({ summary, currency, locale, event }) {
   const legend = useMemo(
@@ -86,8 +86,8 @@ export default function EventSummary({ summary, currency, locale, event }) {
         <tbody>
           {summary?.map((item) => {
             return (
-              <>
-                <tr key={`${item.matchId}-1`}>
+              <Fragment key={`${item.matchId}`}>
+                <tr>
                   <td
                     className="text-center align-middle"
                     onClick={() => {
@@ -128,7 +128,15 @@ export default function EventSummary({ summary, currency, locale, event }) {
                       currency: currency || "USD",
                     })}
                   </td>
-                  <td className="text-end align-middle text-success">
+                  <td
+                    className={
+                      item.commission === 0
+                        ? "text-end align-middle text-warning"
+                        : item.commission > 0
+                        ? "text-end align-middle text-success"
+                        : "text-end align-middle text-danger"
+                    }
+                  >
                     {item.commission.toLocaleString(locale || "en-US", {
                       style: "currency",
                       currency: currency || "USD",
@@ -149,7 +157,7 @@ export default function EventSummary({ summary, currency, locale, event }) {
                   <td
                     className={
                       item.drawNet === 0
-                        ? "text-end align-middle"
+                        ? "text-end align-middle text-warning"
                         : item.drawNet > 0
                         ? "text-end align-middle text-success"
                         : "text-end align-middle text-danger"
@@ -313,7 +321,7 @@ export default function EventSummary({ summary, currency, locale, event }) {
                     </Table>
                   </td>
                 </tr>
-              </>
+              </Fragment>
             );
           })}
         </tbody>
