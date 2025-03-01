@@ -25,7 +25,6 @@ export default function EventSummaryPage() {
   const loadEvent = async (id) => {
     try {
       const { data } = await getEvent(id);
-      console.log(data.result);
       setEvent(data.result);
     } catch {}
   };
@@ -106,7 +105,6 @@ export default function EventSummaryPage() {
         return acc;
       }, []);
 
-      console.log(sum);
       setSummary(sum);
     } catch {
     } finally {
