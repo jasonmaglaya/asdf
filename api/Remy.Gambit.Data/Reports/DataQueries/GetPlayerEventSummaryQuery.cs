@@ -10,11 +10,11 @@ SELECT
 	B.TeamCode BetOn,
 	B.Amount Bet,
 	B.BetTimeStamp,
-	B.OddsMultiplier Odds,
-	COALESCE(MW.Winners, D.Winners) Winners,
+	COALESCE(B.OddsMultiplier, 0) Odds,
+	COALESCE(COALESCE(MW.Winners, D.Winners), 'C') Winners,
 	COALESCE(C.Amount, 0) GainLoss,
-	COALESCE(C.TransactionDate, D.DeclareDate) GainLossDate,
-	COALESCE(C.Notes, 'DRAW') Notes
+	COALESCE(COALESCE(C.TransactionDate, D.DeclareDate), M.CancelDate) GainLossDate,
+	COALESCE(C.Notes, '') Notes
 FROM Bets B
 	JOIN Matches M
 		ON B.MatchId = M.Id
@@ -44,7 +44,7 @@ FROM Bets B
 WHERE
 	M.EventId = @EventId
 	AND B.UserId = @UserId
-	AND B.Status = 'Final'
+	AND B.Status <> 'Open'
 	AND COALESCE(C.TransactionType, 'Draw') <> 'Loading'	
 ORDER BY M.Number, B.BetTimeStamp, C.TransactionDate, C.TransactionType DESC
 ";

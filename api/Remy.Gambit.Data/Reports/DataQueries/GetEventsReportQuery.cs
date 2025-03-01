@@ -78,7 +78,7 @@ FROM [Events] E
 	) MW
 		ON B.MatchId = MW.MatchId
 WHERE E.Status IN ('Active', 'Closed')
-	AND M.Status <> 'New'
+	AND M.Status NOT IN ('New', 'Open')
 GROUP BY E.Id, E.Title, M.EventId, E.EventDate, E.Commission, E.DrawMultiplier
 ORDER BY E.EventDate DESC
 ";

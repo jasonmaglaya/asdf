@@ -21,6 +21,22 @@ export default function EventSummary({ summary, currency, locale, event }) {
     document.getElementById(`${id}-minus`).classList.toggle("d-none");
   };
 
+  const getClassName = (amount, index, length) => {
+    if (index === length - 1) {
+      return amount === 0
+        ? "text-end align-middle text-warning"
+        : amount > 0
+        ? "text-end align-middle text-success"
+        : "text-end align-middle text-danger";
+    }
+
+    return amount === 0
+      ? "text-end align-middle text-warning text-decoration-line-through"
+      : amount < 0
+      ? "text-end align-middle text-danger text-decoration-line-through"
+      : "text-end align-middle text-success text-decoration-line-through";
+  };
+
   return (
     <>
       <Card bg="dark" text="white" className="mb-2">
@@ -69,14 +85,14 @@ export default function EventSummary({ summary, currency, locale, event }) {
             <th className="align-middle text-end" style={{ width: "8%" }}>
               Total Bets
             </th>
-            <th style={{ width: "8%" }} className="align-middle text-end">
-              Commission
-            </th>
             <th style={{ width: "8%" }} className="text-end align-middle">
               Total Draw
             </th>
             <th style={{ width: "8%" }} className="text-end align-middle">
               Draw Payouts
+            </th>
+            <th style={{ width: "8%" }} className="align-middle text-end">
+              Commission
             </th>
             <th style={{ width: "8%" }} className="text-end align-middle">
               Draw Net
@@ -128,6 +144,18 @@ export default function EventSummary({ summary, currency, locale, event }) {
                       currency: currency || "USD",
                     })}
                   </td>
+                  <td className="text-end align-middle">
+                    {item.totalDraw?.toLocaleString(locale || "en-US", {
+                      style: "currency",
+                      currency: currency || "USD",
+                    })}
+                  </td>
+                  <td className="text-end align-middle">
+                    {item.totalDrawPayout?.toLocaleString(locale || "en-US", {
+                      style: "currency",
+                      currency: currency || "USD",
+                    })}
+                  </td>
                   <td
                     className={
                       item.commission === 0
@@ -138,18 +166,6 @@ export default function EventSummary({ summary, currency, locale, event }) {
                     }
                   >
                     {item.commission.toLocaleString(locale || "en-US", {
-                      style: "currency",
-                      currency: currency || "USD",
-                    })}
-                  </td>
-                  <td className="text-end align-middle">
-                    {item.totalDraw?.toLocaleString(locale || "en-US", {
-                      style: "currency",
-                      currency: currency || "USD",
-                    })}
-                  </td>
-                  <td className="text-end align-middle">
-                    {item.totalDrawPayout?.toLocaleString(locale || "en-US", {
                       style: "currency",
                       currency: currency || "USD",
                     })}
@@ -187,28 +203,10 @@ export default function EventSummary({ summary, currency, locale, event }) {
                             IP Address
                           </th>
                           <th
-                            className="align-middle text-end"
-                            style={{ width: "10%" }}
-                          >
-                            Total Bets
-                          </th>
-                          <th
                             style={{ width: "10%" }}
                             className="align-middle text-end"
                           >
                             Commission
-                          </th>
-                          <th
-                            style={{ width: "10%" }}
-                            className="text-end align-middle"
-                          >
-                            Total Draw
-                          </th>
-                          <th
-                            style={{ width: "10%" }}
-                            className="text-end align-middle"
-                          >
-                            Draw Payouts
                           </th>
                           <th
                             style={{ width: "10%" }}
@@ -219,7 +217,7 @@ export default function EventSummary({ summary, currency, locale, event }) {
                         </tr>
                       </thead>
                       <tbody>
-                        {item.declarations.map((declaration) => {
+                        {item.declarations.map((declaration, index) => {
                           return (
                             <tr
                               key={`${item.matchId}-2-${declaration.winners}`}
@@ -253,23 +251,12 @@ export default function EventSummary({ summary, currency, locale, event }) {
                               <td className="align-middle">
                                 {declaration.ipAddress}
                               </td>
-                              <td className="text-end align-middle">
-                                {declaration.totalBets.toLocaleString(
-                                  locale || "en-US",
-                                  {
-                                    style: "currency",
-                                    currency: currency || "USD",
-                                  }
-                                )}
-                              </td>
                               <td
-                                className={
-                                  declaration.commission === 0
-                                    ? "text-end align-middle text-warning"
-                                    : declaration.commission > 0
-                                    ? "text-end align-middle text-success"
-                                    : "text-end align-middle text-danger"
-                                }
+                                className={getClassName(
+                                  declaration.commission,
+                                  index,
+                                  item.declarations.length
+                                )}
                               >
                                 {declaration.commission.toLocaleString(
                                   locale || "en-US",
@@ -279,32 +266,12 @@ export default function EventSummary({ summary, currency, locale, event }) {
                                   }
                                 )}
                               </td>
-                              <td className="text-end align-middle">
-                                {declaration.totalDraw?.toLocaleString(
-                                  locale || "en-US",
-                                  {
-                                    style: "currency",
-                                    currency: currency || "USD",
-                                  }
-                                )}
-                              </td>
-                              <td className="text-end align-middle">
-                                {declaration.totalDrawPayout?.toLocaleString(
-                                  locale || "en-US",
-                                  {
-                                    style: "currency",
-                                    currency: currency || "USD",
-                                  }
-                                )}
-                              </td>
                               <td
-                                className={
-                                  declaration.drawNet === 0
-                                    ? "text-end align-middle text-warning"
-                                    : declaration.drawNet > 0
-                                    ? "text-end align-middle text-success"
-                                    : "text-end align-middle text-danger"
-                                }
+                                className={getClassName(
+                                  declaration.drawNet,
+                                  index,
+                                  item.declarations.length
+                                )}
                               >
                                 {declaration.drawNet?.toLocaleString(
                                   locale || "en-US",

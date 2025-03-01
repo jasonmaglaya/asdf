@@ -70,10 +70,7 @@ export default function EventSummaryPage() {
             declaredBy,
             declareDate,
             ipAddress,
-            totalBets,
             commission,
-            totalDraw,
-            totalDrawPayout,
             drawNet,
           });
         } else {
@@ -92,10 +89,7 @@ export default function EventSummaryPage() {
                 declaredBy,
                 declareDate,
                 ipAddress,
-                totalBets,
                 commission,
-                totalDraw,
-                totalDrawPayout,
                 drawNet,
               },
             ],

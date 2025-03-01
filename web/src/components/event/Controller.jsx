@@ -5,28 +5,19 @@ import {
   updateStatus,
   declareWinner,
   cancelMatch,
-  reDeclareWinner,
 } from "../../services/matchesService";
 import ConfirmDialog from "../_shared/ConfirmDialog";
 import DeclareWinnerDialog from "./DeclareWinnerDialog";
 import { MatchContext } from "../_shared/MatchContext";
 import { nextMatch } from "../../services/eventsService";
 
-export default function Controller({
-  eventId,
-  maxWinners,
-  canReDeclare,
-  allowDraw,
-}) {
+export default function Controller({ eventId, maxWinners, allowDraw }) {
   const [showConfirmBetDialog, setShowConfirmBetDialog] = useState(false);
   const [confirmMessage, setConfirmMessage] = useState();
   const [handleConfirm, setHandleConfirm] = useState();
   const [isBusy, setIsBusy] = useState();
   const [showDeclareWinnerDialog, setShowDeclareWinnerDialog] = useState(false);
-  const [showReDeclareWinnerDialog, setShowReDeclareWinnerDialog] =
-    useState(false);
   const { match, setMatch, status, setStatus } = useContext(MatchContext);
-  const [winners, setWinners] = useState([]);
 
   const confirm = (message, next) => {
     setConfirmMessage(message);
@@ -89,29 +80,10 @@ export default function Controller({
     e.target.blur();
   };
 
-  const showReDeclareDialog = (e) => {
-    setShowReDeclareWinnerDialog(true);
-    e.target.blur();
-  };
-
   const handleDeclareWinner = (newWinners, callback) => {
     declareWinner(eventId, match?.id, newWinners)
       .then(() => {
         setShowDeclareWinnerDialog(false);
-        setWinners(newWinners);
-      })
-      .finally(() => {
-        if (callback) {
-          callback();
-        }
-      });
-  };
-
-  const handleReDeclareWinner = (newWinners, callback) => {
-    reDeclareWinner(eventId, match?.id, newWinners)
-      .then(() => {
-        setShowReDeclareWinnerDialog(false);
-        setWinners(newWinners);
       })
       .finally(() => {
         if (callback) {
@@ -225,20 +197,7 @@ export default function Controller({
       case MatchStatus.Declared:
         return (
           <Row>
-            {canReDeclare && (
-              <Col xs={12} sm={4}>
-                <Button
-                  variant="danger"
-                  size="lg"
-                  className="form-control text-white mb-2 mb-sm-0"
-                  onClick={showReDeclareDialog}
-                  disabled={isBusy}
-                >
-                  RE-DECLARE WINNER
-                </Button>
-              </Col>
-            )}
-            <Col xs={12} sm={canReDeclare ? 8 : 12}>
+            <Col xs={12} sm={12}>
               <Button
                 variant="primary"
                 size="lg"
@@ -271,7 +230,6 @@ export default function Controller({
 
   useEffect(() => {
     setStatus(match?.status);
-    setWinners(match?.winners);
   }, [setStatus, match]);
 
   return (
@@ -292,6 +250,7 @@ export default function Controller({
                   status === MatchStatus.Completed ||
                   status === MatchStatus.Cancelled ||
                   status === MatchStatus.Declared ||
+                  status === MatchStatus.New ||
                   isBusy
                 }
               >
@@ -345,20 +304,6 @@ export default function Controller({
         handleConfirm={handleDeclareWinner}
         allowDraw={allowDraw}
       ></DeclareWinnerDialog>
-      {canReDeclare && (
-        <DeclareWinnerDialog
-          title="Re-Declare Winner"
-          show={showReDeclareWinnerDialog}
-          handleClose={() => {
-            setShowReDeclareWinnerDialog(false);
-          }}
-          teams={match?.teams}
-          maxWinners={maxWinners}
-          handleConfirm={handleReDeclareWinner}
-          allowDraw={allowDraw}
-          exclude={winners}
-        ></DeclareWinnerDialog>
-      )}
     </>
   );
 }

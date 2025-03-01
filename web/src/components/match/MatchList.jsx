@@ -9,8 +9,9 @@ import { MatchStatus } from "../../constants";
 import { useEffect, useMemo, useState } from "react";
 import TeamAvatar from "../event/TeamAvatar";
 import DeclareWinnerDialog from "../event/DeclareWinnerDialog";
-import { reDeclareWinner } from "../../services/matchesService";
+import { cancelMatch, reDeclareWinner } from "../../services/matchesService";
 import { getMatches } from "../../services/eventsService";
+import ConfirmDialog from "../_shared/ConfirmDialog";
 
 export default function MatchList({ eventId, maxWinners, teams, allowDraw }) {
   const legend = useMemo(
@@ -24,6 +25,8 @@ export default function MatchList({ eventId, maxWinners, teams, allowDraw }) {
   );
   const [showReDeclareWinnerDialog, setShowReDeclareWinnerDialog] =
     useState(false);
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [isBusy, setIsBusy] = useState(false);
   const [matchId, setMatchId] = useState();
   const [exclude, setExclude] = useState([]);
   const [matches, setMatches] = useState([]);
@@ -34,13 +37,34 @@ export default function MatchList({ eventId, maxWinners, teams, allowDraw }) {
     setShowReDeclareWinnerDialog(true);
   };
 
+  const showCancelConfirmation = (matchId) => {
+    setMatchId(matchId);
+
+    setShowCancelDialog(true);
+  };
+
+  const handleCancel = async () => {
+    setIsBusy(true);
+
+    cancelMatch(eventId, matchId)
+      .then(async ({ data }) => {
+        if (!data.isSuccessful) {
+          return;
+        }
+
+        await loadMatches(eventId);
+      })
+      .catch(() => {})
+      .finally(() => {
+        setIsBusy(false);
+        setShowCancelDialog(false);
+      });
+  };
+
   const handleReDeclareWinner = (winners, callback) => {
     reDeclareWinner(eventId, matchId, winners)
       .then(async () => {
-        try {
-          const { data } = await getMatches(eventId);
-          setMatches(data?.result?.list || []);
-        } catch {}
+        await loadMatches(eventId);
       })
       .finally(() => {
         if (callback) {
@@ -51,20 +75,20 @@ export default function MatchList({ eventId, maxWinners, teams, allowDraw }) {
       });
   };
 
-  useEffect(() => {
-    const loadMatches = async () => {
-      try {
-        const { data } = await getMatches(eventId);
-        setMatches(data?.result?.list || []);
-      } catch {}
-    };
+  const loadMatches = async (id) => {
+    try {
+      const { data } = await getMatches(id);
+      setMatches(data?.result?.list || []);
+    } catch {}
+  };
 
-    loadMatches();
+  useEffect(() => {
+    loadMatches(eventId);
   }, [eventId]);
 
   return (
     <>
-      <Table variant="dark" striped hover>
+      <Table variant="dark" striped hover style={{ marginBottom: "7rem" }}>
         <thead>
           <tr>
             <th>FIGHT #</th>
@@ -129,6 +153,14 @@ export default function MatchList({ eventId, maxWinners, teams, allowDraw }) {
                       Re-Declare
                     </Dropdown.Item>
                   )}
+                  {[MatchStatus.Completed].includes(match.status) && (
+                    <Dropdown.Item
+                      eventKey="cancel"
+                      onClick={() => showCancelConfirmation(match.id)}
+                    >
+                      Cancel
+                    </Dropdown.Item>
+                  )}
                 </DropdownButton>
               </td>
             </tr>
@@ -147,6 +179,20 @@ export default function MatchList({ eventId, maxWinners, teams, allowDraw }) {
         allowDraw={allowDraw}
         exclude={exclude}
       ></DeclareWinnerDialog>
+      <ConfirmDialog
+        confirmButtonText="CONFIRM"
+        handleConfirm={handleCancel}
+        handleClose={() => {
+          setShowCancelDialog(false);
+        }}
+        show={showCancelDialog}
+        isBusy={isBusy}
+      >
+        <span className="h5">
+          Do you really want to <span className="text-danger">CANCEL</span> the
+          fight?
+        </span>
+      </ConfirmDialog>
     </>
   );
 }

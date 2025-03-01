@@ -17,6 +17,7 @@ export default function PlayerEventSummary({ history, currency, locale }) {
       { code: "M", color: "#e50914", text: "MERON", count: 0 },
       { code: "W", color: "#3d9ae8", text: "WALA", count: 0 },
       { code: "D", color: "green", text: "DRAW", count: 0 },
+      { code: "C", color: "grey", text: "CANCELLED", count: 0 },
     ],
     []
   );
@@ -96,6 +97,14 @@ export default function PlayerEventSummary({ history, currency, locale }) {
     document.getElementById(id).classList.toggle("d-none");
     document.getElementById(`${id}-plus`).classList.toggle("d-none");
     document.getElementById(`${id}-minus`).classList.toggle("d-none");
+  };
+
+  const getClassName = (amount) => {
+    return amount === 0
+      ? "text-end align-middle text-warning"
+      : amount > 0
+      ? "text-end align-middle text-success"
+      : "text-end align-middle text-danger";
   };
 
   return (
@@ -260,6 +269,9 @@ export default function PlayerEventSummary({ history, currency, locale }) {
                     ) : item.declarations[item.declarations.length - 1]
                         .winners === "D" ? (
                       <Badge bg="warning">DRAW</Badge>
+                    ) : item.declarations[item.declarations.length - 1]
+                        .winners === "C" ? (
+                      <Badge bg="warning">CANCELLED</Badge>
                     ) : (
                       <Badge bg="danger">LOSE</Badge>
                     )}
@@ -270,7 +282,7 @@ export default function PlayerEventSummary({ history, currency, locale }) {
                       currency: currency || "USD",
                     })}
                   </td>
-                  <td className="text-end align-middle">
+                  <td className={getClassName(item.gainLoss)}>
                     {item.gainLoss?.toLocaleString(locale || "en-US", {
                       style: "currency",
                       currency: currency || "USD",
@@ -336,6 +348,8 @@ export default function PlayerEventSummary({ history, currency, locale }) {
                                   <Badge bg="success">WIN</Badge>
                                 ) : declaration.winners === "D" ? (
                                   <Badge bg="warning">DRAW</Badge>
+                                ) : declaration.winners === "C" ? (
+                                  <Badge bg="warning">CANCELLED</Badge>
                                 ) : (
                                   <Badge bg="danger">LOSE</Badge>
                                 )}
@@ -348,7 +362,9 @@ export default function PlayerEventSummary({ history, currency, locale }) {
                               <td className="align-middle">
                                 {declaration.notes}
                               </td>
-                              <td className="text-end align-middle">
+                              <td
+                                className={getClassName(declaration.gainLoss)}
+                              >
                                 {declaration.gainLoss.toLocaleString(
                                   locale || "en-US",
                                   {
