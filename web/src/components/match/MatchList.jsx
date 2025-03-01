@@ -137,7 +137,11 @@ export default function MatchList({ eventId, maxWinners, teams, allowDraw }) {
                 })}
               </td>
               <td className="text-end">
-                <DropdownButton as={ButtonGroup} variant="secondary">
+                <DropdownButton
+                  as={ButtonGroup}
+                  variant="secondary"
+                  align={"end"}
+                >
                   <Dropdown.Item eventKey="view" onClick={() => {}}>
                     View
                   </Dropdown.Item>
