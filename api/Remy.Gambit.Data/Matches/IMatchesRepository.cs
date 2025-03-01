@@ -23,7 +23,7 @@ public interface IMatchesRepository
 
     Task<bool> ReDeclareWinnerAsync(Guid matchId, IEnumerable<string> teamCodes, Guid userId, string ipAddress, CancellationToken token);
 
-    Task<bool> CancelMatchAsync(Guid matchId, CancellationToken token);
+    Task<bool> CancelMatchAsync(Guid matchId, Guid cancelledBy, string ipAddress, CancellationToken token);
 
     Task<PaginatedList<Match>> GetMatchesAsync(Guid eventId, int pageNumber, int pageSize, CancellationToken token);
 }

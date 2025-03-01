@@ -1,5 +1,5 @@
 import { Badge, Card, Col, Row, Table } from "react-bootstrap";
-import TeamAvatar from "./TeamAvatar";
+import TeamAvatar from "../event/TeamAvatar";
 import { useEffect, useMemo, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
@@ -24,7 +24,7 @@ export default function PlayerEventSummary({ history, currency, locale }) {
   useEffect(() => {
     const sum = history?.reduce((acc, item) => {
       const { matchNumber, betOn, bet, odds, betTimeStamp } = item;
-      let existingGroup = acc.find(
+      const existingGroup = acc.find(
         (x) =>
           x.matchNumber === matchNumber &&
           x.betOn === betOn &&
@@ -102,7 +102,7 @@ export default function PlayerEventSummary({ history, currency, locale }) {
     <>
       <Card bg="dark" text="white" className="mb-2">
         <Card.Header>
-          <div className="d-flex overflow-auto mb-2 align-items-center justify-content-center">
+          <div className="d-flex overflow-auto align-items-center justify-content-center">
             {legend.map(({ code, text }) => {
               const color = legend.find((x) => x.code === code)?.color;
               return (

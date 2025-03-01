@@ -1,6 +1,6 @@
-﻿namespace Remy.Gambit.Api.Dto;
+﻿namespace Remy.Gambit.Models.Reports;
 
-public class EventReportItem
+public class EventsReportItem
 {
     public Guid EventId { get; set; }
     public string? Title { get; set; }

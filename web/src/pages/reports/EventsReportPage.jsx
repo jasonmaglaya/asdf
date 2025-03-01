@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Container, Table } from "react-bootstrap";
+import { Breadcrumb, Container, Table } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import SpinnerComponent from "../components/_shared/SpinnerComponent";
-import { getEventsReport } from "../services/reportsService";
+import SpinnerComponent from "../../components/_shared/SpinnerComponent";
+import { getEventsReport } from "../../services/reportsService";
+import { NavLink } from "react-router-dom";
 
 export default function EventsReportPage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -28,7 +29,12 @@ export default function EventsReportPage() {
 
   return (
     <Container className="mt-2 text-light">
-      <h3>Events</h3>
+      <h3>Events Summary</h3>
+      <Breadcrumb>
+        <Breadcrumb.Item className="text-light" active>
+          Events
+        </Breadcrumb.Item>
+      </Breadcrumb>
       {isLoading ? (
         <SpinnerComponent />
       ) : (
@@ -69,7 +75,11 @@ export default function EventsReportPage() {
             {summary?.map((item) => {
               return (
                 <tr key={`${item.fightNumber}-${item.betTimeStamp}-1`}>
-                  <td className="align-middle">{item.title}</td>
+                  <td className="align-middle">
+                    <NavLink to={`/reports/events/${item.eventId}`}>
+                      {item.title}
+                    </NavLink>
+                  </td>
                   <td className="align-middle">
                     {new Date(item.eventDate).toLocaleDateString(locale, {
                       year: "numeric",
@@ -111,7 +121,7 @@ export default function EventsReportPage() {
                   <td
                     className={
                       item.drawNet === 0
-                        ? "text-end align-middle"
+                        ? "text-end align-middle text-warning"
                         : item.drawNet > 0
                         ? "text-end align-middle text-success"
                         : "text-end align-middle text-danger"

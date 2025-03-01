@@ -22,9 +22,9 @@ public class MatchesRepository(IGambitDbClient gambitDbClient) : IMatchesReposit
         return await _gambitDbClient.ExecuteScalarAsync<decimal?>(query, token);
     }
 
-    public async Task<bool> CancelMatchAsync(Guid matchId, CancellationToken token)
+    public async Task<bool> CancelMatchAsync(Guid matchId, Guid cancelledBy, string ipAddress, CancellationToken token)
     {
-        var query = new CancelMatchQuery(matchId);
+        var query = new CancelMatchQuery(matchId, cancelledBy, ipAddress);
 
         return await _gambitDbClient.ExecuteAsync(query, token) > 0;
     }

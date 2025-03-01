@@ -78,7 +78,7 @@ export default function NavBar() {
           {features.includes(pathFeatureMappings["/reports"]) && (
             <NavDropdown title="Reports">
               <NavDropdown.Item to="/reports/events" as={NavLink}>
-                Events
+                Events Summary
               </NavDropdown.Item>
             </NavDropdown>
           )}

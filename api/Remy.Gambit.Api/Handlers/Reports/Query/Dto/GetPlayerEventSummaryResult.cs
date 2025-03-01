@@ -3,7 +3,7 @@ using Remy.Gambit.Core.Cqs;
 
 namespace Remy.Gambit.Api.Handlers.Reports.Query.Dto;
 
-public class GetEventsReportResult : QueryResult<IEnumerable<EventsReportItem>>
+public class GetPlayerEventSummaryResult : QueryResult<IEnumerable<PlayerEventSummaryItem>>
 {
 
 }

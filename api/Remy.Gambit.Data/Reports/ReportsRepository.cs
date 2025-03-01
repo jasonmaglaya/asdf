@@ -7,17 +7,24 @@ public class ReportsRepository(IGambitDbClient gambitDbClient) : IReportsReposit
 {
     private readonly IGambitDbClient _gambitDbClient = gambitDbClient;
 
-    public async Task<IEnumerable<EventReportItem>> GetEventsReportAsync(CancellationToken token)
+    public async Task<IEnumerable<EventsReportItem>> GetEventsReportAsync(CancellationToken token)
     {
         var query = new GetEventsReportQuery();
 
-        return await _gambitDbClient.GetCollectionAsync<EventReportItem>(query, token);
+        return await _gambitDbClient.GetCollectionAsync<EventsReportItem>(query, token);
     }
 
-    public async Task<IEnumerable<EventSummaryItem>> GetEventSummaryAsync(Guid eventId, Guid userId, CancellationToken token)
+    public async Task<IEnumerable<EventSummaryItem>> GetEventSummaryAsync(Guid eventId, CancellationToken token)
     {
-        var query = new GetEventSummaryQuery(eventId, userId);
+        var query = new GetEventSummaryQuery(eventId);
 
         return await _gambitDbClient.GetCollectionAsync<EventSummaryItem>(query, token);
+    }
+
+    public async Task<IEnumerable<PlayerEventSummaryItem>> GetPlayerEventSummaryAsync(Guid eventId, Guid userId, CancellationToken token)
+    {
+        var query = new GetPlayerEventSummaryQuery(eventId, userId);
+
+        return await _gambitDbClient.GetCollectionAsync<PlayerEventSummaryItem>(query, token);
     }
 }

@@ -1,14 +1,11 @@
 import { useState, useEffect } from "react";
-import {
-  getLastEvents,
-  getSummary,
-  getWinners,
-} from "../services/eventsService";
+import { getLastEvents, getWinners } from "../../services/eventsService";
 import { Container, Form, Tab, Tabs } from "react-bootstrap";
-import SpinnerComponent from "../components/_shared/SpinnerComponent";
-import PplayerEventSummary from "../components/event/PlayerEventSummary";
-import Trend from "../components/event/Trend";
+import SpinnerComponent from "../../components/_shared/SpinnerComponent";
+import PlayerEventSummary from "../../components/reports/PlayerEventSummary";
+import Trend from "../../components/event/Trend";
 import { useSelector } from "react-redux";
+import { getPlayerEventSummary } from "../../services/reportsService";
 
 export default function PlayerEventSummaryPage() {
   const [events, setEvents] = useState([]);
@@ -27,7 +24,7 @@ export default function PlayerEventSummaryPage() {
     try {
       setIsLoading(true);
 
-      const { data } = await getSummary(id);
+      const { data } = await getPlayerEventSummary(id);
 
       setSummary(data.result);
     } catch {
@@ -81,7 +78,7 @@ export default function PlayerEventSummaryPage() {
           className="mb-3"
         >
           <Tab eventKey="summary" title="Summary">
-            <PplayerEventSummary
+            <PlayerEventSummary
               history={summary}
               currency={currency}
               locale={locale}

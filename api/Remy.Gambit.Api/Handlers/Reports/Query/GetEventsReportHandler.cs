@@ -15,6 +15,6 @@ public class GetEventsReportHandler(IReportsRepository reportsRepository, IMappe
     {
         var report = await _reportsRepository.GetEventsReportAsync(token);
 
-        return new GetEventsReportResult { IsSuccessful = true, Result = _mapper.Map<IEnumerable<EventReportItem>>(report) };
+        return new GetEventsReportResult { IsSuccessful = true, Result = _mapper.Map<IEnumerable<EventsReportItem>>(report) };
     }
 }

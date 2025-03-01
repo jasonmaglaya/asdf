@@ -2,13 +2,15 @@
 
 public class EventSummaryItem
 {
-    public int MatchNumber { get; set; }
-    public string? BetOn { get; set; }
-    public decimal Bet { get; set; }
-    public DateTime BetTimeStamp { get; set; }
+    public Guid MatchId { get; set; }
+    public int Number { get; set; }
     public string? Winners { get; set; }
-    public decimal Odds { get; set; }
-    public decimal GainLoss { get; set; }
-    public DateTime GainLossDate { get; set; }
-    public string? Notes { get; set; }
+    public DateTime DeclareDate { get; set; }
+    public string? DeclaredBy { get; set; }
+    public string? IpAddress { get; set; }
+    public decimal TotalBets { get; set; }
+    public decimal Commission { get; set; }
+    public decimal TotalDraw { get; set; }
+    public decimal TotalDrawPayout { get; set; }
+    public decimal DrawNet { get; set; }
 }

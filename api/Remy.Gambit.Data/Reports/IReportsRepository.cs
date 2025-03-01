@@ -4,7 +4,9 @@ namespace Remy.Gambit.Data.Reports;
 
 public interface IReportsRepository
 {
-    Task<IEnumerable<EventReportItem>> GetEventsReportAsync(CancellationToken token);
+    Task<IEnumerable<EventsReportItem>> GetEventsReportAsync(CancellationToken token);
 
-    Task<IEnumerable<EventSummaryItem>> GetEventSummaryAsync(Guid eventId, Guid userId, CancellationToken token);    
+    Task<IEnumerable<EventSummaryItem>> GetEventSummaryAsync(Guid eventId, CancellationToken token);
+
+    Task<IEnumerable<PlayerEventSummaryItem>> GetPlayerEventSummaryAsync(Guid eventId, Guid userId, CancellationToken token);    
 }

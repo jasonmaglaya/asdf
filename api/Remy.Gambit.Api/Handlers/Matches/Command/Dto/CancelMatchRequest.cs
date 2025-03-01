@@ -9,5 +9,11 @@ namespace Remy.Gambit.Api.Handlers.Matches.Command.Dto
 
         [JsonIgnore]
         public Guid MatchId { get; set; }
+
+        [JsonIgnore]
+        public Guid CancelledBy { get; set; }
+
+        [JsonIgnore]
+        public string? IpAddress { get; set; }
     }
 }

@@ -11,5 +11,6 @@
         public const string UpdateRole = "UpdateRole";
         public const string ActivateAgency = "ActivateAgency";
         public const string ActivateUser = "ActivateUser";
+        public const string Reports = "Reports";
     }
 }

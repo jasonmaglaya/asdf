@@ -33,7 +33,7 @@ namespace Remy.Gambit.Api.Handlers.Matches.Command
                 return new CancelMatchResult { IsSuccessful = false, Errors = validationResult.Errors.Select(x => x.ErrorMessage) };
             }
 
-            var successful = await _matchesRepository.CancelMatchAsync(command.MatchId, token);
+            var successful = await _matchesRepository.CancelMatchAsync(command.MatchId, command.CancelledBy, command.IpAddress!, token);
 
             await _matchHub.Clients.Group(command.EventId.ToString()).SendAsync(EventHubEvents.MatchStatusReceived, MatchStatuses.Cancelled, cancellationToken: token);
 

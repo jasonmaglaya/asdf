@@ -222,6 +222,23 @@ public class MatchesController(
     {
         request.MatchId = id;
 
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        if (!Guid.TryParse(identity?.FindFirst(ClaimTypes.Name)?.Value!, out Guid userId))
+        {
+            return BadRequest();
+        }
+
+        request.CancelledBy = userId;
+
+        var clientIp = Request.Headers["X-Forwarded-For"].FirstOrDefault();
+
+        if (string.IsNullOrEmpty(clientIp))
+        {
+            clientIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+        }
+
+        request.IpAddress = clientIp;
+
         var result = await _cancelMatchHandler.HandleAsync(request, token);
 
         if (result.ValidationResults.Any())
