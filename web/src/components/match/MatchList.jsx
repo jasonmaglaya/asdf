@@ -88,7 +88,7 @@ export default function MatchList({ eventId, maxWinners, teams, allowDraw }) {
 
   return (
     <>
-      <Table variant="dark" striped hover style={{ marginBottom: "7rem" }}>
+      <Table variant="dark" striped hover style={{ marginBottom: "10rem" }}>
         <thead>
           <tr>
             <th>FIGHT #</th>
