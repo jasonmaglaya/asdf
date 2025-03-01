@@ -13,7 +13,7 @@ INSERT INTO MatchWinners (MatchId, TeamCode, DeclareId, DeclareDate, DeclaredBy,
 VALUES (@MatchId, @TeamCodes, @DeclareId, GETUTCDATE(), @DeclaredBy, 0, @IpAddress)
 
 UPDATE Matches SET Status = 'Completed'
-WHERE Id = @MatchIdS
+WHERE Id = @MatchId
 ";
 
     public ReDeclareWinnerQuery(Guid matchId, IEnumerable<string> teamCodes, Guid declareId, Guid declaredBy, string ipAddress)
