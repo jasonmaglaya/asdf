@@ -68,3 +68,7 @@ select.invalid {
 .navbar-nav .dropdown-menu {
     position: absolute !important;
 }
+
+.breadcrumb-item:before {
+    color: white !important
+}
