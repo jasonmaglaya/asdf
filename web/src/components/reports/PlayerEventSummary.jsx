@@ -256,7 +256,7 @@ export default function PlayerEventSummary({ history, currency, locale }) {
                     })}
                   </td>
                   <td className="align-middle">
-                    {new Date(item.betTimeStamp)?.toLocaleString()}
+                    {new Date(`${item.betTimeStamp}Z`)?.toLocaleString()}
                   </td>
                   <td className="align-middle">
                     {(item.odds * 100).toFixed(2)}%
@@ -356,7 +356,7 @@ export default function PlayerEventSummary({ history, currency, locale }) {
                               </td>
                               <td className="align-middle">
                                 {new Date(
-                                  declaration.gainLossDate
+                                  `${declaration.gainLossDate}Z`
                                 )?.toLocaleString()}
                               </td>
                               <td className="align-middle">

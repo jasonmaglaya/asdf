@@ -1,7 +1,13 @@
 import { useNavigate, NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCoins } from "@fortawesome/free-solid-svg-icons";
-import { Navbar, Nav, NavDropdown } from "react-bootstrap";
+import {
+  Navbar,
+  Nav,
+  NavDropdown,
+  Offcanvas,
+  Container,
+} from "react-bootstrap";
 import { logout as userLogout } from "../../services/authService";
 import { useSelector } from "react-redux";
 import { pathFeatureMappings } from "../../constants";
@@ -55,89 +61,118 @@ export default function NavBar() {
       <Navbar
         bg="dark"
         variant="dark"
-        className="justify-content-between"
-        sticky="top"
+        expand="lg"
+        className="justify-content-between px-2"
       >
-        <Nav>
-          <NavLink to="/" className="nav-link">
-            Home
-          </NavLink>
-          <NavLink to="/events/summary" className="nav-link">
-            Event History
-          </NavLink>
-          {features.includes(pathFeatureMappings["/events"]) && (
-            <NavLink to="/events" className="nav-link">
-              Events
-            </NavLink>
-          )}
-          {features.includes(pathFeatureMappings["/users"]) && (
-            <NavLink to="/users" className="nav-link">
-              Users
-            </NavLink>
-          )}
-          {features.includes(pathFeatureMappings["/reports"]) && (
-            <NavDropdown title="Reports">
-              <NavDropdown.Item to="/reports/events" as={NavLink}>
-                Events Summary
-              </NavDropdown.Item>
-            </NavDropdown>
-          )}
-        </Nav>
-        <div className="position-absolute start-50 translate-middle-x text-light d-none d-sm-block">
-          <h5>{dateTime}</h5>
-        </div>
-        <Nav>
+        <Container fluid>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Offcanvas
+            id="basic-navbar-nav"
+            onCLickAway={() => {
+              console.log("clicked away");
+            }}
+          >
+            <Offcanvas.Header closeButton>
+              <Offcanvas.Title>Menu</Offcanvas.Title>
+            </Offcanvas.Header>
+            <Offcanvas.Body>
+              <Nav className="me-auto">
+                <NavLink to="/" className="nav-link">
+                  Home
+                </NavLink>
+                <NavLink to="/events/summary" className="nav-link">
+                  Event History
+                </NavLink>
+                {features.includes(pathFeatureMappings["/events"]) && (
+                  <NavLink to="/events" className="nav-link">
+                    Events
+                  </NavLink>
+                )}
+                {features.includes(pathFeatureMappings["/users"]) && (
+                  <NavLink to="/users" className="nav-link">
+                    Users
+                  </NavLink>
+                )}
+                {features.includes(pathFeatureMappings["/reports"]) && (
+                  <NavDropdown title="Reports">
+                    <NavDropdown.Item to="/reports/events" as={NavLink}>
+                      Events Summary
+                    </NavDropdown.Item>
+                  </NavDropdown>
+                )}
+                <NavDropdown
+                  title={user?.username}
+                  id="basic-nav-dropdown"
+                  className="d-block d-lg-none"
+                >
+                  <NavDropdown.Item
+                    href="#"
+                    onClick={() => {
+                      logoutUser();
+                    }}
+                  >
+                    Logout
+                  </NavDropdown.Item>
+                </NavDropdown>
+              </Nav>
+            </Offcanvas.Body>
+          </Navbar.Offcanvas>
+          <div className="position-absolute start-50 translate-middle-x text-light d-none d-sm-block">
+            <h5>{dateTime}</h5>
+          </div>
           <Nav>
-            <NavDropdown title={user?.username} id="basic-nav-dropdown">
-              <NavDropdown.Item
-                href="#"
-                onClick={() => {
-                  logoutUser();
-                }}
-              >
-                Logout
-              </NavDropdown.Item>
-            </NavDropdown>
-          </Nav>
-          <Nav>
-            <NavDropdown
-              title={
-                <span className="fw-bolder">
-                  <i style={{ color: "gold" }} className="p-2">
-                    <FontAwesomeIcon icon={faCoins} />
-                  </i>
-                  <span className="text-success">
-                    {credits?.toLocaleString(locale || "en-US", {
-                      style: "currency",
-                      currency: currency || "USD",
-                    })}
+            <Nav className="d-none d-lg-block">
+              <NavDropdown title={user?.username} id="basic-nav-dropdown">
+                <NavDropdown.Item
+                  href="#"
+                  onClick={() => {
+                    logoutUser();
+                  }}
+                >
+                  Logout
+                </NavDropdown.Item>
+              </NavDropdown>
+            </Nav>
+            <Nav>
+              <NavDropdown
+                title={
+                  <span className="fw-bolder">
+                    <i style={{ color: "gold" }} className="p-2">
+                      <FontAwesomeIcon icon={faCoins} />
+                    </i>
+                    <span className="text-success">
+                      {credits?.toLocaleString(locale || "en-US", {
+                        style: "currency",
+                        currency: currency || "USD",
+                      })}
+                    </span>
                   </span>
-                </span>
-              }
-              align="end"
-            >
-              <NavDropdown.Item
-                href="#"
-                onClick={() => setShowCashInDialog(true)}
+                }
+                align="end"
               >
-                <span>Cash In</span>
-              </NavDropdown.Item>
-              <NavDropdown.Item
-                href="#"
-                onClick={() => setShowCashOutDialog(true)}
-              >
-                <span>Cash Out</span>
-              </NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item
-                href="#"
-                onClick={() => setShowCreditHistoryDialog(true)}
-              >
-                <span>History</span>
-              </NavDropdown.Item>
-            </NavDropdown>
+                <NavDropdown.Item
+                  href="#"
+                  onClick={() => setShowCashInDialog(true)}
+                >
+                  <span>Cash In</span>
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  href="#"
+                  onClick={() => setShowCashOutDialog(true)}
+                >
+                  <span>Cash Out</span>
+                </NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item
+                  href="#"
+                  onClick={() => setShowCreditHistoryDialog(true)}
+                >
+                  <span>History</span>
+                </NavDropdown.Item>
+              </NavDropdown>
+            </Nav>
           </Nav>
-        </Nav>
+        </Container>
       </Navbar>
       <CashInDialog
         show={showCashInDialog}

@@ -64,3 +64,7 @@ select.invalid {
     text-decoration: none;
     background-color: var(--bs-dropdown-link-bg);
 }
+
+.navbar-nav .dropdown-menu {
+    position: absolute !important;
+}

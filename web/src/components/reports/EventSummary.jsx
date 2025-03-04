@@ -242,7 +242,7 @@ export default function EventSummary({ summary, currency, locale, event }) {
                               </td>
                               <td className="align-middle">
                                 {new Date(
-                                  declaration.declareDate
+                                  `${declaration.declareDate}Z`
                                 )?.toLocaleString()}
                               </td>
                               <td className="align-middle">
