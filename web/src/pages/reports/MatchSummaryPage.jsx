@@ -38,35 +38,34 @@ export default function MatchSummaryPage() {
   useEffect(() => {
     const loadMatch = async (id) => {
       try {
-        const getMatchResult = await getMatch(id);
-        if (!getMatchResult.data.isSuccessful) {
-          return;
-        }
+        const getMatchResult = getMatch(id);
+        const getEventResult = getEvent(eventId);
+        const getTotalBetsResult = getTotalBets(id);
+        const getMatchSummaryResult = getMatchSummary(id);
 
-        const match = getMatchResult.data.result;
-        setMatch(match);
+        const [matchResult, eventResult, totalBetsResult, matchSummaryResult] =
+          await Promise.all([
+            getMatchResult,
+            getEventResult,
+            getTotalBetsResult,
+            getMatchSummaryResult,
+          ]);
 
-        const getEventResult = await getEvent(match.eventId);
-        if (!getEventResult.data.isSuccessful) {
-          return;
-        }
+        setMatch(matchResult.data.result);
 
-        const event = getEventResult.data.result;
-        setEvent(event);
+        setEvent(eventResult.data.result);
 
-        const getTotalBetsResult = await getTotalBets(id);
-        setTotalBets(getTotalBetsResult.data.result.totalBets);
-        setCommission(getTotalBetsResult.data.result.commission);
+        setTotalBets(totalBetsResult.data.result.totalBets);
+        setCommission(totalBetsResult.data.result.commission);
 
-        const getMatchSummaryResult = await getMatchSummary(id);
-        setSummary(getMatchSummaryResult.data.result);
+        setSummary(matchSummaryResult.data.result);
 
         setIsLoading(false);
       } catch {}
     };
 
     loadMatch(matchId);
-  }, [matchId]);
+  }, [eventId, matchId]);
 
   const showHide = async (id) => {
     document.getElementById(`${id}-2`).classList.toggle("d-none");
