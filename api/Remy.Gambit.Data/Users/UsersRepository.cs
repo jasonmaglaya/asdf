@@ -93,6 +93,13 @@ public class UsersRepository : IUsersRepository
         return await _gambitDbClient.ExecuteAsync(query, token) > 0;
     }
 
+    public async Task<bool> UpdateBettingStatusAsync(Guid username, bool isBettingLocked, CancellationToken token)
+    {
+        var query = new UpdateBettingStatusQuery(username, isBettingLocked);
+
+        return await _gambitDbClient.ExecuteAsync(query, token) > 0;
+    }
+
     public async Task<bool> UpdateRoleAsync(Guid username, string roleCode, CancellationToken token)
     {
         var query = new UpdateRoleQuery(username, roleCode);

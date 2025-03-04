@@ -6,6 +6,7 @@ import {
   updateAgency,
   getUser,
   transferCredits,
+  updateBettingStatus,
 } from "../../services/usersService";
 import { getRoles } from "../../services/rolesService";
 import { DownLines, Features } from "../../constants";
@@ -22,6 +23,7 @@ export default function User({ user, setUser }) {
   const [isBusy, setIsBusy] = useState();
   const [isBusyActivating, setIsBusyActivating] = useState();
   const [isActive, setIsActive] = useState(false);
+  const [isBettingLocked, setIsBettingLocked] = useState(false);
   const [isAgent, setIsAgent] = useState(true);
   const [isActivatingAgency, setIsActivatingAgency] = useState();
   const { user: currentUser, features } = useSelector((state) => state.user);
@@ -37,6 +39,12 @@ export default function User({ user, setUser }) {
   const onCheckChange = (e) => {
     const status = e.target.checked;
     setHandleConfirm(() => () => updateUserStatus(status));
+    setShowConfirmDialog(true);
+  };
+
+  const onBettingCheckChange = (e) => {
+    const status = e.target.checked;
+    setHandleConfirm(() => () => updateUserBettingStatus(status));
     setShowConfirmDialog(true);
   };
 
@@ -72,6 +80,18 @@ export default function User({ user, setUser }) {
     updateStatus(user?.id, status)
       .then(() => {
         setIsActive(status);
+      })
+      .finally(() => {
+        setIsBusy(false);
+        setShowConfirmDialog(false);
+      });
+  };
+
+  const updateUserBettingStatus = (isBettingLocked) => {
+    setIsBusy(true);
+    updateBettingStatus(user?.id, isBettingLocked)
+      .then(() => {
+        setIsBettingLocked(isBettingLocked);
       })
       .finally(() => {
         setIsBusy(false);
@@ -153,6 +173,7 @@ export default function User({ user, setUser }) {
     setIsActive(user?.isActive);
     setSelectedRole(user?.role);
     setIsAgent(user?.userRole.isAgent);
+    setIsBettingLocked(user?.isBettingLocked);
 
     if (user?.commission) {
       agencyForm.setValue("commission", (user?.commission * 100).toFixed(2), {
@@ -196,37 +217,68 @@ export default function User({ user, setUser }) {
                   )}
                 </Form.Label>
               </Form.Group>
-              {user?.id !== currentUser?.id &&
-              (features.includes(Features.ActivateUser) ||
-                user?.uplineUser.id === currentUser?.id) ? (
-                <Form.Group className="mb-2" controlId="active">
-                  <Form.Label>Active</Form.Label>
-                  <div
-                    className="form-check form-switch form-control-lg"
-                    style={{ paddingTop: 0 }}
-                  >
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="isActive"
-                      checked={isActive ?? false}
-                      onChange={(e) => onCheckChange(e)}
-                      disabled={isBusy}
-                    />
-                    {isBusy ? (
-                      <span
-                        className="spinner-grow spinner-grow-sm text-primary"
-                        role="status"
-                      ></span>
-                    ) : (
-                      <></>
+              <Row>
+                <Col>
+                  {user?.id !== currentUser?.id &&
+                    (features.includes(Features.ActivateUser) ||
+                      user?.uplineUser.id === currentUser?.id) && (
+                      <Form.Group className="mb-2" controlId="active">
+                        <Form.Label>Active</Form.Label>
+                        <div
+                          className="form-check form-switch form-control-lg"
+                          style={{ paddingTop: 0 }}
+                        >
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            id="isActive"
+                            checked={isActive ?? false}
+                            onChange={(e) => onCheckChange(e)}
+                            disabled={isBusy}
+                          />
+                          {isBusy ? (
+                            <span
+                              className="spinner-grow spinner-grow-sm text-primary"
+                              role="status"
+                            ></span>
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                      </Form.Group>
                     )}
-                  </div>
-                </Form.Group>
-              ) : (
-                <></>
-              )}
-
+                </Col>
+                <Col>
+                  {user?.id !== currentUser?.id &&
+                    (features.includes(Features.ActivateUser) ||
+                      user?.uplineUser.id === currentUser?.id) && (
+                      <Form.Group className="mb-2" controlId="active">
+                        <Form.Label>Betting Locked</Form.Label>
+                        <div
+                          className="form-check form-switch form-control-lg"
+                          style={{ paddingTop: 0 }}
+                        >
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            id="isBettingLocked"
+                            checked={isBettingLocked ?? false}
+                            onChange={(e) => onBettingCheckChange(e)}
+                            disabled={isBusy}
+                          />
+                          {isBusy ? (
+                            <span
+                              className="spinner-grow spinner-grow-sm text-primary"
+                              role="status"
+                            ></span>
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                      </Form.Group>
+                    )}
+                </Col>
+              </Row>
               {user?.id !== currentUser?.id &&
               !user?.userRole?.isAgent &&
               !user?.uplineUser &&

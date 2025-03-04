@@ -23,6 +23,8 @@ public interface IUsersRepository
 
     Task<bool> UpdateStatusAsync(Guid userId, bool isActive, CancellationToken token);
 
+    Task<bool> UpdateBettingStatusAsync(Guid userId, bool isBettingLocked, CancellationToken token);
+
     Task<bool> UpdateRoleAsync(Guid userId, string roleCode, CancellationToken token);
 
     Task<bool> UpdateAgencyAsync(Guid userId, string agentCode, double commission, string role, CancellationToken token);

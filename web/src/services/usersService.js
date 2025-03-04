@@ -22,6 +22,12 @@ export const updateStatus = async (userId, isActive) => {
   return jwtInterceptor.patch(`/users/${userId}/status`, { isActive });
 };
 
+export const updateBettingStatus = async (userId, isBettingLocked) => {
+  return jwtInterceptor.patch(`/users/${userId}/betting/status`, {
+    isBettingLocked,
+  });
+};
+
 export const updateRole = async (userId, roleCode) => {
   return jwtInterceptor.patch(`/users/${userId}/role`, { roleCode });
 };

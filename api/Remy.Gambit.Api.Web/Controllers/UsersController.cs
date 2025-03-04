@@ -16,6 +16,7 @@ public class UsersController(
     IQueryHandler<GetUserRequest, GetUserResult> getUserInfoHandler,
     IQueryHandler<GetDownLinesRequest, GetDownLinesResult> getDownlinesHandler,
     ICommandHandler<UpdateUserStatusRequest, UpdateUserStatusResult> changeUserStatusHandler,
+    ICommandHandler<UpdateUserBettingStatusRequest, UpdateUserBettingStatusResult> changeUserBettingStatusHandler,
     ICommandHandler<UpdateUserRoleRequest, UpdateUserRoleResult> updateUserRoleHandler,
     ICommandHandler<UpdateAgencyRequest, UpdateAgencyResult> updateAgencyHandler,
     IQueryHandler<GetAllUsersRequest, GetAllUsersResult> getAllUsersHandler,
@@ -26,6 +27,7 @@ public class UsersController(
     private readonly IQueryHandler<GetUserRequest, GetUserResult> _getUserInfoHandler = getUserInfoHandler;
     private readonly IQueryHandler<GetDownLinesRequest, GetDownLinesResult> _getDownLinesHandler = getDownlinesHandler;
     private readonly ICommandHandler<UpdateUserStatusRequest, UpdateUserStatusResult> _changeUserStatusHandler = changeUserStatusHandler;
+    private readonly ICommandHandler<UpdateUserBettingStatusRequest, UpdateUserBettingStatusResult> _changeUserBettingStatusHandler = changeUserBettingStatusHandler;
     private readonly ICommandHandler<UpdateUserRoleRequest, UpdateUserRoleResult> _updateUserRoleHandler = updateUserRoleHandler;
     private readonly ICommandHandler<UpdateAgencyRequest, UpdateAgencyResult> _updateAgencyHandler = updateAgencyHandler;
     private readonly IQueryHandler<GetAllUsersRequest, GetAllUsersResult> _getAllUsersHandler = getAllUsersHandler;
@@ -144,6 +146,33 @@ public class UsersController(
         request.UserId = id;
 
         var result = await _changeUserStatusHandler.HandleAsync(request, token);
+
+        if (result.ValidationResults.Any())
+        {
+            return BadRequest(result);
+        }
+
+        if (!result.IsSuccessful)
+        {
+            return Unauthorized();
+        }
+
+        return Ok(result);
+    }
+
+    [HttpPatch("{id}/betting/status")]
+    public async Task<ActionResult<UpdateUserBettingStatusResult>> UpdateBettingStatus([FromRoute] Guid id, [FromBody] UpdateUserBettingStatusRequest request, CancellationToken token)
+    {
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        if (!Guid.TryParse(identity?.FindFirst(ClaimTypes.Name)?.Value!, out Guid userId))
+        {
+            return Unauthorized();
+        }
+
+        request.Requestor = userId;
+        request.UserId = id;
+
+        var result = await _changeUserBettingStatusHandler.HandleAsync(request, token);
 
         if (result.ValidationResults.Any())
         {
