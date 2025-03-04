@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getLastEvents, getWinners } from "../../services/eventsService";
-import { Form, Tab, Tabs } from "react-bootstrap";
+import { Container, Form, Tab, Tabs } from "react-bootstrap";
 import SpinnerComponent from "../../components/_shared/SpinnerComponent";
 import PlayerEventSummary from "../../components/reports/PlayerEventSummary";
 import Trend from "../../components/event/Trend";
@@ -60,7 +60,7 @@ export default function PlayerEventSummaryPage() {
   }, [eventId]);
 
   return (
-    <div className="mt-2 px-3 text-light">
+    <Container className="mt-2 text-light px-3" fluid>
       <h3>Event Summary</h3>
       <Form.Select onChange={onEventChange} className="mb-3">
         {events.map((event) => (
@@ -89,6 +89,6 @@ export default function PlayerEventSummaryPage() {
           </Tab>
         </Tabs>
       )}
-    </div>
+    </Container>
   );
 }

@@ -66,12 +66,7 @@ export default function NavBar() {
       >
         <Container fluid>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Offcanvas
-            id="basic-navbar-nav"
-            onCLickAway={() => {
-              console.log("clicked away");
-            }}
-          >
+          <Navbar.Offcanvas id="basic-navbar-nav">
             <Offcanvas.Header closeButton>
               <Offcanvas.Title>Menu</Offcanvas.Title>
             </Offcanvas.Header>

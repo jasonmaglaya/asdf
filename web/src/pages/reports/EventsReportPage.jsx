@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Breadcrumb, Table } from "react-bootstrap";
+import { Breadcrumb, Container, Table } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import SpinnerComponent from "../../components/_shared/SpinnerComponent";
 import { getEventsReport } from "../../services/reportsService";
@@ -28,7 +28,7 @@ export default function EventsReportPage() {
   }, []);
 
   return (
-    <div className="mt-2 px-3 text-light">
+    <Container className="mt-2 text-light px-3" fluid>
       <h3>Events Summary</h3>
       <Breadcrumb>
         <Breadcrumb.Item className="text-light" active>
@@ -138,6 +138,6 @@ export default function EventsReportPage() {
           </tbody>
         </Table>
       )}
-    </div>
+    </Container>
   );
 }

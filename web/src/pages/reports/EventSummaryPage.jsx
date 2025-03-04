@@ -1,4 +1,4 @@
-import { Breadcrumb, Tab, Tabs } from "react-bootstrap";
+import { Breadcrumb, Container, Tab, Tabs } from "react-bootstrap";
 import SpinnerComponent from "../../components/_shared/SpinnerComponent";
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
@@ -115,7 +115,7 @@ export default function EventSummaryPage() {
   }, [eventId]);
 
   return (
-    <div className="mt-2 px-3 text-light">
+    <Container className="mt-2 text-light px-3" fluid>
       <h3>Events Summary</h3>
       <Breadcrumb>
         <Breadcrumb.Item>
@@ -146,6 +146,6 @@ export default function EventSummaryPage() {
           </Tab>
         </Tabs>
       )}
-    </div>
+    </Container>
   );
 }
