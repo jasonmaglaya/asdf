@@ -116,7 +116,7 @@ export default function EventSummaryPage() {
 
   return (
     <Container className="mt-2 text-light px-3" fluid>
-      <h3>Events Summary</h3>
+      <h3>Event Summary</h3>
       <Breadcrumb>
         <Breadcrumb.Item>
           <NavLink to="/reports/events">Events</NavLink>

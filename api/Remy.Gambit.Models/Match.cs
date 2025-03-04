@@ -9,4 +9,6 @@ public class Match
     public string? Status { get; set; }
     public int? Sequence { get; set; }
     public string? WinnerCode { get; set; }
+    public IEnumerable<Team>? Teams { get; set; }
+    public IEnumerable<string>? Winners { get; set; }
 }

@@ -84,9 +84,7 @@ export default function Team({
         </h3>
         <Row xs={1} md={2}>
           <Col>
-            <small className="text-secondary d-none d-lg-block">
-              TOTAL BETS
-            </small>
+            <small className="d-none d-lg-block">TOTAL BETS</small>
             {isRolling ? (
               <h5>
                 {(displayTotalBets || 0).toLocaleString(locale || "en-US", {
@@ -105,7 +103,7 @@ export default function Team({
           </Col>
           {code !== "D" && (
             <Col>
-              <small className="text-secondary d-none d-lg-block">ODDS</small>
+              <small className="d-none d-lg-block">ODDS</small>
               {isRolling ? (
                 <h5 className="text text-warning">
                   {displayOdd && displayOdd !== Infinity
@@ -122,9 +120,7 @@ export default function Team({
           )}
           {code === "D" && (
             <Col>
-              <small className="text-secondary d-none d-lg-block">
-                MULTIPLIER
-              </small>
+              <small className="d-none d-lg-block">MULTIPLIER</small>
               <h5 className="text text-warning">x{drawMultiplier}</h5>
             </Col>
           )}

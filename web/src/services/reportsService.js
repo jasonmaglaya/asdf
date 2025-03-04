@@ -11,3 +11,11 @@ export const getEventSummary = async (eventId) => {
 export const getPlayerEventSummary = async (eventId) => {
   return jwtInterceptor.get(`/reports/players/events/${eventId}`);
 };
+
+export const getMatchSummary = async (matchId) => {
+  return jwtInterceptor.get(`/reports/matches/${matchId}`);
+};
+
+export const getPlayerBetSummary = async (matchId, userId) => {
+  return jwtInterceptor.get(`/reports/matches/${matchId}/players/${userId}`);
+};

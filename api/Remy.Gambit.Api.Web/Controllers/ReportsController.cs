@@ -14,18 +14,34 @@ namespace Remy.Gambit.Api.Web.Controllers
     public class ReportsController(
         IQueryHandler<GetEventsReportRequest, GetEventsReportResult> getEventsReportHandler,
         IQueryHandler<GetEventSummaryRequest, GetEventSummaryResult> getEventSummaryHandler,
-        IQueryHandler<GetPlayerEventSummaryRequest, GetPlayerEventSummaryResult> getPlayerEventSummaryHandler
+        IQueryHandler<GetPlayerEventSummaryRequest, GetPlayerEventSummaryResult> getPlayerEventSummaryHandler,
+        IQueryHandler<GetMatchSummaryRequest, GetMatchSummaryResult> getMatchSummaryHandler,
+        IQueryHandler<GetPlayerBetSummaryRequest, GetPlayerBetSummaryResult> getPlayerBetSummaryHandler
         ) : ControllerBase        
     {
         private readonly IQueryHandler<GetEventsReportRequest, GetEventsReportResult> _getEventsReportHandler = getEventsReportHandler;
         private readonly IQueryHandler<GetEventSummaryRequest, GetEventSummaryResult> _getEventSummaryHandler = getEventSummaryHandler;
         private readonly IQueryHandler<GetPlayerEventSummaryRequest, GetPlayerEventSummaryResult> _getPlayerEventSummaryHandler = getPlayerEventSummaryHandler;
+        private readonly IQueryHandler<GetMatchSummaryRequest, GetMatchSummaryResult> _getMatchSummaryHandler = getMatchSummaryHandler;
+        private readonly IQueryHandler<GetPlayerBetSummaryRequest, GetPlayerBetSummaryResult> _getPlayerBetSummaryHandler = getPlayerBetSummaryHandler;
 
         [FeatureFilter(Features.Reports)]
         [HttpGet("events")]
         public async Task<ActionResult<GetEventsReportResult>> GetEventsReportAsync(CancellationToken token)
         {
-            return Ok(await _getEventsReportHandler.HandleAsync(new GetEventsReportRequest(), token));
+            var result = await _getEventsReportHandler.HandleAsync(new GetEventsReportRequest() , token);
+
+            if (result.ValidationResults.Any())
+            {
+                return BadRequest(result);
+            }
+
+            if (!result.IsSuccessful)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
         }
 
         [FeatureFilter(Features.Reports)]
@@ -52,6 +68,7 @@ namespace Remy.Gambit.Api.Web.Controllers
             return Ok(result);
         }
 
+        [FeatureFilter(Features.Reports)]
         [HttpGet("players/events/{id}")]
         public async Task<ActionResult<GetPlayerEventSummaryResult>> GetPlayerEventSummary([FromRoute] Guid id, CancellationToken token)
         {
@@ -69,6 +86,44 @@ namespace Remy.Gambit.Api.Web.Controllers
             request.UserId = userId;
 
             var result = await _getPlayerEventSummaryHandler.HandleAsync(request, token);
+
+            if (result.ValidationResults.Any())
+            {
+                return BadRequest(result);
+            }
+
+            if (!result.IsSuccessful)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        [FeatureFilter(Features.Reports)]
+        [HttpGet("matches/{id}")]
+        public async Task<ActionResult<GetMatchSummaryResult>> GetMatchSummary([FromRoute] Guid id, CancellationToken token)
+        {
+            var result = await _getMatchSummaryHandler.HandleAsync(new GetMatchSummaryRequest { MatchId = id }, token);
+
+            if (result.ValidationResults.Any())
+            {
+                return BadRequest(result);
+            }
+
+            if (!result.IsSuccessful)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        [FeatureFilter(Features.Reports)]
+        [HttpGet("matches/{matchId}/players/{userId}")]
+        public async Task<ActionResult<GetPlayerBetSummaryResult>> GetPlayerBetSummary([FromRoute] Guid matchId, [FromRoute] Guid userId, CancellationToken token)
+        {
+            var result = await _getPlayerBetSummaryHandler.HandleAsync(new GetPlayerBetSummaryRequest { MatchId = matchId, UserId = userId }, token);
 
             if (result.ValidationResults.Any())
             {

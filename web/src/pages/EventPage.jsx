@@ -252,6 +252,11 @@ export default function EventPage() {
               (AdminRoles.includes(role) && event.allowAdminBetting) ||
               (AgentRoles.includes(role) && event.allowAgentBetting))
           }
+          match={match}
+          totalBets={totalBets}
+          commission={commission}
+          status={status}
+          winners={winners}
         ></Betting>
         {((canControlMatch && event.allowAdminBetting) ||
           (!event.allowAgentBetting && !PlayerRoles.includes(role))) &&

@@ -29,7 +29,7 @@ export default function EventsReportPage() {
 
   return (
     <Container className="mt-2 text-light px-3" fluid>
-      <h3>Events Summary</h3>
+      <h3>Events</h3>
       <Breadcrumb>
         <Breadcrumb.Item className="text-light" active>
           Events

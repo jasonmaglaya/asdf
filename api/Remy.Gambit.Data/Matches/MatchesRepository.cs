@@ -106,11 +106,21 @@ public class MatchesRepository(IGambitDbClient gambitDbClient) : IMatchesReposit
         return await _gambitDbClient.GetCollectionAsync<TotalBet>(query, token);
     }
 
-    public async Task<Match> GetMatchAsync(Guid id, CancellationToken token)
+    public async Task<Match?> GetMatchAsync(Guid id, CancellationToken token)
     {
         var query = new GetMatchQuery(id);
 
-        return await _gambitDbClient.GetFirstOrDefaultAsync<Match>(query, token);
+        var (firstResult, secondResult, thirdResult) = await _gambitDbClient.GetMultipleAsync<Match, Team, string>(query, token);
+
+        var match = firstResult.FirstOrDefault();
+
+        if (match is not null)
+        {
+            match.Teams = secondResult;
+            match.Winners = thirdResult;
+        }
+
+        return match;
     }
 
     public async Task<(IEnumerable<TotalBet>, decimal)> GetTotalBetsAsync(Guid id, CancellationToken token)

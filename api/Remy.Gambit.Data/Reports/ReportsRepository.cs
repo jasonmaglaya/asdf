@@ -27,4 +27,18 @@ public class ReportsRepository(IGambitDbClient gambitDbClient) : IReportsReposit
 
         return await _gambitDbClient.GetCollectionAsync<PlayerEventSummaryItem>(query, token);
     }
+
+    public async Task<IEnumerable<MatchSummaryItem>> GetMatchSummaryAsync(Guid matchId, CancellationToken token)
+    {
+        var query = new GetMatchSummaryQuery(matchId);
+
+        return await _gambitDbClient.GetCollectionAsync<MatchSummaryItem>(query, token);
+    }
+
+    public async Task<IEnumerable<PlayerBetSummaryItem>> GetPlayerBetSummaryAsync(Guid matchId, Guid userId, CancellationToken token)
+    {
+        var query = new GetPlayerBetSummaryQuery(matchId, userId);
+
+        return await _gambitDbClient.GetCollectionAsync<PlayerBetSummaryItem>(query, token);
+    }
 }

@@ -29,6 +29,8 @@ namespace Remy.Gambit.Api.Mappers
             CreateMap<PlayerEventSummaryItem, Dto.PlayerEventSummaryItem>();
             CreateMap<EventsReportItem, Dto.EventsReportItem>();
             CreateMap<EventSummaryItem, Dto.EventSummaryItem>();
+            CreateMap<MatchSummaryItem, Dto.MatchSummaryItem>();
+            CreateMap<PlayerBetSummaryItem, Dto.PlayerBetSummaryItem>();
         }
     }
 }

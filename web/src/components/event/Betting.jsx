@@ -1,11 +1,10 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import { Card, Row, Col, Badge } from "react-bootstrap";
 import Team from "./Team";
 import PlaceBet from "./PlaceBet";
 import { MatchStatus, AdminRoles } from "../../constants";
 import { getBets } from "../../services/matchesService";
 import { BetsContext } from "../_shared/BetsContext";
-import { MatchContext } from "../_shared/MatchContext";
 import PlaceBetDraw from "./PlaceBetDraw";
 import { useSelector } from "react-redux";
 import SpinnerComponent from "../_shared/SpinnerComponent";
@@ -21,11 +20,15 @@ export default function Betting({
   allowBetting,
   currency,
   locale,
+  match,
+  totalBets,
+  commission,
+  status,
+  winners,
+  forReport,
 }) {
   const [bets, setBets] = useState([]);
   const [disabled, setDisabled] = useState(true);
-  const { match, totalBets, commission, status, winners } =
-    useContext(MatchContext);
 
   const { role, credits } = useSelector((state) => state.user);
 
@@ -53,46 +56,61 @@ export default function Betting({
         <Card.Header className="p-2 pb-0">
           <h5 className="text-center">{title}</h5>
           <div className="d-flex justify-content-between align-items-center">
-            <h4>
-              <Badge
-                className="text-uppercase"
-                bg={
-                  status === MatchStatus.Open
-                    ? "success"
+            {!forReport ? (
+              <h4>
+                <Badge
+                  className="text-uppercase"
+                  bg={
+                    status === MatchStatus.Open
+                      ? "success"
+                      : status === MatchStatus.Cancelled
+                      ? "secondary"
+                      : "danger"
+                  }
+                >
+                  {status === MatchStatus.Open
+                    ? MatchStatus.Open
                     : status === MatchStatus.Cancelled
-                    ? "secondary"
-                    : "danger"
-                }
-              >
-                {status === MatchStatus.Open
-                  ? MatchStatus.Open
-                  : status === MatchStatus.Cancelled
-                  ? MatchStatus.Cancelled
-                  : "Closed"}
-              </Badge>
-            </h4>
+                    ? MatchStatus.Cancelled
+                    : "Closed"}
+                </Badge>
+              </h4>
+            ) : (
+              <span></span>
+            )}
             {status === MatchStatus.Open ? (
               <h4 className="text-center text-danger fw-bolder blink">
                 PLACE YOUR BETS!
               </h4>
-            ) : [MatchStatus.Declared, MatchStatus.Completed].includes(
-                status
-              ) ? (
-              <h4 className="text-center fw-bolder blink">
-                {[...match?.teams, { code: "D", name: "DRAW", color: "green" }]
-                  ?.filter((x) => winners.includes(x.code))
-                  .map((x) => {
-                    const { name, color } = x;
-                    return (
-                      <span key={name} className="fw-bolder" style={{ color }}>
-                        {name}
-                      </span>
-                    );
-                  })}{" "}
-                WINS
-              </h4>
             ) : (
-              <></>
+              [MatchStatus.Declared, MatchStatus.Completed].includes(
+                status
+              ) && (
+                <h4
+                  className={
+                    "text-center fw-bolder" + (forReport ? "" : " blink")
+                  }
+                >
+                  {[
+                    ...match?.teams,
+                    { code: "D", name: "DRAW", color: "green" },
+                  ]
+                    ?.filter((x) => winners.includes(x.code))
+                    .map((x) => {
+                      const { name, color } = x;
+                      return (
+                        <span
+                          key={name}
+                          className="fw-bolder"
+                          style={{ color }}
+                        >
+                          {name}
+                        </span>
+                      );
+                    })}{" "}
+                  WINS
+                </h4>
+              )
             )}
 
             <h5 className="d-flex align-items-center">
@@ -118,7 +136,7 @@ export default function Betting({
                 const odd = (total - total * commission) / teamTotalBets;
 
                 return (
-                  <Col key={t.name}>
+                  <Col key={t.name} lg={forReport ? 4 : 6}>
                     <Team
                       matchId={match?.id}
                       name={t.name}
@@ -143,7 +161,7 @@ export default function Betting({
                 );
               })}
               {!allowBetting && (
-                <Col key="DRAW">
+                <Col key="DRAW" lg={forReport ? 4 : 6}>
                   <Team
                     matchId={match?.id}
                     name="DRAW"

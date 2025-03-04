@@ -7,7 +7,7 @@ public interface IMatchesRepository
 {
     Task<Guid> AddMatchAsync(Guid eventId, Match match, CancellationToken token);
 
-    Task<Match> GetMatchAsync(Guid id, CancellationToken token);
+    Task<Match?> GetMatchAsync(Guid id, CancellationToken token);
 
     Task<IEnumerable<Winner>> GetMatchWinnersAsync(Guid matchId, CancellationToken token);
 

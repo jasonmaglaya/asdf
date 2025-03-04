@@ -1,5 +1,9 @@
 import jwtInterceptor from "./jwtInterceptor";
 
+export const getMatch = async (matchId) => {
+  return jwtInterceptor.get(`/matches/${matchId}`, { matchId });
+};
+
 export const addBet = async (matchId, teamCode, amount) => {
   return jwtInterceptor.post(`/matches/${matchId}/bets`, { teamCode, amount });
 };

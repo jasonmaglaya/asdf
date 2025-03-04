@@ -3,6 +3,7 @@ import TeamAvatar from "../../components/event/TeamAvatar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useMemo, Fragment } from "react";
+import { NavLink } from "react-router-dom";
 
 export default function EventSummary({ summary, currency, locale, event }) {
   const legend = useMemo(
@@ -122,7 +123,13 @@ export default function EventSummary({ summary, currency, locale, event }) {
                       className="d-none"
                     />
                   </td>
-                  <td className="align-middle">{item.number}</td>
+                  <td className="align-middle">
+                    <NavLink
+                      to={`/reports/events/${event.id}/matches/${item.matchId}`}
+                    >
+                      {item.number}
+                    </NavLink>
+                  </td>
                   <td className="align-middle">
                     {item.winners?.split(",").map((code) => {
                       const { color, text } = legend.find(

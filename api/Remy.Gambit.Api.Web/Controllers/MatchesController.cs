@@ -13,6 +13,7 @@ namespace Remy.Gambit.Api.Web.Controllers;
 [Route("[controller]")]
 [ApiController]
 public class MatchesController(
+    IQueryHandler<GetMatchRequest, GetMatchResult> getMatchHandler,
     ICommandHandler<AddBetRequest, AddBetResult> addBetHandler,
     IQueryHandler<GetTotalBetsRequest, GetTotalBetsResult> getTotalBetsHandler,
     IQueryHandler<GetBetsRequest, GetBetsResult> getBetsHandler,
@@ -22,6 +23,7 @@ public class MatchesController(
     ICommandHandler<CancelMatchRequest, CancelMatchResult> cancelMatchHandler
     ) : ControllerBase
 {
+    private readonly IQueryHandler<GetMatchRequest, GetMatchResult> _getMatchHandler = getMatchHandler;
     private readonly ICommandHandler<AddBetRequest, AddBetResult> _addBetHandler = addBetHandler;
     private readonly IQueryHandler<GetTotalBetsRequest, GetTotalBetsResult> _getTotalBetsHandler = getTotalBetsHandler;
     private readonly IQueryHandler<GetBetsRequest, GetBetsResult> _getBetsHandler = getBetsHandler;
@@ -29,6 +31,29 @@ public class MatchesController(
     private readonly ICommandHandler<DeclareWinnerRequest, DeclareWinnerResult> _declareWinnerHandler = declareWinnerHandler;
     private readonly ICommandHandler<ReDeclareWinnerRequest, ReDeclareWinnerResult> _reDeclareWinnerHandler = reDeclareWinnerHandler;
     private readonly ICommandHandler<CancelMatchRequest, CancelMatchResult> _cancelMatchHandler = cancelMatchHandler;
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<GetMatchResult>> GetMatch([FromRoute] Guid id, CancellationToken token)
+    {
+        var request = new GetMatchRequest
+        {
+            MatchId = id
+        };
+
+        var result = await _getMatchHandler.HandleAsync(request, token);
+
+        if (result.ValidationResults.Any())
+        {
+            return BadRequest(result);
+        }
+
+        if (!result.IsSuccessful)
+        {
+            return NotFound();
+        }
+
+        return Ok(result);
+    }
 
     [HttpPost("{id}/bets")]
     public async Task<ActionResult<AddBetResult>> AddBet([FromRoute] Guid id, [FromBody] AddBetRequest request, CancellationToken token)
