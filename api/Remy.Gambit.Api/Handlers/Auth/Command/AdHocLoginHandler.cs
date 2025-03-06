@@ -25,26 +25,24 @@ public class AdHocLoginHandler(IConfiguration configuration, IValidator<AdHocLog
             return new AdHocLoginResult { Type = command.Type, Status = "failure" };
         }
 
-        //var clientSecret = await _clientSecretsRepository.GetClientSecretAsync(command.ClientId!, token);
-        //if (clientSecret is null)
-        //{
-        //    return new AdHocLoginResult { IsSuccessful = false, Errors = ["Invalid client secret or ID"] };
-        //}
+        var clientSecret = await _clientSecretsRepository.GetClientSecretAsync(command.ClientId!, token);
+        if (clientSecret is null)
+        {
+            return new AdHocLoginResult { Type = command.Type, Status = "failure" };
+        }
 
-        //if (clientSecret.Secret != command.ClientSecret)
-        //{
-        //    return new AdHocLoginResult { IsSuccessful = false, Errors = ["Invalid client secret or ID"] };
-        //}
+        if (clientSecret.Secret != command.ClientSecret)
+        {
+            return new AdHocLoginResult { Type = command.Type, Status = "failure" };
+        }
 
-        //if (!string.IsNullOrEmpty(clientSecret.IpAddress))
-        //{
-        //    if (clientSecret.IpAddress != command.IpAddress)
-        //    {
-        //        return new AdHocLoginResult { IsSuccessful = false, Errors = [$"Invalid client secret or ID - {command.IpAddress}"] };
-        //    }
-        //}
-
-
+        if (!string.IsNullOrEmpty(clientSecret.IpAddress))
+        {
+            if (!clientSecret.IpAddress.Split(",").Any(x => x == command.IpAddress))
+            {
+                return new AdHocLoginResult { Type = command.Type, Status = "failure" };
+            }
+        }
 
         Models.User user;
 

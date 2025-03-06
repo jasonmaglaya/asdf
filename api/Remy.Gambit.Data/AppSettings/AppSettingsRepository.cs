@@ -4,19 +4,13 @@ using Remy.Gambit.Models;
 
 namespace Remy.Gambit.Data.Features;
 
-public class AppSettingsRepository : IAppSettingsRepository
+public class AppSettingsRepository(IGambitDbClient gambitDbClient, IMemoryCache cache) : IAppSettingsRepository
 {
-    private readonly IGambitDbClient _gambitDbClient;
-    private readonly IMemoryCache _cache;
+    private readonly IGambitDbClient _gambitDbClient = gambitDbClient;
+    private readonly IMemoryCache _cache = cache;
     private const string APP_SETTINGS = "AppSettings";
     private const int CACHE_EXPIRY_IN_HOUR = 1;
-    private static SemaphoreSlim _semaphoreSlim = new(1, 1);
-
-    public AppSettingsRepository(IGambitDbClient gambitDbClient, IMemoryCache cache)
-    {
-        _gambitDbClient = gambitDbClient;
-        _cache = cache;
-    }
+    private static readonly SemaphoreSlim _semaphoreSlim = new(1, 1);
 
     public async Task<IEnumerable<AppSetting>> GetAppSettingsAsync(CancellationToken token)
     {

@@ -123,11 +123,6 @@ public class AuthController(
 
         var result = await _adHocLoginHandler.HandleAsync(request, token);
 
-        //if (result.Status! != "success")
-        //{
-        //    return Unauthorized();
-        //}
-
         return Ok(result);
     }
 
