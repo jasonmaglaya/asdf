@@ -28,8 +28,8 @@ namespace Remy.Gambit.Api.Handlers.Auth.Command
                 return new LoginResult { IsSuccessful = false, ValidationResults = ["Invalid username or password"] };
             }
 
-            var accessToken = TokenHelper.GenerateToken(user, _configuration);
             var refreshToken = TokenHelper.GenerateToken(64);
+            var accessToken = TokenHelper.GenerateToken(user, refreshToken, _configuration);            
             var refreshTokenExpiry = DateTime.UtcNow.AddHours(_configuration.GetValue("Jwt:RefreshTokenExpiryHours", 24));
 
             var refreshTokenIsSet = await _userRepository.UpdateRefreshTokenAsync(user.Id, refreshToken, refreshTokenExpiry, token);

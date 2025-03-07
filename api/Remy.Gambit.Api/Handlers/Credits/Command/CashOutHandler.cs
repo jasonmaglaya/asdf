@@ -50,7 +50,7 @@ public class CashOutHandler(IUsersRepository usersRepository, ICreditsRepository
 
             // Credit the amount to the partner
             var transactionId = $"{DateTime.UtcNow:yyyyMMddHHmmss}{TokenHelper.GenerateToken(10)}";
-            var tableId = Constants.AppSettings.MarvelGamingTableId;
+            var tableId = Constants.Config.MarvelGamingTableId;
             var round = await _usersRepository.GetLastRoundIdAsync(user.Id, token);
             if(string.IsNullOrEmpty(round))
             {

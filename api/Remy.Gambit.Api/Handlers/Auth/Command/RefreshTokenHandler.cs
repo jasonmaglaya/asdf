@@ -35,7 +35,7 @@ public class RefreshTokenHandler : ICommandHandler<RefreshTokenRequest, RefreshT
             return new RefreshTokenResult { IsSuccessful = false, ValidationResults = ["Unsuccessful"] };
         }
 
-        var accessToken = TokenHelper.GenerateToken(user, _configuration);
+        var accessToken = TokenHelper.GenerateToken(user, command.RefreshToken, _configuration);
         var refreshTokenExpiry = DateTime.UtcNow.AddHours(_configuration.GetValue<int>("Jwt:RefreshTokenExpiryHours"));
 
         var refreshTokenIsSet = await _userRepository.UpdateRefreshTokenAsync(user.Id, command.RefreshToken, refreshTokenExpiry, token);

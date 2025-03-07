@@ -64,7 +64,7 @@ namespace Remy.Gambit.Api.Handlers.Matches.Command
                 return new AddBetResult { IsSuccessful = false, ValidationResults = ["Invalid Event ID"] };
             }
 
-            if(command.TeamCode == Constants.AppSettings.Draw)
+            if(command.TeamCode == Config.Draw)
             {
                 if (command.Amount < @event.MinDrawBet || (command.Amount > @event.MaxDrawBet && @event.MaxDrawBet > 0m))
                 {

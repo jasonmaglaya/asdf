@@ -26,6 +26,8 @@ jwtInterceptor.interceptors.response.use(
   },
 
   async (error) => {
+    console.log("HERE", error);
+
     if (error.response?.status !== 401) {
       return Promise.reject(error);
     }
@@ -42,13 +44,11 @@ jwtInterceptor.interceptors.response.use(
     const payload = { refreshToken };
 
     try {
-      let response = await jwtInterceptor.post(
-        "/auth/access-token/refresh",
-        payload
-      );
+      let response = await axios.post("/auth/access-token/refresh", payload);
 
       const { data } = response;
       if (!data?.isSuccessful) {
+        localStorage.removeItem("user");
         window.location.href = "/login";
         return;
       }

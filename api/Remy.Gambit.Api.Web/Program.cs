@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using Remy.Gambit.Api.Handlers.Auth.Command;
 using Remy.Gambit.Api.Hubs;
 using Remy.Gambit.Api.Mappers;
+using Remy.Gambit.Api.Middlewares;
 using Remy.Gambit.Api.Validators;
 using Remy.Gambit.Api.Web.ActionFilters;
 using Remy.Gambit.Core.Concurrency;
@@ -182,11 +183,13 @@ if (Convert.ToBoolean(builder.Configuration["Swagger:Enabled"]))
     app.UseSwaggerUI();
 }
 
+app.UseCors(corsPolicy);
+
+app.UseMiddleware<SessionValidationMiddleware>();
+
 app.UseIpRateLimiting();
 
 app.UseHttpsRedirection();
-
-app.UseCors(corsPolicy);
 
 app.UseAuthentication();
 app.UseAuthorization();

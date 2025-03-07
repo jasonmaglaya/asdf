@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Remy.Gambit.Api.Constants;
 using Remy.Gambit.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -10,11 +11,12 @@ namespace Remy.Gambit.Api.Helpers
 {
     public static class TokenHelper
     {
-        public static string GenerateToken(User user, IConfiguration configuration)
+        public static string GenerateToken(User user, string refreshToken, IConfiguration configuration)
         {
             var claims = new List<Claim> {
                 new(ClaimTypes.Name, user.Id.ToString()),
-                new(ClaimTypes.Role, user.Role)
+                new(ClaimTypes.Role, user.Role),
+                new(Config.SessionID, refreshToken)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(

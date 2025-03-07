@@ -56,7 +56,7 @@ public class CashInHandler(IUsersRepository usersRepository, ICreditsRepository 
 
             // Deduct the amount from the partner
             var transactionId = $"{DateTime.UtcNow:yyyyMMddHHmmss}{TokenHelper.GenerateToken(10)}";
-            var tableId = Constants.AppSettings.MarvelGamingTableId;
+            var tableId = Constants.Config.MarvelGamingTableId;
             var round = $"{DateTime.UtcNow:yyyyMMddHHmmss}{TokenHelper.GenerateToken(10)}";
 
             var cashInRequest = new Services.Dto.CashInRequest
