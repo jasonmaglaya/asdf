@@ -35,7 +35,6 @@ jobs:
       - name: Build and push container image to registry
         uses: azure/container-apps-deploy-action@v2
         with:
-          environment: "Staging"
           appSourcePath: ${{ github.workspace }}
           _dockerfilePathKey_: _dockerfilePath_
           registryUrl: jasonmaglaya.azurecr.io
@@ -46,3 +45,5 @@ jobs:
           imageToBuild: jasonmaglaya.azurecr.io/remy-gambit-app:${{ github.sha }}
           _buildArgumentsKey_: |
             _buildArgumentsValues_
+          environmentVariables: |
+            DOTNET_ENVIRONMENT=Staging
