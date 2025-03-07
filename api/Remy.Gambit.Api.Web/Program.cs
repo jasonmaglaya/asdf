@@ -106,12 +106,6 @@ builder.Services.AddAuthorization();
 var corsPolicy = "CorsPolicy";
 builder.Services.AddCors(options => options.AddPolicy(corsPolicy, corsBuilder => {
     var validOrigins = builder.Configuration.GetSection("AllowedOrigins:Default").Get<List<string>>();
-
-    if (builder.Environment.IsDevelopment())
-    {
-        validOrigins?.AddRange(builder.Configuration.GetSection("AllowedOrigins:Dev").Get<List<string>>()!);
-    }
-
     corsBuilder
         .AllowAnyOrigin()
         .AllowAnyMethod()
