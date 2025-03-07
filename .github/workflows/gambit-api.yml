@@ -45,5 +45,7 @@ jobs:
           imageToBuild: jasonmaglaya.azurecr.io/remy-gambit-app:${{ github.sha }}
           _buildArgumentsKey_: |
             _buildArgumentsValues_
+          container-app-env-vars: |
+            DOTNET_ENVIRONMENT=Staging
 
 
