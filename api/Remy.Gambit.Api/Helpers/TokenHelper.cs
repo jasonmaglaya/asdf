@@ -11,12 +11,12 @@ namespace Remy.Gambit.Api.Helpers
 {
     public static class TokenHelper
     {
-        public static string GenerateToken(User user, string refreshToken, IConfiguration configuration)
+        public static string GenerateToken(User user, string sessionId, IConfiguration configuration)
         {
             var claims = new List<Claim> {
                 new(ClaimTypes.Name, user.Id.ToString()),
                 new(ClaimTypes.Role, user.Role),
-                new(Config.SessionID, refreshToken)
+                new(Config.SessionID, sessionId)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(

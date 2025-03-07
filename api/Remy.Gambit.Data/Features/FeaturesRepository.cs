@@ -1,26 +1,18 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using Remy.Gambit.Core.Caching;
 using Remy.Gambit.Data.Features.DataQueries;
 using Remy.Gambit.Models;
 
 namespace Remy.Gambit.Data.Features;
 
-public class FeaturesRepository : IFeaturesRepository
+public class FeaturesRepository(IGambitDbClient gambitDbClient, ICacheService cache) : IFeaturesRepository
 {
-    private readonly IGambitDbClient _gambitDbClient;
-    private readonly IMemoryCache _cache;
+    private readonly IGambitDbClient _gambitDbClient = gambitDbClient;
     private const string ROLE_FEATURES = "RoleFeatures";
-    private const int CACHE_EXPIRY_IN_HOUR = 1;
-    private static SemaphoreSlim _semaphoreSlim = new(1, 1);
-
-    public FeaturesRepository(IGambitDbClient gambitDbClient, IMemoryCache cache)
-    {
-        _gambitDbClient = gambitDbClient;
-        _cache = cache;
-    }
+    private static readonly SemaphoreSlim _semaphoreSlim = new(1, 1);
 
     private async Task<IEnumerable<RoleFeature>> GetAllRoleFeaturesAsync(CancellationToken token)
     {
-        _cache.TryGetValue(ROLE_FEATURES, out IEnumerable<RoleFeature>? roleFeatures);
+        cache.TryGetValue(ROLE_FEATURES, out IEnumerable<RoleFeature>? roleFeatures);
 
         if (roleFeatures is not null && roleFeatures.Any())
         {
@@ -31,7 +23,7 @@ public class FeaturesRepository : IFeaturesRepository
         {
             await _semaphoreSlim.WaitAsync(token);
 
-            _cache.TryGetValue(ROLE_FEATURES, out roleFeatures);
+            cache.TryGetValue(ROLE_FEATURES, out roleFeatures);
 
             if (roleFeatures is not null && roleFeatures.Any())
             {
@@ -44,10 +36,7 @@ public class FeaturesRepository : IFeaturesRepository
 
             if (roleFeatures is not null && roleFeatures.Any())
             {
-                var options = new MemoryCacheEntryOptions()
-                    .SetAbsoluteExpiration(TimeSpan.FromHours(CACHE_EXPIRY_IN_HOUR));
-
-                _cache.Set(ROLE_FEATURES, roleFeatures, options);
+                cache.Set(ROLE_FEATURES, roleFeatures);
             }
         }
         catch
@@ -59,7 +48,7 @@ public class FeaturesRepository : IFeaturesRepository
             _semaphoreSlim.Release();
         }
 
-        return roleFeatures ?? new List<RoleFeature>();
+        return roleFeatures ?? [];
     }
 
     public async Task<IEnumerable<string>> GetFeaturesByRoleAsync(string role, CancellationToken token)

@@ -1,6 +1,7 @@
-﻿using System.Collections.Concurrent;
+﻿using Remy.Gambit.Core.Concurrency;
+using System.Collections.Concurrent;
 
-namespace Remy.Gambit.Core.Concurrency;
+namespace Remy.Gambit.Api.Concurrencies;
 
 public class SemaphoreUserLockService : IUserLockService
 {

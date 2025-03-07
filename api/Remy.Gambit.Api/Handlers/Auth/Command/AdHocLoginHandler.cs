@@ -1,7 +1,9 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.Configuration;
+using Remy.Gambit.Api.Constants;
 using Remy.Gambit.Api.Handlers.Auth.Command.Dto;
 using Remy.Gambit.Api.Helpers;
+using Remy.Gambit.Core.Caching;
 using Remy.Gambit.Core.Cqs;
 using Remy.Gambit.Data.ClientSecrets;
 using Remy.Gambit.Data.Users;
@@ -9,23 +11,19 @@ using Remy.Gambit.Data.Users;
 namespace Remy.Gambit.Api.Handlers.Auth.Command;
 
 public class AdHocLoginHandler(IConfiguration configuration, IValidator<AdHocLoginRequest> validator, IUsersRepository usersRepository, 
-    IClientSecretsRepository clientSecretsRepository) : ICommandHandler<AdHocLoginRequest, AdHocLoginResult>
+    IClientSecretsRepository clientSecretsRepository, ICacheService cache) : ICommandHandler<AdHocLoginRequest, AdHocLoginResult>
 {
-    private readonly IConfiguration _configuration = configuration;
-    private readonly IValidator<AdHocLoginRequest> _validator = validator;
-    private readonly IUsersRepository _usersRepository = usersRepository;
-    private readonly IClientSecretsRepository _clientSecretsRepository = clientSecretsRepository;
     private readonly SemaphoreSlim _semaphore = new(1);
 
     public async ValueTask<AdHocLoginResult> HandleAsync(AdHocLoginRequest command, CancellationToken token = default)
     {
-        var validationResult = await _validator.ValidateAsync(command, token);
+        var validationResult = await validator.ValidateAsync(command, token);
         if (!validationResult.IsValid)
         {
             return new AdHocLoginResult { Type = command.Type, Status = "failure" };
         }
 
-        var clientSecret = await _clientSecretsRepository.GetClientSecretAsync(command.ClientId!, token);
+        var clientSecret = await clientSecretsRepository.GetClientSecretAsync(command.ClientId!, token);
         if (clientSecret is null)
         {
             return new AdHocLoginResult { Type = command.Type, Status = "failure" };
@@ -50,7 +48,7 @@ public class AdHocLoginHandler(IConfiguration configuration, IValidator<AdHocLog
         {
             await _semaphore.WaitAsync(token);
 
-            user = await _usersRepository.GetUserByUsernameAsync(command.UserName!, token);
+            user = await usersRepository.GetUserByUsernameAsync(command.UserName!, token);
             if (user is not null && (user.Role != Constants.Roles.Player || !user.IsActive))
             {
                 return new AdHocLoginResult { Type = command.Type, Status = "failure" };
@@ -58,15 +56,15 @@ public class AdHocLoginHandler(IConfiguration configuration, IValidator<AdHocLog
 
             if (user is null)
             {
-                var succeeded = await _usersRepository.SignUpAsync(command.UserName!, null, null, Constants.Roles.Player, null, null, true, token);
+                var succeeded = await usersRepository.SignUpAsync(command.UserName!, null, null, Constants.Roles.Player, null, null, true, token);
 
                 if (!succeeded)
                 {
                     return new AdHocLoginResult { Type = command.Type, Status = "failure" };
                 }
                                 
-                user = await _usersRepository.GetUserByUsernameAsync(command.UserName!, token);
-                await _usersRepository.UpdateStatusAsync(user.Id, true, token);
+                user = await usersRepository.GetUserByUsernameAsync(command.UserName!, token);
+                await usersRepository.UpdateStatusAsync(user.Id, true, token);
             }
         }
         catch
@@ -78,11 +76,15 @@ public class AdHocLoginHandler(IConfiguration configuration, IValidator<AdHocLog
             _semaphore.Release();
         }
 
-        var refreshToken = TokenHelper.GenerateToken(64);
-        var accessToken = TokenHelper.GenerateToken(user, refreshToken, _configuration);
-        var refreshTokenExpiry = DateTime.UtcNow.AddHours(_configuration.GetValue("Jwt:RefreshTokenExpiryHours", 24));
+        // Set Session ID
+        var sessionId = Guid.NewGuid().ToString();
+        cache.Set($"{Config.SessionID}:{user.Id}", sessionId);
 
-        var refreshTokenIsSet = await _usersRepository.UpdateRefreshTokenAsync(user.Id, refreshToken, refreshTokenExpiry, token);
+        var accessToken = TokenHelper.GenerateToken(user, sessionId, configuration);
+        var refreshTokenExpiry = DateTime.UtcNow.AddHours(configuration.GetValue("Jwt:RefreshTokenExpiryHours", 24));
+
+        var refreshToken = TokenHelper.GenerateToken(64);
+        var refreshTokenIsSet = await usersRepository.UpdateRefreshTokenAsync(user.Id, refreshToken, refreshTokenExpiry, token);
         if (!refreshTokenIsSet)
         {
             return new AdHocLoginResult { Type = command.Type, Status = "failure" };
@@ -90,7 +92,7 @@ public class AdHocLoginHandler(IConfiguration configuration, IValidator<AdHocLog
 
         var operatorToken = TokenHelper.GenerateToken(24);
 
-        var callBackUrl = $"{_configuration["MG:CallbackUrl"]}?accessToken={accessToken}&refreshToken={refreshToken}&operatorToken={operatorToken}";
+        var callBackUrl = $"{configuration["MG:CallbackUrl"]}?accessToken={accessToken}&refreshToken={refreshToken}&operatorToken={operatorToken}";
 
         return new AdHocLoginResult
         {

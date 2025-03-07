@@ -4,12 +4,15 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Remy.Gambit.Api.Caching;
+using Remy.Gambit.Api.Concurrencies;
 using Remy.Gambit.Api.Handlers.Auth.Command;
 using Remy.Gambit.Api.Hubs;
 using Remy.Gambit.Api.Mappers;
 using Remy.Gambit.Api.Middlewares;
 using Remy.Gambit.Api.Validators;
 using Remy.Gambit.Api.Web.ActionFilters;
+using Remy.Gambit.Core.Caching;
 using Remy.Gambit.Core.Concurrency;
 using Remy.Gambit.Data;
 using Remy.Gambit.Services;
@@ -24,6 +27,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<IDbConnection>(x => new SqlConnection(builder.Configuration["ConnectionStrings:GambitDbSqlConnection"]));
 builder.Services.AddTransient<IGambitDbClient, GambitDbClient>();
 builder.Services.AddSingleton<IUserLockService, SemaphoreUserLockService>();
+builder.Services.AddSingleton<ICacheService, MemoryCacheService>();
 builder.Services.AddTransient<IPartnerService, MarvelGamingService>();
 
 // Repositories
