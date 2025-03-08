@@ -226,7 +226,7 @@ export default function EventPage() {
       >
         <Video embedTag={event?.video}></Video>
         {canControlMatch && isDesktopOrLaptop && <></>}
-        {canControlMatch ? (
+        {canControlMatch && event?.status === EventStatus.Active ? (
           <Controller
             eventId={eventId}
             maxWinners={event.maxWinners}

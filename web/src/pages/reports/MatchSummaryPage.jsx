@@ -1,4 +1,4 @@
-import { NavLink, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Betting from "../../components/event/Betting";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
@@ -24,6 +24,7 @@ export default function MatchSummaryPage() {
   const [summary, setSummary] = useState([]);
   const { appSettings } = useSelector((state) => state.appSettings);
   const { currency, locale } = appSettings;
+  const navigate = useNavigate();
 
   const legend = useMemo(
     () => [
@@ -86,11 +87,19 @@ export default function MatchSummaryPage() {
     <Container className="mt-2 text-light px-3" fluid>
       <h3>Match Summary</h3>
       <Breadcrumb>
-        <Breadcrumb.Item>
-          <NavLink to="/reports/events">Events</NavLink>
+        <Breadcrumb.Item
+          onClick={() => {
+            navigate("/reports/events");
+          }}
+        >
+          Events
         </Breadcrumb.Item>
-        <Breadcrumb.Item>
-          <NavLink to={`/reports/events/${event.id}`}>{event.title}</NavLink>
+        <Breadcrumb.Item
+          onClick={() => {
+            navigate(`/reports/events/${event.id}`);
+          }}
+        >
+          {event.title}
         </Breadcrumb.Item>
         <Breadcrumb.Item className="text-light" active>
           {match?.number}

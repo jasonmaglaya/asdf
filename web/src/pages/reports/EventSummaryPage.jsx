@@ -1,7 +1,7 @@
 import { Breadcrumb, Container, Tab, Tabs } from "react-bootstrap";
 import SpinnerComponent from "../../components/_shared/SpinnerComponent";
 import { useEffect, useState } from "react";
-import { NavLink, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getEventSummary } from "../../services/reportsService";
 import EventSummary from "../../components/reports/EventSummary";
@@ -118,8 +118,12 @@ export default function EventSummaryPage() {
     <Container className="mt-2 text-light px-3" fluid>
       <h3>Event Summary</h3>
       <Breadcrumb>
-        <Breadcrumb.Item>
-          <NavLink to="/reports/events">Events</NavLink>
+        <Breadcrumb.Item
+          onClick={() => {
+            navigate("/reports/events");
+          }}
+        >
+          Events
         </Breadcrumb.Item>
         <Breadcrumb.Item className="text-light" active>
           {event.title}

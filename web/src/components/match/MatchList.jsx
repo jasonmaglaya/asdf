@@ -12,6 +12,7 @@ import DeclareWinnerDialog from "../event/DeclareWinnerDialog";
 import { cancelMatch, reDeclareWinner } from "../../services/matchesService";
 import { getMatches } from "../../services/eventsService";
 import ConfirmDialog from "../_shared/ConfirmDialog";
+import { useNavigate } from "react-router-dom";
 
 export default function MatchList({ eventId, maxWinners, teams, allowDraw }) {
   const legend = useMemo(
@@ -30,6 +31,7 @@ export default function MatchList({ eventId, maxWinners, teams, allowDraw }) {
   const [matchId, setMatchId] = useState();
   const [exclude, setExclude] = useState([]);
   const [matches, setMatches] = useState([]);
+  const navigate = useNavigate();
 
   const showReDeclareDialog = (matchId, winnerCode) => {
     setMatchId(matchId);
@@ -80,6 +82,10 @@ export default function MatchList({ eventId, maxWinners, teams, allowDraw }) {
       const { data } = await getMatches(id);
       setMatches(data?.result?.list || []);
     } catch {}
+  };
+
+  const view = (id) => {
+    navigate(`/reports/events/${eventId}/matches/${id}`);
   };
 
   useEffect(() => {
@@ -142,7 +148,12 @@ export default function MatchList({ eventId, maxWinners, teams, allowDraw }) {
                   variant="secondary"
                   align={"end"}
                 >
-                  <Dropdown.Item eventKey="view" onClick={() => {}}>
+                  <Dropdown.Item
+                    eventKey="view"
+                    onClick={() => {
+                      view(match.id);
+                    }}
+                  >
                     View
                   </Dropdown.Item>
                   {[MatchStatus.Cancelled, MatchStatus.Completed].includes(

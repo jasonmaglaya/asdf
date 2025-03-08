@@ -26,8 +26,6 @@ jwtInterceptor.interceptors.response.use(
   },
 
   async (error) => {
-    console.log("HERE", error);
-
     if (error.response?.status !== 401) {
       return Promise.reject(error);
     }
