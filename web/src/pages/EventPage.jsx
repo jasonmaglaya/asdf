@@ -103,7 +103,11 @@ export default function EventPage() {
 
         const event = getEventResult.data.result;
 
-        if (!event || event.status !== EventStatus.Active) {
+        if (
+          !event ||
+          (event.status !== EventStatus.Active &&
+            !features.includes(Features.PreviewEvent))
+        ) {
           navigate("/", { replace: true });
           return;
         }
@@ -211,7 +215,7 @@ export default function EventPage() {
     });
 
     startConnection();
-  }, [eventId, dispatch, navigate]);
+  }, [eventId, dispatch, navigate, features]);
 
   return (
     <MatchContext.Provider value={matchContext}>

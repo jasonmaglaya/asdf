@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Remy.Gambit.Api.Helpers;
 using Remy.Gambit.Data.Features;
 using System.Security.Claims;
 
@@ -11,7 +12,7 @@ public class FeatureFilterAttribute : ActionFilterAttribute
 
     public FeatureFilterAttribute()
     {
-        _features = Array.Empty<string>();
+        _features = [];
     }
 
     public FeatureFilterAttribute(params string[] features)
@@ -30,28 +31,15 @@ public class FeatureFilterAttribute : ActionFilterAttribute
             return;
         }
 
-        if (!_features.Any())
+        if (_features.Length == 0)
         {
             context.Result = new UnauthorizedResult();
             return;
         }
 
-        var svc = context.HttpContext.RequestServices;
-        var featureRepository = svc.GetService<IFeaturesRepository>() ?? throw new InvalidOperationException("Could not resolve IFeaturesReporsitory from RestrictFeatureAttribute");
+        var isAuthorized = AuthorizationHelper.IsAuthorized(role, _features, context.HttpContext);       
 
-        var features = featureRepository.GetFeaturesByRoleAsync(role, context.HttpContext.RequestAborted).Result;
-
-        bool isAutorized = false;
-        foreach (string f in _features)
-        {
-            if (features.Contains(f))
-            {
-                isAutorized |= true;
-                break;
-            }
-        }
-
-        if (!isAutorized)
+        if (!isAuthorized)
         {
             context.Result = new UnauthorizedResult();
         }

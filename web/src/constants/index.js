@@ -36,6 +36,7 @@ export const Features = {
   MaintainEvents: "MaintainEvents",
   ListAllUsers: "ListAllUsers",
   Reports: "Reports",
+  PreviewEvent: "PreviewEvent",
 };
 
 export const AgentRoles = ["ag", "ma", "sma", "inco"];

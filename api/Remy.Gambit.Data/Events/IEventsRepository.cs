@@ -5,7 +5,7 @@ namespace Remy.Gambit.Data.Events;
 
 public interface IEventsRepository
 {
-    Task<PaginatedList<Event>> GetEventsAsync(string? status, int pageNumber, int pageSize, bool includeNew, CancellationToken token);
+    Task<PaginatedList<Event>> GetEventsAsync(string[]? status, int pageNumber, int pageSize, CancellationToken token);
 
     Task<Event> GetEventByIdAsync(Guid id, CancellationToken token);
 

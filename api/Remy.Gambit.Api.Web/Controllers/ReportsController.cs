@@ -68,7 +68,6 @@ namespace Remy.Gambit.Api.Web.Controllers
             return Ok(result);
         }
 
-        [FeatureFilter(Features.Reports)]
         [HttpGet("players/events/{id}")]
         public async Task<ActionResult<GetPlayerEventSummaryResult>> GetPlayerEventSummary([FromRoute] Guid id, CancellationToken token)
         {

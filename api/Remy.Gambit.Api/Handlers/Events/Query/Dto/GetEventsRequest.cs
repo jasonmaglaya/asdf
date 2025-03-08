@@ -4,12 +4,9 @@ namespace Remy.Gambit.Api.Handlers.Events.Query.Dto;
 
 public class GetEventsRequest : IQuery
 {
-    public string? Status { get; set; }
+    public string[]? Status { get; set; }
 
     public int PageNumber { get; set; } = 1;
 
-    public int PageSize { get; set; } = 20;
-
-    [JsonIgnore]
-    public bool IncludeNew { get; set; } = true;
+    public int PageSize { get; set; } = 20;    
 }

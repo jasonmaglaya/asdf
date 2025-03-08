@@ -12,5 +12,6 @@
         public const string ActivateAgency = "ActivateAgency";
         public const string ActivateUser = "ActivateUser";
         public const string Reports = "Reports";
+        public const string PreviewEvent = "PreviewEvent";
     }
 }

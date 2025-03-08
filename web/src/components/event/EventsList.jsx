@@ -38,7 +38,7 @@ export default function EventsList({ events }) {
                 to={`/events/${event.id}`}
                 className="btn btn-primary btn-lg align-center form-control h-100"
               >
-                ENTER
+                {event.status === EventStatus.New ? "PREVIEW" : "ENTER"}
               </NavLink>
             </Col>
           </Row>

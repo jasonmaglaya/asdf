@@ -8,6 +8,7 @@ using Remy.Gambit.Api.Web.ActionFilters;
 using Remy.Gambit.Api.Handlers.Matches.Query.Dto;
 using System.Security.Claims;
 using Remy.Gambit.Api.Handlers.Reports.Query.Dto;
+using Remy.Gambit.Api.Helpers;
 
 namespace Remy.Gambit.Api.Web.Controllers;
 
@@ -99,6 +100,8 @@ public class EventsController(
     [HttpGet("all")]
     public async Task<ActionResult<GetEventsResult>> GetAllEvents([FromQuery] GetEventsRequest request, CancellationToken token)
     {
+        request.Status = [EventStatuses.Active, EventStatuses.Closed, EventStatuses.New];
+
         var result = await _getEventsHandler.HandleAsync(request, token);
 
         if (result.ValidationResults.Any())
@@ -120,7 +123,7 @@ public class EventsController(
         var request = new GetEventsRequest {
             PageNumber = 1,
             PageSize = 5,
-            IncludeNew = false
+            Status = [EventStatuses.Active, EventStatuses.Closed]
         };
 
         var result = await _getEventsHandler.HandleAsync(request, token);
@@ -136,8 +139,18 @@ public class EventsController(
     [HttpGet]
     public async Task<ActionResult<GetEventsResult>> GetEvents([FromQuery] GetEventsRequest request, CancellationToken token)
     {
-        request.Status = EventStatuses.Active;
+        var statuses = new List<string> { EventStatuses.Active };
 
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        var role = identity?.FindFirst(ClaimTypes.Role)?.Value;
+
+        if (AuthorizationHelper.IsAuthorized(role!, [Features.PreviewEvent], HttpContext))
+        {
+            statuses.Add(EventStatuses.New);
+        }
+
+        request.Status = [.. statuses];
+        
         var result = await _getEventsHandler.HandleAsync(request, token);
 
         if (result.ValidationResults.Any())
