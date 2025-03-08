@@ -236,7 +236,7 @@ export default function EventPage() {
         ) : (
           <></>
         )}
-        {event?.status !== EventStatus.New && <></>}
+        {!canControlMatch && event?.status !== EventStatus.New && <></>}
         {canControlMatch && isDesktopOrLaptop && <></>}
         {canControlMatch && isDesktopOrLaptop && <></>}
         {canControlMatch && isTabletOrMobile && <></>}
