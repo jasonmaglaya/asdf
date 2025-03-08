@@ -233,7 +233,10 @@ export default function EventPage() {
             canReDeclare={features?.includes(Features.ReDeclare)}
             allowDraw={event.allowDraw}
           />
-        ) : null}
+        ) : (
+          <></>
+        )}
+        {event?.status !== EventStatus.New && <></>}
         {canControlMatch && isDesktopOrLaptop && <></>}
         {canControlMatch && isDesktopOrLaptop && <></>}
         {canControlMatch && isTabletOrMobile && <></>}
