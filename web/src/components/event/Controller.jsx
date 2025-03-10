@@ -9,7 +9,11 @@ import {
 import ConfirmDialog from "../_shared/ConfirmDialog";
 import DeclareWinnerDialog from "./DeclareWinnerDialog";
 import { MatchContext } from "../_shared/MatchContext";
-import { nextMatch } from "../../services/eventsService";
+import {
+  nextMatch,
+  refreshUsers,
+  refreshVideo,
+} from "../../services/eventsService";
 
 export default function Controller({ eventId, maxWinners, allowDraw }) {
   const [showConfirmBetDialog, setShowConfirmBetDialog] = useState(false);
@@ -140,9 +144,21 @@ export default function Controller({ eventId, maxWinners, allowDraw }) {
     e.target.blur();
   };
 
-  const refreshUsers = () => {};
+  const confirmRefreshVideo = (e) => {
+    confirm(<span className="h5">Do you refresh the video?</span>, () =>
+      refreshVideo(eventId)
+    );
 
-  const refreshVideo = () => {};
+    e.target.blur();
+  };
+
+  const confirmRefreshUsers = (e) => {
+    confirm(<span className="h5">Do you refresh all the users?</span>, () =>
+      refreshUsers(eventId)
+    );
+
+    e.target.blur();
+  };
 
   const renderStatusButton = () => {
     switch (status) {
@@ -262,7 +278,7 @@ export default function Controller({ eventId, maxWinners, allowDraw }) {
                 variant="outline-warning"
                 size="lg"
                 className="form-control h-100"
-                onClick={refreshVideo}
+                onClick={confirmRefreshVideo}
                 disabled={isBusy}
               >
                 REFRESH VIDEO
@@ -273,7 +289,7 @@ export default function Controller({ eventId, maxWinners, allowDraw }) {
                 variant="outline-info"
                 size="lg"
                 className="form-control h-100"
-                onClick={refreshUsers}
+                onClick={confirmRefreshUsers}
                 disabled={isBusy}
               >
                 REFRESH USERS

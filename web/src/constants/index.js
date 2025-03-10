@@ -21,6 +21,8 @@ export const EventHubEvents = {
   WinnerDeclared: "WinnerDeclared",
   WinnerReDeclared: "WinnerReDeclared",
   NextMatchReceived: "NextMatchReceived",
+  RefreshVideo: "RefreshVideo",
+  RefreshUsers: "RefreshUsers",
 };
 
 export const Features = {

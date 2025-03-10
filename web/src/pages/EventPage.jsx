@@ -40,6 +40,7 @@ export default function EventPage() {
   const [event, setEvent] = useState({});
   const [match, setMatch] = useState();
   const [status, setStatus] = useState();
+  const [video, setVideo] = useState();
   const [totalBets, setTotalBets] = useState([]);
   const [commission, setCommission] = useState(0);
   const { eventId } = useParams();
@@ -94,6 +95,8 @@ export default function EventPage() {
   };
 
   useEffect(() => {
+    let _event = {};
+
     const loadEvent = async () => {
       try {
         const getEventResult = await getEvent(eventId);
@@ -101,11 +104,11 @@ export default function EventPage() {
           return;
         }
 
-        const event = getEventResult.data.result;
+        const result = getEventResult.data.result;
 
         if (
-          !event ||
-          (event.status !== EventStatus.Active &&
+          !result ||
+          (result.status !== EventStatus.Active &&
             !features.includes(Features.PreviewEvent))
         ) {
           navigate("/", { replace: true });
@@ -118,16 +121,25 @@ export default function EventPage() {
           return;
         }
 
-        setEvent(event);
+        setEvent(result);
+        _event = result;
 
         const currentMatch = currentMatchResult.data.result;
 
         setMatch(currentMatch);
         setStatus(currentMatch?.status);
         setWinners(currentMatch?.winners);
+        setVideo(result?.video);
       } catch (error) {
         navigate("/", { replace: true });
       }
+    };
+
+    const refreshVideo = () => {
+      setVideo("Loading...");
+      setTimeout(() => {
+        setVideo(_event?.video);
+      }, 1000);
     };
 
     const user = JSON.parse(localStorage.getItem("user")?.toString());
@@ -214,6 +226,14 @@ export default function EventPage() {
       setStatus(match?.status);
     });
 
+    newConnection.on(EventHubEvents.RefreshVideo, () => {
+      refreshVideo();
+    });
+
+    newConnection.on(EventHubEvents.RefreshUsers, () => {
+      window.location.reload();
+    });
+
     startConnection();
   }, [eventId, dispatch, navigate, features]);
 
@@ -224,7 +244,7 @@ export default function EventPage() {
         className="my-masonry-grid"
         columnClassName="my-masonry-grid_column"
       >
-        <Video embedTag={event?.video}></Video>
+        <Video embedTag={video}></Video>
         {canControlMatch && isDesktopOrLaptop && <></>}
         {canControlMatch && event?.status === EventStatus.Active ? (
           <Controller

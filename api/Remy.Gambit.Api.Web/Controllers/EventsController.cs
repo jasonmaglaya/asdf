@@ -9,6 +9,8 @@ using Remy.Gambit.Api.Handlers.Matches.Query.Dto;
 using System.Security.Claims;
 using Remy.Gambit.Api.Handlers.Reports.Query.Dto;
 using Remy.Gambit.Api.Helpers;
+using Microsoft.AspNetCore.SignalR;
+using Remy.Gambit.Api.Hubs;
 
 namespace Remy.Gambit.Api.Web.Controllers;
 
@@ -24,7 +26,8 @@ public class EventsController(
     IQueryHandler<GetCurrentMatchRequest, GetCurrentMatchResult> getCurrentMatchHandler,
     ICommandHandler<NextMatchRequest, NextMatchResult> nextMatchHandler,
     IQueryHandler<GetEventWinnersRequest, GetEventWinnersResult> getEventWinnersHandler,
-    IQueryHandler<GetMatchesRequest, GetMatchesResult> getMatchesHandler
+    IQueryHandler<GetMatchesRequest, GetMatchesResult> getMatchesHandler,
+    IHubContext<EventHub> eventHub
     ) : ControllerBase
 {
     private readonly ICommandHandler<AddEventRequest, AddEventResult> _addEventHandler = addEventHandler;
@@ -283,5 +286,23 @@ public class EventsController(
         }
 
         return Ok(result);
-    }    
+    }
+
+    [FeatureFilter(Features.ControlMatch)]
+    [HttpPost("{id}/video/refresh")]
+    public async Task<ActionResult> RefreshVideo([FromRoute] Guid id, CancellationToken token)
+    {
+        await eventHub.Clients.Group(id.ToString()).SendAsync(EventHubEvents.RefreshVideo, cancellationToken: token);
+
+        return Ok();
+    }
+
+    [FeatureFilter(Features.ControlMatch)]
+    [HttpPost("{id}/users/refresh")]
+    public async Task<ActionResult> RefreshUsers([FromRoute] Guid id, CancellationToken token)
+    {
+        await eventHub.Clients.Group(id.ToString()).SendAsync(EventHubEvents.RefreshUsers, cancellationToken: token);
+
+        return Ok();
+    }
 }
