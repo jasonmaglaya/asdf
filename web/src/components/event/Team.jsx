@@ -35,7 +35,7 @@ export default function Team({
 
   useEffect(() => {
     if (isRolling) {
-      const controls = animate(0, totalBets, {
+      const controls = animate(0, totalBets ?? 0, {
         duration: animationDuration ?? 15,
         onUpdate(value) {
           setDisplayTotalBets(value);

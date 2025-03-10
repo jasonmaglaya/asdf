@@ -235,6 +235,15 @@ export default function EventPage() {
     });
 
     startConnection();
+
+    return () => {
+      const disconnectSignalR = async () => {
+        newConnection.off(EventHubEvents.RefreshUsers);
+        await newConnection.stop();
+      };
+
+      disconnectSignalR();
+    };
   }, [eventId, dispatch, navigate, features]);
 
   return (
