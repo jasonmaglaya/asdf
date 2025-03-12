@@ -99,7 +99,7 @@ public class MatchesRepository(IGambitDbClient gambitDbClient) : IMatchesReposit
         return true;
     }
 
-    public async Task<IEnumerable<TotalBet>> GetBetsAsync(Guid id, Guid userId, CancellationToken token)
+    public async Task<IEnumerable<TotalBet>> GetBetsByUserIdAsync(Guid id, Guid userId, CancellationToken token)
     {
         var query = new GetBetsQuery(id, userId);
 

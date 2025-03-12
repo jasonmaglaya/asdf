@@ -10,6 +10,7 @@ import { StyledCard } from "../_shared/StyledCard";
 import { useDispatch, useSelector } from "react-redux";
 import { setCredits } from "../../store/userSlice";
 import { animate } from "framer-motion";
+import { setErrorMessages } from "../../store/messagesSlice";
 
 export default function PlaceBetDraw({
   minimumBet,
@@ -74,9 +75,15 @@ export default function PlaceBetDraw({
       .then(async ({ data }) => {
         dispatch(setCredits(data.credits));
         setBets(data.bets);
-        await drawForm.reset({ amount: "" });
+        drawForm.reset({ amount: "" });
         drawForm.clearErrors("amount");
-        setShowConfirmBetDialog(false);
+      })
+      .catch(({ response }) => {
+        const errors = [
+          ...(response?.data?.validationResults || []),
+          ...(response?.data?.errors || []),
+        ];
+        dispatch(setErrorMessages(errors));
       })
       .finally(() => {
         setIsBusy(false);
@@ -109,7 +116,14 @@ export default function PlaceBetDraw({
         <Card.Body className="p-1">
           <h6 className="text-white text-center">
             <span className="text-success">x{drawMultiplier}</span> IF DRAW -
-            MAX BET:{" "}
+            MIN:{" "}
+            <span className="text-warning">
+              {minimumBet?.toLocaleString(locale || "en-US", {
+                style: "currency",
+                currency: currency || "USD",
+              })}{" "}
+            </span>{" "}
+            MAX:{" "}
             <span className="text-warning">
               {maxDrawBet?.toLocaleString(locale || "en-US", {
                 style: "currency",
@@ -207,7 +221,10 @@ export default function PlaceBetDraw({
       <ConfirmDialog
         confirmButtonText="Place Bet"
         confirmButtonTextBusy="Placing Bet..."
-        handleConfirm={placeBet}
+        handleConfirm={() => {
+          setShowConfirmBetDialog(false);
+          placeBet();
+        }}
         handleClose={() => {
           setShowConfirmBetDialog(false);
         }}

@@ -13,7 +13,7 @@ public interface IMatchesRepository
 
     Task<(IEnumerable<TotalBet>, decimal)> GetTotalBetsAsync(Guid id, CancellationToken token);
 
-    Task<IEnumerable<TotalBet>> GetBetsAsync(Guid id, Guid userId, CancellationToken token);
+    Task<IEnumerable<TotalBet>> GetBetsByUserIdAsync(Guid id, Guid userId, CancellationToken token);
 
     Task<decimal?> AddBetAsync(Guid userId, Guid matchId, string teamCode, decimal amount, string ipAddress, CancellationToken token);
 

@@ -203,10 +203,7 @@ export default function Betting({
                         disabled={disabled}
                         currency={currency}
                         locale={locale}
-                        isRolling={
-                          status === MatchStatus.Open &&
-                          !AdminRoles.includes(role)
-                        }
+                        isRolling={false}
                       />
                     ) : (
                       <></>

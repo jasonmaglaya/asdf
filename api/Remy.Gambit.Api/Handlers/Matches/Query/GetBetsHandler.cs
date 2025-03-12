@@ -18,7 +18,7 @@ namespace Remy.Gambit.Api.Handlers.Matches.Query
 
         public async ValueTask<GetBetsResult> HandleAsync(GetBetsRequest request, CancellationToken token = default)
         {
-            var bets = await _matchesRepository.GetBetsAsync(request.MatchId, request.UserId, token);
+            var bets = await _matchesRepository.GetBetsByUserIdAsync(request.MatchId, request.UserId, token);
 
             var betsDto = _mapper.Map<IEnumerable<Api.Dto.TotalBet>>(bets);
 

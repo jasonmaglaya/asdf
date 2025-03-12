@@ -24,7 +24,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddSingleton<IDbConnection>(x => new SqlConnection(builder.Configuration["ConnectionStrings:GambitDbSqlConnection"]));
+builder.Services.AddTransient<IDbConnection>(x => new SqlConnection(builder.Configuration["ConnectionStrings:GambitDbSqlConnection"]));
 builder.Services.AddTransient<IGambitDbClient, GambitDbClient>();
 builder.Services.AddSingleton<IUserLockService, SemaphoreUserLockService>();
 builder.Services.AddSingleton<ICacheService, MemoryCacheService>();

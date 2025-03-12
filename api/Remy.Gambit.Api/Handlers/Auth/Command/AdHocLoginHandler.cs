@@ -81,9 +81,10 @@ public class AdHocLoginHandler(IConfiguration configuration, IValidator<AdHocLog
         cache.Set($"{Config.SessionID}:{user.Id}", sessionId);
 
         var accessToken = TokenHelper.GenerateToken(user, sessionId, configuration);
-        var refreshTokenExpiry = DateTime.UtcNow.AddHours(configuration.GetValue("Jwt:RefreshTokenExpiryHours", 24));
 
+        var refreshTokenExpiry = DateTime.UtcNow.AddHours(configuration.GetValue("Jwt:RefreshTokenExpiryHours", 24));
         var refreshToken = TokenHelper.GenerateToken(64);
+
         var refreshTokenIsSet = await usersRepository.UpdateRefreshTokenAsync(user.Id, refreshToken, refreshTokenExpiry, token);
         if (!refreshTokenIsSet)
         {

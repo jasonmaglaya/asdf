@@ -11,6 +11,7 @@ import { BetsContext } from "../_shared/BetsContext";
 import { StyledCard } from "../_shared/StyledCard";
 import { useDispatch, useSelector } from "react-redux";
 import { setCredits } from "../../store/userSlice";
+import { setErrorMessages } from "../../store/messagesSlice";
 
 const StyledButton = styled(Button)`
   margin: 3px;
@@ -67,7 +68,7 @@ export default function PlaceBet({
       return;
     }
 
-    await betForm.setValue(
+    betForm.setValue(
       "amount",
       amount.toLocaleString(locale || "en-US", {
         style: "currency",
@@ -112,11 +113,17 @@ export default function PlaceBet({
         dispatch(setCredits(data.credits));
         setBalance(data.credits);
         setBets(data.bets);
-        await betForm.reset({ amount: "" });
+        betForm.reset({ amount: "" });
         betForm.clearErrors("amount");
       })
+      .catch(({ response }) => {
+        const errors = [
+          ...(response?.data?.validationResults || []),
+          ...(response?.data?.errors || []),
+        ];
+        dispatch(setErrorMessages(errors));
+      })
       .finally(() => {
-        setShowConfirmBetDialog(false);
         setIsBusy(false);
       });
   };
@@ -239,7 +246,10 @@ export default function PlaceBet({
       <ConfirmDialog
         confirmButtonText="Place Bet"
         confirmButtonTextBusy="Placing Bet..."
-        handleConfirm={placeBet}
+        handleConfirm={() => {
+          setShowConfirmBetDialog(false);
+          placeBet();
+        }}
         handleClose={() => {
           setShowConfirmBetDialog(false);
         }}

@@ -16,6 +16,7 @@ import { addBet } from "../../services/matchesService";
 import { useDispatch, useSelector } from "react-redux";
 import { setCredits } from "../../store/userSlice";
 import { BetsContext } from "../_shared/BetsContext";
+import { setErrorMessages } from "../../store/messagesSlice";
 
 const StyledButton = styled(Button)`
   margin: 3px;
@@ -97,8 +98,15 @@ export default function PlaceBetDialog({
         dispatch(setCredits(data.credits));
         setBalance(data.credits);
         setBets(data.bets);
-        await reset({ amount: "" });
+        reset({ amount: "" });
         clearErrors("amount");
+      })
+      .catch(({ response }) => {
+        const errors = [
+          ...(response?.data?.validationResults || []),
+          ...(response?.data?.errors || []),
+        ];
+        dispatch(setErrorMessages(errors));
       })
       .finally(() => {
         setShow(false);
