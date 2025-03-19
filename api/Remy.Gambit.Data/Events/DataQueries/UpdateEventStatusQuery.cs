@@ -8,7 +8,7 @@ public class UpdateEventStatusQuery : DataQuery
 UPDATE Events
 SET Status = @Status
 WHERE Id = @EventId
-    AND Status != 'Closed'
+    AND Status != 'Final'
 ";
 
     public UpdateEventStatusQuery(Guid eventId, string status)

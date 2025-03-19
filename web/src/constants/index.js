@@ -2,6 +2,7 @@ export const EventStatus = {
   New: "New",
   Active: "Active",
   Closed: "Closed",
+  Final: "Final",
 };
 
 export const MatchStatus = {

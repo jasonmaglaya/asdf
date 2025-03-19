@@ -38,6 +38,15 @@ export default function EventsMaintenance() {
     });
   };
 
+  const lockEvent = (id) => {
+    setIsBusy(true);
+    updateEventStatus(id, EventStatus.Final).then(() => {
+      setIsBusy(false);
+      setShowConfirmDialog(false);
+      loadEvents();
+    });
+  };
+
   const confirmLive = (eventId, eventTitle) => {
     setShowConfirmDialog(true);
     setEventId(eventId);
@@ -53,6 +62,15 @@ export default function EventsMaintenance() {
     setConfirmationMessage("CLOSE EVENT");
     setButtonText("CLOSE EVENT");
     setConfirmationAction(() => closeEvent);
+    setShowConfirmDialog(true);
+  };
+
+  const confirmLock = (eventId, eventTitle) => {
+    setEventId(eventId);
+    setTitle(eventTitle);
+    setConfirmationMessage("LOCK EVENT");
+    setButtonText("LOCK EVENT");
+    setConfirmationAction(() => lockEvent);
     setShowConfirmDialog(true);
   };
 
@@ -87,14 +105,16 @@ export default function EventsMaintenance() {
           >
             <Card.Header className="d-flex justify-content-between align-items-center p-1">
               {event?.status === EventStatus.Active ? (
-                <span className="text-danger fw-bolder">
-                  LIVE
+                <span className="text-success fw-bolder">
+                  LIVE{" "}
                   <span
-                    className="spinner-grow spinner-grow-sm text-success"
+                    className="spinner-grow spinner-grow-sm text-danger"
                     role="status"
                   ></span>
                 </span>
-              ) : event?.status === EventStatus.Closed ? (
+              ) : [EventStatus.Closed, EventStatus.Final].includes(
+                  event?.status
+                ) ? (
                 <span className="text-danger fw-bolder text-uppercase">
                   {event?.status}
                 </span>
@@ -122,7 +142,7 @@ export default function EventsMaintenance() {
                 <Col md={4}>
                   <Row>
                     {event?.status !== EventStatus.Closed && (
-                      <Col className="mt-2 col-12 col-xl-4">
+                      <Col className="mt-2 col-12 col-xl-3">
                         <NavLink
                           to={`/events/${event.id}/edit`}
                           className="btn btn-secondary btn-lg align-center form-control h-100"
@@ -131,7 +151,7 @@ export default function EventsMaintenance() {
                         </NavLink>
                       </Col>
                     )}
-                    <Col className="mt-2 col-12 col-xl-4">
+                    <Col className="mt-2 col-12 col-xl-3">
                       <NavLink
                         to={`/events/${event.id}/matches`}
                         className="btn btn-info btn-lg align-center form-control"
@@ -139,8 +159,10 @@ export default function EventsMaintenance() {
                         MATCHES
                       </NavLink>
                     </Col>
-                    <Col className="mt-2 col-12 col-xl-4">
-                      {event?.status === EventStatus.New && (
+                    <Col className="mt-2 col-12 col-xl-3">
+                      {[EventStatus.New, EventStatus.Closed].includes(
+                        event?.status
+                      ) && (
                         <Button
                           className="btn btn-success btn-lg align-center form-control h-100"
                           onClick={() => confirmLive(event.id, event.title)}
@@ -154,6 +176,18 @@ export default function EventsMaintenance() {
                           onClick={() => confirmClose(event.id, event.title)}
                         >
                           CLOSE
+                        </Button>
+                      )}
+                    </Col>
+                    <Col className="mt-2 col-12 col-xl-3">
+                      {[EventStatus.Active, EventStatus.Closed].includes(
+                        event?.status
+                      ) && (
+                        <Button
+                          className="btn btn-danger btn-lg align-center form-control h-100 text-light"
+                          onClick={() => confirmLock(event.id, event.title)}
+                        >
+                          LOCK
                         </Button>
                       )}
                     </Col>
