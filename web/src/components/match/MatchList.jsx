@@ -5,7 +5,7 @@ import {
   DropdownButton,
   Table,
 } from "react-bootstrap";
-import { MatchStatus } from "../../constants";
+import { EventStatus, MatchStatus } from "../../constants";
 import { useEffect, useMemo, useState } from "react";
 import TeamAvatar from "../event/TeamAvatar";
 import DeclareWinnerDialog from "../event/DeclareWinnerDialog";
@@ -31,6 +31,7 @@ export default function MatchList({ eventId, maxWinners, teams, allowDraw }) {
   const [matchId, setMatchId] = useState();
   const [exclude, setExclude] = useState([]);
   const [matches, setMatches] = useState([]);
+  const [eventStatus, setEventStatus] = useState();
   const navigate = useNavigate();
 
   const showReDeclareDialog = (matchId, winnerCode) => {
@@ -77,10 +78,15 @@ export default function MatchList({ eventId, maxWinners, teams, allowDraw }) {
       });
   };
 
-  const loadMatches = async (id) => {
+  const loadMatches = async (id, goTo) => {
     try {
       const { data } = await getMatches(id);
       setMatches(data?.result?.list || []);
+      setEventStatus(data?.eventStatus);
+
+      if (data?.eventStatus === EventStatus.Final) {
+        goTo("/events", { replace: true });
+      }
     } catch {}
   };
 
@@ -89,8 +95,8 @@ export default function MatchList({ eventId, maxWinners, teams, allowDraw }) {
   };
 
   useEffect(() => {
-    loadMatches(eventId);
-  }, [eventId]);
+    loadMatches(eventId, navigate);
+  }, [eventId, navigate]);
 
   return (
     <>
@@ -156,26 +162,29 @@ export default function MatchList({ eventId, maxWinners, teams, allowDraw }) {
                   >
                     View
                   </Dropdown.Item>
+
                   {[MatchStatus.Cancelled, MatchStatus.Completed].includes(
                     match.status
-                  ) && (
-                    <Dropdown.Item
-                      eventKey="redeclare"
-                      onClick={() =>
-                        showReDeclareDialog(match.id, match.winnerCode)
-                      }
-                    >
-                      Re-Declare
-                    </Dropdown.Item>
-                  )}
-                  {[MatchStatus.Completed].includes(match.status) && (
-                    <Dropdown.Item
-                      eventKey="cancel"
-                      onClick={() => showCancelConfirmation(match.id)}
-                    >
-                      Cancel
-                    </Dropdown.Item>
-                  )}
+                  ) &&
+                    eventStatus !== EventStatus.Final && (
+                      <Dropdown.Item
+                        eventKey="redeclare"
+                        onClick={() =>
+                          showReDeclareDialog(match.id, match.winnerCode)
+                        }
+                      >
+                        Re-Declare
+                      </Dropdown.Item>
+                    )}
+                  {[MatchStatus.Completed].includes(match.status) &&
+                    eventStatus !== EventStatus.Final && (
+                      <Dropdown.Item
+                        eventKey="cancel"
+                        onClick={() => showCancelConfirmation(match.id)}
+                      >
+                        Cancel
+                      </Dropdown.Item>
+                    )}
                 </DropdownButton>
               </td>
             </tr>

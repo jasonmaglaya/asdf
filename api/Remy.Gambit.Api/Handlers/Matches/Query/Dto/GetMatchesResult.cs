@@ -6,6 +6,6 @@ namespace Remy.Gambit.Api.Handlers.Matches.Query.Dto
 {
     public class GetMatchesResult : QueryResult<PaginatedList<MatchListItem>>
     {
-        
+        public string? EventStatus { get; set; }
     }
 }
