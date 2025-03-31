@@ -50,11 +50,11 @@ public class ValuesController(IQueryHandler<GetRolesRequest, GetRolesResult> get
 
         if(allowedIps.Contains(ip))
         {
-            return $"Your IP Address {ip} is allowed.";
+            return $"Your IP Address {ip} is allowed.\n\nAllowed IPs are:\n{string.Join("\n", allowedIps)}";
         }
         else
         {
-            return $"Your IP Address {ip} is NOT allowed.";
+            return $"Your IP Address {ip} is NOT allowed.\n\nAllowed IPs are:\n{string.Join("\n" , allowedIps)}";
         }
     }
 
