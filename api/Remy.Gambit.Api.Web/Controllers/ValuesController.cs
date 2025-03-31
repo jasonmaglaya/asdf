@@ -36,6 +36,28 @@ public class ValuesController(IQueryHandler<GetRolesRequest, GetRolesResult> get
         return Ok($"xForwardedFor : {xForwardedFor}\nremoteIpAddress:{remoteIpAddress}");
     }
 
+    [AllowAnonymous]
+    [HttpGet("test")]
+    public ActionResult<string> Test(CancellationToken token)
+    {
+        var ip = Request.Headers["X-Forwarded-For"].FirstOrDefault();
+
+        var allowedIps = new string[] {
+            "45.192.223.30",
+            "45.192.223.20",
+            "45.192.223.10"
+        };
+
+        if(allowedIps.Contains(ip))
+        {
+            return $"Your IP Address {ip} is allowed.";
+        }
+        else
+        {
+            return $"Your IP Address {ip} is NOT allowed.";
+        }
+    }
+
     //[AllowAnonymous]
     //[HttpGet("my-ip/bounce")]
     //public async Task<ActionResult<string>> BounceMyIp(CancellationToken token)
