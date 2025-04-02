@@ -8,4 +8,5 @@ public interface ICreditsRepository
     Task<bool> CashInAsync(Credit credit, string notes, CancellationToken cancellationToken);
     Task<bool> CashOutAsync(Credit credit, string notes, CancellationToken cancellationToken);
     Task<PaginatedList<Credit>> GetHistoryAsync(Guid userId, int pageNumber, int pageSize, CancellationToken token);
+    Task<bool> CanCashOutAsync(Guid userId, CancellationToken token);
 }

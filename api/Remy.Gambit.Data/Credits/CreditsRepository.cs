@@ -30,4 +30,11 @@ public class CreditsRepository(IGambitDbClient gambitDbClient) : ICreditsReposit
 
         return new PaginatedList<Credit> { List = history, PageSize = pageSize, TotalItems = total.FirstOrDefault() };
     }
+
+    public async Task<bool> CanCashOutAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        var query = new CanCashOutQuery(userId);
+
+        return await _gambitDbClient.ExecuteScalarAsync<bool>(query, cancellationToken);
+    }
 }

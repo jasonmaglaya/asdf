@@ -14,16 +14,9 @@ namespace Remy.Gambit.Api.Handlers.Credits.Command;
 public class CashOutHandler(IUsersRepository usersRepository, ICreditsRepository creditsRepository, IAppSettingsRepository appSettingsRepository,
     IValidator<CashOutRequest> validator, IPartnerService partnerService, IUserLockService userLockService) : ICommandHandler<CashOutRequest, CashOutResult>
 {
-    private readonly IUsersRepository _usersRepository = usersRepository;
-    private readonly ICreditsRepository _creditsRepository = creditsRepository;
-    private readonly IAppSettingsRepository _appSettingsRepository = appSettingsRepository;
-    private readonly IValidator<CashOutRequest> _validator = validator;
-    private readonly IPartnerService _partnerService = partnerService;
-    private readonly IUserLockService _userLockService = userLockService;
-
     public async ValueTask<CashOutResult> HandleAsync(CashOutRequest command, CancellationToken token = default)
     {
-        var validationResult = await _validator.ValidateAsync(command, token);
+        var validationResult = await validator.ValidateAsync(command, token);
         if (!validationResult.IsValid)
         {
             return new CashOutResult { IsSuccessful = false, ValidationResults = validationResult.Errors.Select(x => x.ErrorMessage) };
@@ -31,13 +24,20 @@ public class CashOutHandler(IUsersRepository usersRepository, ICreditsRepository
 
         try
         {
-            var lockAcquired = await _userLockService.AcquireLockAsync(command.UserId);
+            var canCashOut = await creditsRepository.CanCashOutAsync(command.UserId, token);
+            if (!canCashOut)
+            {
+                var matchesToCashOut = await appSettingsRepository.GetAppSettingValueAsync<int>(Constants.AppSettings.MatchesToCashOut, token);
+                return new CashOutResult { IsSuccessful = false, ValidationResults = [$"You are not yet allowed to cash out. Please wait after {matchesToCashOut} fights."] };
+            }
+
+            var lockAcquired = await userLockService.AcquireLockAsync(command.UserId);
             if (!lockAcquired)
             {
                 return new CashOutResult { IsSuccessful = false, ValidationResults = ["Failed to cash out."] };
             }
 
-            var user = await _usersRepository.GetUserByIdAsync(command.UserId, token);
+            var user = await usersRepository.GetUserByIdAsync(command.UserId, token);
             if (user is null)
             {
                 return new CashOutResult { IsSuccessful = false, ValidationResults = ["Failed to cash out."] };
@@ -51,13 +51,13 @@ public class CashOutHandler(IUsersRepository usersRepository, ICreditsRepository
             // Credit the amount to the partner
             var transactionId = $"{DateTime.UtcNow:yyyyMMddHHmmss}{TokenHelper.GenerateToken(10)}";
             var tableId = Constants.Config.MarvelGamingTableId;
-            var round = await _usersRepository.GetLastRoundIdAsync(user.Id, token);
+            var round = await usersRepository.GetLastRoundIdAsync(user.Id, token);
             if(string.IsNullOrEmpty(round))
             {
                 round = $"{DateTime.UtcNow:yyyyMMddHHmmss}{TokenHelper.GenerateToken(10)}";
             }
 
-            var currency = await _appSettingsRepository.GetAppSettingValueAsync<string>(Constants.AppSettings.Currency, token);
+            var currency = await appSettingsRepository.GetAppSettingValueAsync<string>(Constants.AppSettings.Currency, token);
 
             var cashOutRequest = new Services.Dto.CashOutRequest
             {
@@ -70,7 +70,7 @@ public class CashOutHandler(IUsersRepository usersRepository, ICreditsRepository
                 Round = round
             };
 
-            var cashOutResult = await _partnerService.CashOutAsync(cashOutRequest, token);
+            var cashOutResult = await partnerService.CashOutAsync(cashOutRequest, token);
             if (!cashOutResult.IsSuccessful)
             {
                 return new CashOutResult { IsSuccessful = false, Errors = cashOutResult.Errors! };
@@ -88,7 +88,7 @@ public class CashOutHandler(IUsersRepository usersRepository, ICreditsRepository
 
             var notes = $"CASH OUT - TransactionId: {transactionId}, TableId: {tableId}, Round: {round}";
 
-            var deductCreditResult = await _creditsRepository.CashOutAsync(deduction, notes, token);
+            var deductCreditResult = await creditsRepository.CashOutAsync(deduction, notes, token);
 
             if (!deductCreditResult)
             {
@@ -107,9 +107,9 @@ public class CashOutHandler(IUsersRepository usersRepository, ICreditsRepository
                     Round = round
                 };
 
-                var res = await _partnerService.CashInAsync(cashInRequest, token);
+                var res = await partnerService.CashInAsync(cashInRequest, token);
 
-                await _usersRepository.UpdateLastRoundIdAsync(user.Id, round, token);
+                await usersRepository.UpdateLastRoundIdAsync(user.Id, round, token);
 
                 return new CashOutResult { IsSuccessful = false, Errors = res.Errors! };
             }
@@ -127,7 +127,7 @@ public class CashOutHandler(IUsersRepository usersRepository, ICreditsRepository
         }
         finally
         {
-            await _userLockService.ReleaseLockAsync(command.UserId);
+            await userLockService.ReleaseLockAsync(command.UserId);
         }
     }
 }
