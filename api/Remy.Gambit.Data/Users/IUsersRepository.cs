@@ -38,4 +38,6 @@ public interface IUsersRepository
     Task<bool> UpdateLastRoundIdAsync(Guid userId, string lastRoundId, CancellationToken token);
 
     Task<string> GetLastRoundIdAsync(Guid userId, CancellationToken token);
+
+    Task<bool> ChangePasswordAsync(Guid userId, string newPassword, CancellationToken token);
 }

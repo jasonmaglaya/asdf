@@ -151,4 +151,10 @@ public class UsersRepository : IUsersRepository
         var query = new GetLastRoundIdQuery(userId);
         return await _gambitDbClient.ExecuteScalarAsync<string>(query, token);
     }
+
+    public async Task<bool> ChangePasswordAsync(Guid userId, string newPassword, CancellationToken token)
+    {
+        var query = new ChangePasswordQuery(userId, newPassword);
+        return await _gambitDbClient.ExecuteAsync(query, token) > 0;
+    }
 }

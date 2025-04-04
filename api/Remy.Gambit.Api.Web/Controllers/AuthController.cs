@@ -16,21 +16,15 @@ public class AuthController(
     ICommandHandler<LoginRequest, LoginResult> loginHandler,
     ICommandHandler<RefreshTokenRequest, RefreshTokenResult> refreshTokenHandler,
     ICommandHandler<LogoutRequest, LogoutResult> logoutHandler,
-    ICommandHandler<AdHocLoginRequest, AdHocLoginResult> adHocLoginHandler
+    ICommandHandler<AdHocLoginRequest, AdHocLoginResult> adHocLoginHandler,
+    ICommandHandler<ChangePasswordRequest, ChangePasswordResult> changePasswordHandler
         ) : ControllerBase
 {
-    private readonly ICommandHandler<SignUpRequest, SignUpResult> _signupHandler = signupHandler;
-    private readonly IQueryHandler<CheckUsernameRequest, CheckUsernameResult> _checkUsernameHandler = checkUsernameHandler;
-    private readonly IQueryHandler<CheckReferralCodeRequest, CheckReferralCodeResult> _checkReferralCodeHandler = checkReferralCodeHandler;
-    private readonly ICommandHandler<LoginRequest, LoginResult> _loginHandler = loginHandler;
-    private readonly ICommandHandler<RefreshTokenRequest, RefreshTokenResult> _refreshTokenHandler = refreshTokenHandler;
-    private readonly ICommandHandler<LogoutRequest, LogoutResult> _logoutHandler = logoutHandler;
-    private readonly ICommandHandler<AdHocLoginRequest, AdHocLoginResult> _adHocLoginHandler = adHocLoginHandler;
 
     [HttpPost("signup")]
     public async Task<ActionResult<SignUpResult>> Signup([FromBody] SignUpRequest request, CancellationToken token)
     {
-        var result = await _signupHandler.HandleAsync(request, token);
+        var result = await signupHandler.HandleAsync(request, token);
 
         if (result.ValidationResults.Any())
         {
@@ -48,7 +42,7 @@ public class AuthController(
     [HttpGet("username/check")]
     public async Task<ActionResult<CheckUsernameResult>> CheckUsername([FromQuery] CheckUsernameRequest request, CancellationToken token)
     {
-        var result = await _checkUsernameHandler.HandleAsync(request, token);
+        var result = await checkUsernameHandler.HandleAsync(request, token);
 
         if (result.ValidationResults.Any())
         {
@@ -66,7 +60,7 @@ public class AuthController(
     [HttpGet("referral-code/check")]
     public async Task<ActionResult<CheckReferralCodeResult>> CheckReferralCode([FromQuery] CheckReferralCodeRequest request, CancellationToken token)
     {
-        var result = await _checkReferralCodeHandler.HandleAsync(request, token);
+        var result = await checkReferralCodeHandler.HandleAsync(request, token);
 
         if (result.ValidationResults.Any())
         {
@@ -84,7 +78,7 @@ public class AuthController(
     [HttpPost("login")]
     public async Task<ActionResult<LoginResult>> Login([FromBody] LoginRequest request, CancellationToken token)
     {
-        var result = await _loginHandler.HandleAsync(request, token);
+        var result = await loginHandler.HandleAsync(request, token);
 
         if (result.ValidationResults.Any())
         {
@@ -121,7 +115,7 @@ public class AuthController(
 
         request.IpAddress = clientIp;
 
-        var result = await _adHocLoginHandler.HandleAsync(request, token);
+        var result = await adHocLoginHandler.HandleAsync(request, token);
 
         return Ok(result);
     }
@@ -129,7 +123,7 @@ public class AuthController(
     [HttpPost("access-token/refresh")]
     public async Task<ActionResult<RefreshTokenResult>> RefreshToken([FromBody] RefreshTokenRequest request, CancellationToken token)
     {
-        var result = await _refreshTokenHandler.HandleAsync(request, token);
+        var result = await refreshTokenHandler.HandleAsync(request, token);
 
         if (result.ValidationResults.Any())
         {
@@ -156,7 +150,42 @@ public class AuthController(
 
         var request = new LogoutRequest { UserId = userId };
 
-        var result = await _logoutHandler.HandleAsync(request, token);
+        var result = await logoutHandler.HandleAsync(request, token);
+
+        if (result.ValidationResults.Any())
+        {
+            return BadRequest(result);
+        }
+
+        if (!result.IsSuccessful)
+        {
+            return Unauthorized();
+        }
+
+        return Ok(result);
+    }
+
+    [Authorize]
+    [HttpPut("password")]
+    public async Task<ActionResult<ChangePasswordResult>> ChangePassword(ChangePasswordRequest request, CancellationToken token)
+    {
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        if (!Guid.TryParse(identity?.FindFirst(ClaimTypes.Name)?.Value!, out Guid userId))
+        {
+            return Unauthorized();
+        }
+
+        request.UserId = userId;
+
+        var role = identity?.FindFirst(ClaimTypes.Role)?.Value;
+        if (string.IsNullOrEmpty(role))
+        {
+            return Unauthorized();
+        }
+
+        request.Role = role;
+
+        var result = await changePasswordHandler.HandleAsync(request, token);
 
         if (result.ValidationResults.Any())
         {
