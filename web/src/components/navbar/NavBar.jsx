@@ -10,7 +10,7 @@ import {
 } from "react-bootstrap";
 import { logout as userLogout } from "../../services/authService";
 import { useSelector } from "react-redux";
-import { pathFeatureMappings } from "../../constants";
+import { Features, pathFeatureMappings } from "../../constants";
 import { useEffect, useState } from "react";
 import CashInDialog from "../credits/CashInDialog";
 import CashOutDialog from "../credits/CashOutDialog";
@@ -46,6 +46,10 @@ export default function NavBar() {
         localStorage.removeItem("user");
         navigate("/login");
       });
+  };
+
+  const changePassword = () => {
+    navigate("/change-password");
   };
 
   useEffect(() => {
@@ -100,6 +104,16 @@ export default function NavBar() {
                   id="basic-nav-dropdown"
                   className="d-block d-lg-none"
                 >
+                  {features.includes(Features.ChangeOwnPassword) && (
+                    <NavDropdown.Item
+                      href="#"
+                      onClick={() => {
+                        changePassword();
+                      }}
+                    >
+                      Change Password
+                    </NavDropdown.Item>
+                  )}
                   <NavDropdown.Item
                     href="#"
                     onClick={() => {
@@ -118,6 +132,16 @@ export default function NavBar() {
           <Nav>
             <Nav className="d-none d-lg-block">
               <NavDropdown title={user?.username} id="basic-nav-dropdown">
+                {features.includes(Features.ChangeOwnPassword) && (
+                  <NavDropdown.Item
+                    href="#"
+                    onClick={() => {
+                      changePassword();
+                    }}
+                  >
+                    Change Password
+                  </NavDropdown.Item>
+                )}
                 <NavDropdown.Item
                   href="#"
                   onClick={() => {

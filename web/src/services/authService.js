@@ -33,3 +33,17 @@ export const signUp = async (
     referralCode,
   });
 };
+
+export const userChangePassword = async (
+  oldPassword,
+  newPassword,
+  confirmPassword,
+  securityCode
+) => {
+  return jwtInterceptor.put("/auth/password", {
+    oldPassword,
+    newPassword,
+    confirmPassword,
+    securityCode,
+  });
+};

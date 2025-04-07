@@ -18,6 +18,7 @@ import PlayerEventSummaryPage from "./pages/reports/PlayerEventSummaryPage";
 import EventsReportPage from "./pages/reports/EventsReportPage";
 import EventSummaryPage from "./pages/reports/EventSummaryPage";
 import MatchSummaryPage from "./pages/reports/MatchSummaryPage";
+import ChangePasswordPage from "./pages/ChangePasswordPage";
 
 const getUserData = () => {
   return new Promise((resolve) =>
@@ -116,6 +117,10 @@ export const router = createBrowserRouter([
           {
             path: "/reports/events/:eventId/matches/:matchId",
             element: <MatchSummaryPage />,
+          },
+          {
+            path: "/change-password",
+            element: <ChangePasswordPage />,
           },
         ],
       },

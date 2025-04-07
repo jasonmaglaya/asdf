@@ -40,6 +40,7 @@ export const Features = {
   ListAllUsers: "ListAllUsers",
   Reports: "Reports",
   PreviewEvent: "PreviewEvent",
+  ChangeOwnPassword: "ChangeOwnPassword",
 };
 
 export const AgentRoles = ["ag", "ma", "sma", "inco"];
